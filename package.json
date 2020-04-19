@@ -1,0 +1,29 @@
+{
+    "name": "app-doacao",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "node ./bin/www",
+        "test": "mocha tests --recursive --watch"
+    },
+    "dependencies": {
+        "axios": "^0.19.2",
+        "body-parser": "^1.19.0",
+        "cheerio": "^0.22.0",
+        "cors": "^2.8.1",
+        "crypto": "^1.0.1",
+        "debug": "^4.1.1",
+        "express": "^4.17.1",
+        "express-load": "1.1.16",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^5.9.7",
+        "morgan": "^1.10.0",
+        "mysql2": "^2.1.0",
+        "sequelize": "^5.21.6",
+        "serve-favicon": "^2.5.0",
+        "winston": "^2.2.0"
+    },
+    "devDependencies": {
+        "chai": "4.1.2"
+    }
+}
