@@ -1,9 +1,9 @@
 let Usuario = require('../models/Usuario')
-let Solicitacao = require('../models/Solicitacao')
+let Pedido = require('../models/Pedido')
 
 module.exports = {
     buscarPorId:(req, res, next)=>{
-        Solicitacao.findAll({
+        Pedido.findAll({
             where: {
                 id: req.params.id
             },
@@ -11,83 +11,83 @@ module.exports = {
                 model: Usuario
             }]
         })
-        .then(solicitacao=>{
-            res.status(200).json(solicitacao[0])
+        .then(pedido=>{
+            res.status(200).json(pedido[0])
         })
         .catch(error=>{
             res.status(500).json({msg: error.message})
         })
     },
-    buscarTodas:(req, res, next)=>{
-        Solicitacao.findAll({
+    buscarTodos:(req, res, next)=>{
+        Pedido.findAll({
             include:[{
                 model: Usuario
             }]
         })
-        .then(solicitacoes=>{
-            res.status(200).json(solicitacoes)
+        .then(pedidos=>{
+            res.status(200).json(pedidos)
         })
         .catch(error=>{
             res.status(500).json({msg: error.message})
         })
     },
-    buscarTodasNaoAtendidas:(req, res, next)=>{
-        Solicitacao.findAll({
+    naoAtendidos:(req, res, next)=>{
+        Pedido.findAll({
             where: {
-                [Op.or]: [{statusEntrega: null}, {statusEntrega: false}]
+                status: 0
             },
             include:[{
                 model: Usuario
             }]
         })
-        .then(solicitacoes=>{
-            res.status(200).json(solicitacoes)
+        .then(pedidos=>{
+            res.status(200).json(pedidos)
         })
         .catch(error=>{
             res.status(500).json({msg: error.message})
         })
     },
-    buscarTodasAtendidas:(req, res, next)=>{
-        Solicitacao.findAll({
+    atendidos:(req, res, next)=>{
+        Pedido.findAll({
             where: {
-                statusEntrega: true
+                status: 2
             },
             include:[{
                 model: Usuario
             }]
         })
-        .then(solicitacoes=>{
-            res.status(200).json(solicitacoes)
+        .then(pedidos=>{
+            res.status(200).json(pedidos)
         })
         .catch(error=>{
             res.status(500).json({msg: error.message})
         })
     },
-    buscarMinhasSolicitacoes:(req, res, next)=>{
-        Solicitacao.findAll({
+    meusPedidos:(req, res, next)=>{
+        Pedido.findAll({
             where: {
                 usuarioId: req.user.id
             }
         })
-        .then(solicitacoes=>{
-            res.status(200).json(solicitacoes)
+        .then(pedidos=>{
+            res.status(200).json(pedidos)
         })
         .catch(error=>{
             res.status(500).json({msg: error.message})
         })
     },
     cadastrar:(req, res, next)=>{
-        let solicitacao = new Solicitacao({
-             cestaBasica: req.body.cestaBasica,
-             alcoolGel: req.body.alcoolGel, 
-             mascara: req.body.mascara, 
-             outrosItens: req.body.outrosItens, 
+        let pedido = new Pedido({
+             generoAlimenticio: req.body.cestaBasica,
+             higienePessoal: req.body.alcoolGel, 
+             artigoLimpeza: req.body.mascara, 
+             mascara: req.body.outrosItens, 
              observacoes: req.body.observacoes,
              usuarioId: req.user.id})
 
-        solicitacao.save()
-        .then(novaSolicitacao =>{
-            res.status(200).json(novaSolicitacao)
+        pedido.save()
+        .then(novoPedido =>{
+            res.status(200).json(novoPedido)
         })
         .catch(error=>{
             res.status(500).json({msg: error.message})
@@ -95,12 +95,12 @@ module.exports = {
     },
     editar: (req, res, next)=>{
         
-        Solicitacao.update({
-            cestaBasica: req.body.cestaBasica,
-            alcoolGel: req.body.alcoolGel, 
-            mascara: req.body.mascara, 
-            outrosItens: req.body.outrosItens, 
-            observacoes: req.body.observacoes
+        Pedido.update({
+            generoAlimenticio: req.body.cestaBasica,
+            higienePessoal: req.body.alcoolGel, 
+            artigoLimpeza: req.body.mascara, 
+            mascara: req.body.outrosItens, 
+            observacoes: req.body.observacoes,
         },{
             where: {
                 id: req.params.id,
@@ -109,7 +109,7 @@ module.exports = {
         })
     },
     remover:(req, res, next)=>{
-        Solicitacao.update({
+        Pedido.update({
             removida: true
         },{
             where: {
@@ -118,15 +118,15 @@ module.exports = {
             }
         })
         .then(ok=>{
-            res.status(200).json({msg: "Solicitacao removida com sucesso!"})
+            res.status(200).json({msg: "Pedido removido com sucesso!"})
         })
         .catch(error=>{
-            res.status(500).json({msg: "Erro ao remover solicitação!" , err:error.message})
+            res.status(500).json({msg: "Erro ao remover pedido!" , err:error.message})
         })
     },
-    alterarStatusEntrega:(req, res, next)=>{
-        Solicitacao.update({
-            statusEntrega: req.body.status
+    alterarStatus:(req, res, next)=>{
+        Pedido.update({
+            status: req.body.status
         },{
             where: {
                 id: req.body.id,

@@ -1,9 +1,8 @@
 const Sequelize = require('sequelize')
 const sequelize = require('../database/dbMysql');
 const Usuario = require('./Usuario');
-const Pedido = require('./Pedido');
 
-const Doacao = sequelize.define('doacao', {
+const Pedido = sequelize.define('pedido', {
     id: {
         type: Sequelize.INTEGER.UNSIGNED,
         primaryKey: true,
@@ -30,20 +29,16 @@ const Doacao = sequelize.define('doacao', {
         type: Sequelize.INTEGER.UNSIGNED,
         defaultValue: 0
     },
-    dispEntrega:{
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-    },
-    removida:{
+    removido:{
         type: Sequelize.BOOLEAN,
         defaultValue: false,
         get() {
             return() => this.getDataValue('removida')
         }
     }
-}, { sequelize, modelName: 'doacao', tableName: 'doacoes' });
+}, { sequelize, modelName: 'pedido',  tableName: 'pedidos' });
 
-Doacao.belongsTo(Usuario);
-Doacao.belongsTo(Pedido);
+Pedido.belongsTo(Usuario);
 
-module.exports = Doacao;
+
+module.exports = Pedido;

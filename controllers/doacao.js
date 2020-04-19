@@ -1,6 +1,6 @@
 let Usuario = require('../models/Usuario')
 let Doacao = require('../models/Doacao')
-let Solicitacao = require('../models/Solicitacao')
+let Pedido = require('../models/Pedido')
 
 module.exports = {
     buscarPorId:(req, res, next)=>{
@@ -33,8 +33,12 @@ module.exports = {
             res.status(500).json({msg: error.message})
         })
     },
-    buscarMinhasDoacoes:(req, res, next)=>{
-        Doacao.findAll()
+    minhasDoacoes:(req, res, next)=>{
+        Doacao.findAll({
+            where: {
+                usuarioId: req.user.id
+            }
+        })
         .then(doacoes=>{
             res.status(200).json(doacoes)
         })
@@ -42,7 +46,7 @@ module.exports = {
             res.status(500).json({msg: error.message})
         })
     },
-    buscarFinalizadas:(req, res, next)=>{
+    finalizadas:(req, res, next)=>{
         Doacao.findAll({
             where: {
                 [Op.or]: [{statusEntrega: null}, {statusEntrega: false}]
@@ -60,34 +64,17 @@ module.exports = {
     },
     cadastrar:(req, res, next)=>{
         let doacao = new Doacao({
-             cestaBasica: req.body.cestaBasica,
-             alcoolGel: req.body.alcoolGel, 
-             mascara: req.body.mascara, 
-             outrosItens: req.body.outrosItens, 
-             observacoes: req.body.observacoes,
-             dispEntrega: req.body.dispEntrega,
-             dataEntrega: req.body.dataEntrega,
-             usuarioId: req.user.id})
+                generoAlimenticio: req.body.cestaBasica,
+                higienePessoal: req.body.alcoolGel, 
+                artigoLimpeza: req.body.mascara, 
+                mascara: req.body.outrosItens, 
+                observacoes: req.body.observacoes,
+                dispEntrega: req.body.dispEntrega,
+                usuarioId: req.user.id})
 
         doacao.save()
         .then(novaDoacao =>{
-            if(req.id.solicitacaoId){
-                Solicitacao.update({
-                    doacaoId: novaDoacao.id
-                },{
-                    where: {
-                        id: req.body.solicitacaoId
-                    }
-                })
-                .then(ok=>{
-                    res.status(200).json(novaDoacao)
-                })
-                .catch(error=>{
-                    res.status(500).json({msg: "Erro ao atualizar solicitação!" , err:error.message})
-                }) 
-            }else{
-                res.status(200).json(novaDoacao)
-            }
+            res.status(200).json(novaDoacao)
         })
         .catch(error=>{
             res.status(500).json({msg: error.message})
@@ -96,13 +83,12 @@ module.exports = {
     editar: (req, res, next)=>{
         
         Doacao.update({
-            cestaBasica: req.body.cestaBasica,
-            alcoolGel: req.body.alcoolGel, 
-            mascara: req.body.mascara, 
-            outrosItens: req.body.outrosItens, 
-            observacoes: req.body.observacoes,
-            dispEntrega: req.body.dispEntrega,
-            dataEntrega: req.body.dataEntrega
+                generoAlimenticio: req.body.cestaBasica,
+                higienePessoal: req.body.alcoolGel, 
+                artigoLimpeza: req.body.mascara, 
+                mascara: req.body.outrosItens, 
+                observacoes: req.body.observacoes,
+                dispEntrega: req.body.dispEntrega,
         },{
             where: {
                 id: req.params.id,
@@ -126,10 +112,9 @@ module.exports = {
             res.status(500).json({msg: "Erro ao remover doação!" , err:error.message})
         })
     },
-    alterarStatusEntrega:(req, res, next)=>{
+    alterarStatus:(req, res, next)=>{
         Doacao.update({
-            statusEntrega: req.body.statusEntrega,
-            motivo: req.body.motivo
+            status: req.body.status
         },{
             where: {
                 id: req.body.id,

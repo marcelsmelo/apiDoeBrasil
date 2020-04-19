@@ -1,9 +1,11 @@
 require('./database/dbMysql')
 const Usuario = require('./models/Usuario')
+const Pedido = require('./models/Pedido')
 const Doacao = require('./models/Doacao')
-const Solicitacao = require('./models/Solicitacao')
+
 
 Usuario.sync()
+Pedido.sync()
 Doacao.sync()
-Solicitacao.sync()
+
 
