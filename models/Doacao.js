@@ -57,6 +57,7 @@ const Doacao = sequelize.define('doacao', {
 }, { sequelize, modelName: 'doacao', tableName: 'doacoes' });
 
 Doacao.belongsTo(Usuario);
-Doacao.hasOne(Solicitacao);
+Doacao.hasMany(Solicitacao);
+
 
 module.exports = Doacao;
