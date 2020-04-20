@@ -36,7 +36,11 @@ module.exports = {
 
         logger.debug(`[LOGIN] Dados recebidos: ${req.body}`)
 
-        Usuario.findOne({'telefone': telefone})
+        Usuario.findOne({
+            where: {
+                'telefone': telefone
+            }
+        })
         .then(user=>{
             logger.info(`[LOGIN] Usuário encontrado: ${user}`)
             if(!user){//Usuário (username) não foi encontrado
