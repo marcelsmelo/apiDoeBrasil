@@ -20,11 +20,11 @@ module.exports = {
         user.save()
         .then(user =>{
             logger.debug(`[CADASTRAR] Usuário criado: ${user}`)
-            res.status(201).json(user)
+            res.status(201).json({msg:"Usuário criado com sucesso", "usuario": user})
         })
         .catch(error =>{
             logger.error(`[CADASTRAR] Erro: ${error}`)
-            res.status(500).json(error)
+            res.status(500).json({msg:"Erro ao cadastrar o usuário!", "error": error.message})
         })
     },
     login: (req, res, next)=>{
@@ -37,8 +37,8 @@ module.exports = {
             logger.info(`[LOGIN] Usuário encontrado: ${user}`)
             if(!user){//Usuário (username) não foi encontrado
                 res.status(401).json({
-                    token: null,
-                    msg: "Usuário não encontrado!"})   
+                    msg: "Usuário não encontrado!",
+                    error: null})   
             }else{//Usuário encontrado, verificar senha
                 if(user.comparePassword(senha)){//Senha informada está correta
                     user.generateAuthToken() //Gerar o token JWT
@@ -48,21 +48,23 @@ module.exports = {
                     })
                     .catch(error =>{//Erro ao gerar o Token JWT
                         logger.error(`[LOGIN] Erro ao realizar o login`)
-                        res.status(401).json(error)
+                        res.status(401).json({msg:"Erro ao realizar o login", "error": error.message})
                     })
                 }else{//Senha informada está incorreta
                     logger.error(`[LOGIN] Senha incorreta`)
                     res.status(401).json({
-                        token: null,
-                        msg: "Senha informada está incorreta!"})
+                        msg: "Senha informada está incorreta!",
+                        "error": null
+                    })
                 }
             }
         })
         .catch(error =>{
             logger.error(`[LOGIN] usuário não encontrado`)
             res.status(401).json({
-                token: null,
-                msg: "Usuário não encontrado!"})
+                msg: "Usuário não encontrado!",
+                "error":null
+            })
         })
     },
     logout:(req, res, next)=>{
@@ -84,7 +86,7 @@ module.exports = {
         })
         .catch(error=>{
             logger.error(`[LOGOUT] Erro: `+error)
-            res.status(500).send({ msg: 'Logout não realizado!' });
+            res.status(500).send({msg: 'Logout não realizado!', "error": error.message});
         })
     },
     getCidadeFromUF: (req, res, next)=>{
@@ -95,6 +97,6 @@ module.exports = {
             return city.sigla == req.params.uf;
         })
         logger.debug(`[CIDADES] Cidades recuperadas`)
-        res.status(200).json(cidadesByUF);
+        res.status(200).json(cidadesByUF[0]);
     }
 }

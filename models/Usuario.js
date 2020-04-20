@@ -130,13 +130,14 @@ Usuario.prototype.generateAuthToken = function() {
       .then(user =>{
           //Retornar uma Promises de sucesso
           success({
+            msg:"Usuário logado com sucesso!",
             token: token
           });
       })
       .catch(err => {
         //Retornar uma Promises de erro
           reject({
-            token: null,
+            msg: "Erro ao gerar token JWT!",
             err: err.errmsg
           });
       })
