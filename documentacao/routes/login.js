@@ -42,7 +42,7 @@
         }
      }
     },
-    "/login": {
+    "/signup": {
       "post": {
         "description": "Realiza o login do usuário",
         "produces": "application/json",

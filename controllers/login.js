@@ -4,6 +4,8 @@ module.exports = {
     cadastrar:(req, res, next)=>{
 
         logger.debug(`[CADASTRAR] Dados recebidos: ${req.body}`)
+        console.log('[CADASTRAR] Nome: '+req.body.nome)
+        console.log('[CADASTRAR] Senha: '+req.body.senha)
 
         const user = new Usuario({
             nome: req.body.nome,
@@ -29,6 +31,8 @@ module.exports = {
     },
     login: (req, res, next)=>{
         const { telefone, senha } = req.body
+        console.log('[LOGIN] Telefone: '+telefone)
+        console.log('[LOGIN] Senha: '+senha)
 
         logger.debug(`[LOGIN] Dados recebidos: ${req.body}`)
 
