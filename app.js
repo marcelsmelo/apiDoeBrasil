@@ -51,6 +51,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // swagger definition
 let swaggerDefinition = {
+    openapi: '3.0.0',
     info: {
       title: 'API aplicativo doações', //Nome da API
       version: '1.0.0', //Versão da API
