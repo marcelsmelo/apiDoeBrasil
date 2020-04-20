@@ -111,7 +111,7 @@
         "tags":['Login'],
         "produces": "application/json",
         "security": [
-          { "bearerAuth": [] }
+          { "BearerAuth": [] }
         ],
         "responses": {
           "200": {
