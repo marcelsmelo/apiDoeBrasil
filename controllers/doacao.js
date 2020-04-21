@@ -9,8 +9,10 @@ module.exports = {
                 id: req.params.id,
                 usuarioId: req.user.id
             },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
             include:[{
-                model: Usuario
+                model: Usuario,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }
             }]
         })
         .then(doacao=>{
@@ -22,8 +24,30 @@ module.exports = {
     },
     buscarTodas:(req, res, next)=>{
         Doacao.findAll({
+            where: {},
+            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
             include:[{
-                model: Usuario
+                model: Usuario,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }
+            }]
+        })
+        .then(doacoes=>{
+            res.status(200).json(doacoes)
+        })
+        .catch(error=>{
+            res.status(500).json({msg: error.message})
+        })
+    },
+    buscarPorStatus:(req, res, next)=>{
+        Doacao.findAll({
+            where: {
+                status: req.params.status
+            },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
+            include:[{
+                model: Usuario,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
+                where:{'cidade': req.user.cidade}
             }]
         })
         .then(doacoes=>{
@@ -37,7 +61,12 @@ module.exports = {
         Doacao.findAll({
             where: {
                 usuarioId: req.user.id
-            }
+            },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
+            include:[{
+                model: Usuario,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }
+            }]
         })
         .then(doacoes=>{
             res.status(200).json(doacoes)
@@ -46,13 +75,16 @@ module.exports = {
             res.status(500).json({msg: error.message})
         })
     },
-    finalizadas:(req, res, next)=>{
+    minhasPorStatus:(req, res, next)=>{
         Doacao.findAll({
             where: {
-                [Op.or]: [{statusEntrega: null}, {statusEntrega: false}]
+                usuarioId: req.user.id,
+                status: req.params.status
             },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
             include:[{
-                model: Usuario
+                model: Usuario,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }
             }]
         })
         .then(doacoes=>{
@@ -117,15 +149,15 @@ module.exports = {
             status: req.body.status
         },{
             where: {
-                id: req.body.id,
+                id: req.params.id,
                 usuarioId: req.user.id
             }
         })
         .then(ok=>{
-            res.status(200).json({msg: "Status da entrega atualizada!"})
+            res.status(200).json({msg: "Status da doação atualizada!"})
         })
         .catch(error=>{
-            res.status(500).json({msg: "Erro ao atualizar solicitação!" , err:error.message})
+            res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
         })
     }
 }

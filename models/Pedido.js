@@ -10,16 +10,20 @@ const Pedido = sequelize.define('pedido', {
         autoIncrement: true
     },
     generoAlimenticio: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
     },
     higienePessoal: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
     },
     artigoLimpeza: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
     },
     mascara: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
     },
     observacoes:{
         type: Sequelize.STRING, 

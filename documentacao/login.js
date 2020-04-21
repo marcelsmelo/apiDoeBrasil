@@ -1,20 +1,13 @@
-
 /**
-  @swagger
+@swagger
   {
     "/signup": {
       "post": {
         "description": "Adiciona um novo o usuário",
         "tags":['Login'],
-        "parameters":[{
-          name: "usuario",
-          description: "Objeto Usuário a ser inserido",
-          in: "body",
-          requiered:true,
-          "schema": {
-              "$ref": "#/components/schemas/Usuario"
-            }
-        }],
+        "parameters":[
+          "$ref": "#/components/parameters/userParam"
+        ],
         "responses": {
           "201": {
             "description": "Usuário criado com sucesso.",
@@ -33,18 +26,7 @@
             }  
           },
           "401":{
-            "description": "Erro ao executar a operação",
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "msg": { "type":"string"},
-                    "error": { "type":"string"}
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/genericError"
           }
         }
      }
@@ -82,25 +64,14 @@
                   "type":"object",
                   "properties":{
                     "msg": { "type":"string"},
-                    "error": { "type":"string"}
+                    "token": { "type":"string"}
                   }
                 }
               }
             }
           },
           "500":{
-            "description": "Erro ao executar a operação",
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "msg": { "type":"string"},
-                    "error": { "type":"string"}
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/genericError"
           }
         }
      }
@@ -109,38 +80,15 @@
       "post": {
         "description": "Realiza o logout do usuário",
         "tags":['Login'],
-        "produces": "application/json",
         "security": [
           { "BearerAuth": [] }
         ],
         "responses": {
           "200": {
-            "description": "Usuário logado com sucesso.",
-            "content":{
-              "application/json":{
-                "schema": {
-                  "type":"object",
-                  "properties":{
-                    "msg": { "type":"string"},
-                    "error": { "type":"string"}
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/singleMsg"
           },
           "500":{
-            "description": "Erro ao executar a operação",
-            "content":{
-              "application/json":{
-                "schema":{
-                  "type":"object",
-                  "properties":{
-                    "msg": { "type":"string"},
-                    "error": { "type":"string"}
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/genericError"
           }
         }
      }

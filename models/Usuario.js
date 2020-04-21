@@ -55,7 +55,10 @@ const Usuario = sequelize.define('usuario', {
     },
     token:{
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: true,
+        get() {
+            return() => this.getDataValue('token')
+        }
     }, 
     rua: {
         type: Sequelize.STRING,
