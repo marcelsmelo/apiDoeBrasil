@@ -19,7 +19,7 @@ module.exports = {
             res.status(200).json(doacao[0])
         })
         .catch(error=>{
-            res.status(500).json({msg: error.message})
+            res.status(500).json({msg: "Erro ao cadastrar doação", 'error': error.message})
         })
     },
     buscarTodas:(req, res, next)=>{
@@ -35,7 +35,7 @@ module.exports = {
             res.status(200).json(doacoes)
         })
         .catch(error=>{
-            res.status(500).json({msg: error.message})
+            res.status(500).json({msg: "Erro ao buscar doações", 'error': error.message})
         })
     },
     buscarPorStatus:(req, res, next)=>{
@@ -54,7 +54,7 @@ module.exports = {
             res.status(200).json(doacoes)
         })
         .catch(error=>{
-            res.status(500).json({msg: error.message})
+            res.status(500).json({msg: "Erro ao buscar doações", 'error': error.message})
         })
     },
     minhasDoacoes:(req, res, next)=>{
@@ -72,7 +72,7 @@ module.exports = {
             res.status(200).json(doacoes)
         })
         .catch(error=>{
-            res.status(500).json({msg: error.message})
+            res.status(500).json({msg:"Erro ao buscar doações", 'error': error.message})
         })
     },
     minhasPorStatus:(req, res, next)=>{
@@ -91,7 +91,7 @@ module.exports = {
             res.status(200).json(doacoes)
         })
         .catch(error=>{
-            res.status(500).json({msg: error.message})
+            res.status(500).json({msg:"Erro ao buscar doações", 'error': error.message})
         })
     },
     cadastrar:(req, res, next)=>{
@@ -102,14 +102,16 @@ module.exports = {
                 mascara: req.body.outrosItens, 
                 observacoes: req.body.observacoes,
                 dispEntrega: req.body.dispEntrega,
-                usuarioId: req.user.id})
+                usuarioId: req.user.id,
+                pedidoId: req.body.pedidoId ? req.body.pedidoId : null
+            })
 
         doacao.save()
         .then(novaDoacao =>{
             res.status(200).json(novaDoacao)
         })
         .catch(error=>{
-            res.status(500).json({msg: error.message})
+            res.status(500).json({msg:"Erro ao cadastrar doação", 'error': error.message})
         })
     },
     editar: (req, res, next)=>{
@@ -127,6 +129,12 @@ module.exports = {
                 usuarioId: req.user.id
             }
         })
+        .then(ok =>{
+            res.status(200).json({msg:"Doação editada com sucesso!"})
+        })
+        .catch(error=>{
+            res.status(500).json({msg:"Erro ao editar doação", 'error': error.message})
+        })
     },
     remover:(req, res, next)=>{
         Doacao.update({
@@ -141,7 +149,7 @@ module.exports = {
             res.status(200).json({msg: "Doação removida com sucesso!"})
         })
         .catch(error=>{
-            res.status(500).json({msg: "Erro ao remover doação!" , err:error.message})
+            res.status(500).json({msg: "Erro ao remover doação!" , 'error' :error.message})
         })
     },
     alterarStatus:(req, res, next)=>{
