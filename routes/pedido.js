@@ -7,8 +7,8 @@ module.exports = (app) => {
     app.get('/pedido', auth.jwtVerify, controller.buscarTodos);
     app.get('/pedido/status/:status', auth.jwtVerify, controller.buscarPorStatus);
    
-    app.get('/pedido/me', auth.jwtVerify, controller.meusPedidos);
-    app.get('/pedido/me/status/:status', auth.jwtVerify, controller.meusPorStatus);
+    app.get('/meus-pedidos/', auth.jwtVerify, controller.meusPedidos);
+    app.get('/meus-pedidos/status/:status', auth.jwtVerify, controller.meusPorStatus);
   
     app.post('/pedido', auth.jwtVerify, controller.cadastrar);
     app.put('/pedido/:id',auth.jwtVerify, controller.editar)

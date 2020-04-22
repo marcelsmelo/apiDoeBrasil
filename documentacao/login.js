@@ -63,7 +63,6 @@
                 "schema": {
                   "type":"object",
                   "properties":{
-                    "msg": { "type":"string"},
                     "token": { "type":"string"}
                   }
                 }

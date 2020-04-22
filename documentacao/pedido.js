@@ -146,7 +146,7 @@
       }
     }
   },
-  "/pedido/me": {
+  "/meus-pedidos/": {
     "get": {
       "description": "Busca todos os pedidos vinculados ao usuário logado",
       "tags":['Pedido'],
@@ -164,7 +164,7 @@
       }
     }
   },
-  "/pedido/me/status/{status}": {
+  "/meus-pedidos/status/{status}": {
     "get": {
       "description": "Busca todos os pedidos pelo Status informado vinculados ao usuário logado",
       "tags":['Pedido'],

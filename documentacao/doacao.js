@@ -146,7 +146,7 @@
       }
     }
   },
-  "/doacao/me": {
+  "/minhas-doacoes/": {
     "get": {
       "description": "Busca todas as Doações vinculadas ao usuário logado",
       "tags":['Doação'],
@@ -164,7 +164,7 @@
       }
     }
   },
-  "/doacao/me/status/{status}": {
+  "/minhas-doacoes/status/{status}": {
     "get": {
       "description": "Busca todas as Doações no Status informado vinculadas ao usuário logado",
       "tags":['Doação'],

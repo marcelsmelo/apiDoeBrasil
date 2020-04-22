@@ -14,10 +14,6 @@ const Usuario = sequelize.define('usuario', {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
-            is:{
-                args: ["^[a-z ]+$",'i'],
-                msg: "Nome deve conter somente letras!"
-            },
             min:{
                 args: 5,
                 msg: "Nome deve conter mais de 5 caracteres!"
@@ -133,7 +129,6 @@ Usuario.prototype.generateAuthToken = function() {
       .then(user =>{
           //Retornar uma Promises de sucesso
           success({
-            msg:"Usuário logado com sucesso!",
             token: token
           });
       })
@@ -141,7 +136,7 @@ Usuario.prototype.generateAuthToken = function() {
         //Retornar uma Promises de erro
           reject({
             msg: "Erro ao gerar token JWT!",
-            err: err.errmsg
+            'error': err.errmsg
           });
       })
     });
