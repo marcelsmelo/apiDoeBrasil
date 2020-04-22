@@ -105,10 +105,10 @@ module.exports = {
     },
     editar: (req, res, next)=>{
         Pedido.update({
-            generoAlimenticio: req.body.cestaBasica,
-            higienePessoal: req.body.alcoolGel, 
-            artigoLimpeza: req.body.mascara, 
-            mascara: req.body.outrosItens, 
+            generoAlimenticio: req.body.generoAlimenticio,
+            higienePessoal: req.body.higienePessoal, 
+            artigoLimpeza: req.body.artigoLimpeza, 
+            mascara: req.body.mascara, 
             observacoes: req.body.observacoes,
         },{
             where: {
