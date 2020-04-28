@@ -103,9 +103,9 @@ module.exports = {
         }else{//Se a doação não for vinculada a um pedido
             //Realizar o usuário for realizar a entrega, deve ter selecionado um parceiro e um ponto de entrega
             if(req.body.dispEntrega && req.body.parceiroId && req.body.pontoEntregaId) status = 0 
-            else if(!req.body.dispEntrega && req.body.parceiroId) status = 1 //Parceiro irá retirar a doação na casa do doador
+            else if(!req.body.dispEntrega) status = 1 //Parceiro irá retirar a doação na casa do doador
             else { //Não foi selecionado um parceiro
-                res.status(500).json({msg:"Erro: Selecione um parceiro e/ou ponto de entrega para retirada ou entrega da doação", 'error': null})
+                res.status(500).json({msg:"Erro: Selecione um parceiro e ponto de entrega para entrega da doação", 'error': null})
                 return;
             }
         }
