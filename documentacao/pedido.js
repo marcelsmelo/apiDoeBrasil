@@ -174,7 +174,7 @@
       "parameters":[
         {
           'name': "status",
-          'description': "Status do pedido <br><br> 0 - Não atendido <br> 1 - Aguardando Entrega <br> 2 - Finalizado",
+          'description': "Status da doação <br><br> 0 - Não Atendida <br> 1 - Aguardando entrega <br> 2 - Finalizado",
           'in': "path",
          'requiered':true,
           "schema": {
@@ -192,9 +192,9 @@
       }
     }
   },
-  "/pedido/status/{id}": {
+  "/pedido/confirmar/{id}": {
     "put": {
-      "description": "Altera o Status do pedido informado pelo ID",
+      "description": "O usuário confirma o recebimento da doação para o pedido informado pelo ID <br> Status = 2 (finalizado) <br> Neste momento é finalizada a doação vinculada, caso exista. ",
       "tags":['Pedido'],
       "security": [
           { "BearerAuth": [] }
@@ -208,17 +208,61 @@
           "schema": {
             'type': 'integer'
           }
+        }
+      ],
+      "responses": {
+        "200":{
+          "$ref": "#/components/responses/singleMsg"
         },
+        "500":{
+          "$ref": "#/components/responses/genericError"
+        }
+      }
+    }
+  },
+  "/pedido/atender/{id}": {
+    "put": {
+      "description": "O Parceiro seleciona o pedido, pelo ID, para ser atendido (Somente para parceiros) <br> Status = 1 (Aguardando Entrega)",
+      "tags":['Pedido'],
+      "security": [
+          { "BearerAuth": [] }
+        ],
+      "parameters":[
         {
-          'name': "status",
-          'description': "Status do projeto <br><br> 0 - Não atendido <br> 1 - Aguardando Entrega <br> 2 - Finalizado",
-          'in': "body",
+          'name': "id",
+          'description': "ID do pedido",
+          'in': "path",
          'requiered':true,
           "schema": {
-            'type': 'object',
-            "properties":{
-                "status": {'type': 'integer', enum: [0, 1, 2]}
-            }
+            'type': 'integer'
+          }
+        }
+      ],
+      "responses": {
+        "200":{
+          "$ref": "#/components/responses/singleMsg"
+        },
+        "500":{
+          "$ref": "#/components/responses/genericError"
+        }
+      }
+    }
+  },
+  "/pedido/finalizar/{id}": {
+    "put": {
+      "description": "O Parceiro seleciona o pedido, pelo ID, para ser finalizado, após realizar a entrega (Somente para parceiros) <br> Status = 2 (finalizado)",
+      "tags":['Pedido'],
+      "security": [
+          { "BearerAuth": [] }
+        ],
+      "parameters":[
+        {
+          'name': "id",
+          'description': "ID do pedido",
+          'in': "path",
+         'requiered':true,
+          "schema": {
+            'type': 'integer'
           }
         }
       ],

@@ -1,9 +1,10 @@
 let Usuario = require('../models/Usuario')
 let Pedido = require('../models/Pedido')
+let Doacao = require('../models/Doacao')
 
 module.exports = {
     buscarPorId:(req, res, next)=>{
-        Pedido.findAll({
+        Pedido.findOne({
             where: {
                 id: req.params.id
             },
@@ -14,7 +15,7 @@ module.exports = {
             }]
         })
         .then(pedido=>{
-            res.status(200).json(pedido[0])
+            res.status(200).json(pedido)
         })
         .catch(error=>{
             res.status(500).json({msg: "Erro ao buscar pedido", 'error': error.message})
@@ -93,6 +94,7 @@ module.exports = {
              artigoLimpeza: req.body.artigoLimpeza, 
              mascara: req.body.mascara, 
              observacoes: req.body.observacoes,
+             status: 0, //Marcar como não atendida
              usuarioId: req.user.id})
 
         pedido.save()
@@ -131,11 +133,43 @@ module.exports = {
                 usuarioId: req.user.id
             }
         })
-        .then(ok=>{
+        .then(()=>{
             res.status(200).json({msg: "Pedido removido com sucesso!"})
         })
         .catch(error=>{
             res.status(500).json({msg: "Erro ao remover pedido!" , 'error': error.message})
+        })
+    },
+    confirmar:(req, res, next)=>{
+        Pedido.update({
+            status: 2
+        },{
+            where: {
+                id: req.params.id,
+                usuarioId: req.user.id,
+                status: 1
+            }
+        })
+        .then(()=>{
+            //Verificar se há uma doação vinculada ao pedido. Caso exista, finalizar doação
+            //Se status=2 e pedidoId!= null (pedido precisa finalizar/confirmar)
+            Doacao.update({
+                status : 3
+            }, {
+                where: {
+                    pedidoId: req.params.id
+                }
+            })
+            .then(()=>{
+                res.status(200).json({msg: "Doação confirmada e finalizada!"})
+            })
+            .catch(error=>{
+                res.status(500).json({msg: "Erro ao atualizar Doação/Pedido!" , 'error':error.message})
+            })
+            
+        })
+        .catch(error=>{
+            res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
         })
     },
     alterarStatus:(req, res, next)=>{
@@ -149,6 +183,44 @@ module.exports = {
         })
         .then(ok=>{
             res.status(200).json({msg: "Status da entrega atualizada!"})
+        })
+        .catch(error=>{
+            res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
+        })
+    },
+    atenderPedido:(req, res, next)=>{
+        Pedido.update({
+            status: 1,
+            atendidoPor: req.user.id,
+            atendidoPorGroup: 'P'
+        },{
+            where: {
+                id: req.params.id
+            }
+        })
+        .then(ok=>{
+            res.status(200).json({msg: "Entrega selecionada para atendimento pelo parceiro!"})
+        })
+        .catch(error=>{
+            res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
+        })
+    },
+    finalizar:(req, res, next)=>{
+        Pedido.update({
+            status: 2
+        },{
+            where: {
+                id: req.params.id
+            },
+            include:[{
+                model: Usuario,
+                attributes:['id', 'nome', 'telefone', 'group', 'parceiroId'],
+                trought:{attribute:['atendidoPor']},
+                where: {'parceiroId': req.user.parceiroId}
+            }]
+        })
+        .then(ok=>{
+            res.status(200).json({msg: "Entrega finalizada pelo parceiro!"})
         })
         .catch(error=>{
             res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})

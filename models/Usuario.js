@@ -2,6 +2,7 @@ const Sequelize = require('sequelize')
 const sequelize = require('../database/dbMysql');
 const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
+const Parceiro = require('./Parceiro')
 
 const Usuario = sequelize.define('usuario', {
     id: {
@@ -45,9 +46,9 @@ const Usuario = sequelize.define('usuario', {
         }
     },
     group:{
-        type: Sequelize.ENUM('user', 'partner', 'admin') ,
+        type: Sequelize.ENUM('U', 'R', 'A', 'P') ,
         allowNull: false,
-        defaultValue: 'user'
+        defaultValue: 'U'
     },
     token:{
         type: Sequelize.STRING,
@@ -144,5 +145,12 @@ Usuario.prototype.generateAuthToken = function() {
 
 Usuario.beforeCreate(setSaltAndPassword)
 Usuario.beforeUpdate(setSaltAndPassword)
+
+Usuario.belongsTo(Parceiro, {
+    foreignKey: {
+        allowNull: true, 
+        defaultValue: null
+    }
+})
 
 module.exports = Usuario;

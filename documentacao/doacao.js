@@ -100,7 +100,7 @@
       }
     },
     "post": {
-      "description": "Adiciona uma nova Doação vinculadas ao usuário logado",
+      "description": "Adiciona uma nova Doação vinculadas ao usuário logado <br> O status da doação dependerá dos dados informados podendo ser:<br>0 - Aguardando Entrega <br>1 - Aguardando retirada",
       "tags":['Doação'],
       "security": [
           { "BearerAuth": [] }
@@ -128,7 +128,7 @@
       "parameters":[
         {
           'name': "status",
-          'description': "Status da doação <br><br> 0 - Não atendido <br> 1 - Aguardando Retirada <br> 2 - Aguardando Entrega <br> 3 - Finalizado",
+          'description': "Status da doação <br><br> 0 - Aguardando Entrega <br> 1 - Aguardando Retirada (parceiro) <br> 2 - Aguardando confirmação de entrega <br> 3 - Finalizado",
           'in': "path",
          'requiered':true,
           "schema": {
@@ -174,7 +174,7 @@
       "parameters":[
         {
           'name': "status",
-          'description': "Status da doação <br><br> 0 - Não atendido <br> 1 - Aguardando Retirada <br> 2 - Aguardando Entrega <br> 3 - Finalizado",
+          'description': "Status da doação <br><br> 0 - Aguardando Entrega <br> 1 - Aguardando Retirada (parceiro) <br> 2 - Aguardando confirmação de entrega <br> 3 - Finalizado",
           'in': "path",
          'requiered':true,
           "schema": {
@@ -192,9 +192,9 @@
       }
     }
   },
-  "/doacao/status/{id}": {
+  "/doacao/confirmar/{id}": {
     "put": {
-      "description": "Altera o Status da Doação informada pelo ID ",
+      "description": "Confirma a entrega da Doação informada pelo ID <br> (status = 2 (Aguardando Confirmação) <br> É aguardado o usuário que realizou o pedido ou o parceiro confirmar recebimento. ",
       "tags":['Doação'],
       "security": [
           { "BearerAuth": [] }
@@ -208,17 +208,33 @@
           "schema": {
             'type': 'integer'
           }
+        }
+      ],
+      "responses": {
+        "200":{
+          "$ref": "#/components/responses/singleMsg"
         },
+        "500":{
+          "$ref": "#/components/responses/genericError"
+        }
+      }
+    }
+  },
+  "/doacao/finalizar/{id}": {
+    "put": {
+      "description": "Finaliza a entrega da Doação informada pelo ID (Somente para parceiros)<br> status = 3 (Finalizada) ",
+      "tags":['Doação'],
+      "security": [
+          { "BearerAuth": [] }
+        ],
+      "parameters":[
         {
-          'name': "status",
-          'description': "Status da doação <br><br> 0 - Não atendido <br> 1 - Aguardando Retirada <br> 2 - Aguardando Entrega <br> 3 - Finalizado",
-          'in': "body",
+          'name': "id",
+          'description': "ID do doação",
+          'in': "path",
          'requiered':true,
           "schema": {
-            'type': 'object',
-            "properties":{
-                "status": {'type': 'integer', enum: [0, 1, 2]}
-            }
+            'type': 'integer'
           }
         }
       ],

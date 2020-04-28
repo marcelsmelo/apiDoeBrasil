@@ -14,5 +14,9 @@ module.exports = (app) => {
     app.post('/doacao', auth.jwtVerify, controller.cadastrar);
     app.put('/doacao/:id',auth.jwtVerify, controller.editar)
     app.delete('/doacao/:id', auth.jwtVerify, controller.remover);
-    app.put('/doacao/status/:id', auth.jwtVerify, controller.alterarStatus);
+
+    app.put('/doacao/confirmar/:id', auth.jwtVerify, controller.confirmar);
+    app.put('/doacao/finalizar/:id', auth.jwtVerify, auth.groupVerify(['A', 'R', 'P']), controller.finalizar);
+    
+    app.put('/doacao/status/:id', auth.jwtVerify, auth.groupVerify(['A']), controller.alterarStatus); 
 }

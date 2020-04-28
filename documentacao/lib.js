@@ -26,6 +26,22 @@
         "schema": {
           "$ref": "#/components/schemas/Doacao"
         }
+      },
+      'parceiroParam':{
+        'description': "Objeto Parceiro",
+        'in': "body",
+        'requiered':true,
+        "schema": {
+          "$ref": "#/components/schemas/Parceiro"
+        }
+      },
+      'pontoEntregaParam':{
+        'description': "Objeto PontoEntrega",
+        'in': "body",
+        'requiered':true,
+        "schema": {
+          "$ref": "#/components/schemas/PontoEntrega"
+        }
       }
     },
     responses: {
@@ -98,6 +114,52 @@
           "application/json":{
             "schema":{
               "$ref":"#/components/schemas/Doacao"
+            }
+          }
+        }
+      },
+      "arrayParceiros":{
+        "description": "Array de Parceiros solicitadas",
+        "content":{
+          "application/json":{
+            "schema":{
+              "type":"array",
+              "items":{
+                "$ref":"#/components/schemas/Parceiro"
+              }
+            }
+          }
+        }
+      },
+      "singleParceiro":{
+        "description": "Parceiro solicitada",
+        "content":{
+          "application/json":{
+            "schema":{
+              "$ref":"#/components/schemas/Parceiro"
+            }
+          }
+        }
+      },
+      "arrayPontosEntrega":{
+        "description": "Array de Pontos de Entrega solicitados",
+        "content":{
+          "application/json":{
+            "schema":{
+              "type":"array",
+              "items":{
+                "$ref":"#/components/schemas/PontoEntrega"
+              }
+            }
+          }
+        }
+      },
+      "singlePontoEntrega":{
+        "description": "PontoEntrega solicitado",
+        "content":{
+          "application/json":{
+            "schema":{
+              "$ref":"#/components/schemas/PontoEntrega"
             }
           }
         }

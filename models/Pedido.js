@@ -33,6 +33,10 @@ const Pedido = sequelize.define('pedido', {
         type: Sequelize.INTEGER.UNSIGNED,
         defaultValue: 0
     },
+    atendidoPorGroup:{
+        type: Sequelize.STRING, 
+        allowNull: true
+    },
     removido:{
         type: Sequelize.BOOLEAN,
         defaultValue: false,
@@ -43,6 +47,10 @@ const Pedido = sequelize.define('pedido', {
 }, { sequelize, modelName: 'pedido',  tableName: 'pedidos' });
 
 Pedido.belongsTo(Usuario);
+
+Pedido.belongsTo(Usuario, {
+    foreignKey: 'atendidoPor'
+});
 
 
 module.exports = Pedido;
