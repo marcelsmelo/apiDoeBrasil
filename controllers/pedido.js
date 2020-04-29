@@ -23,8 +23,6 @@ module.exports = {
         })
     },
     buscarTodos:(req, res, next)=>{
-        console.log(req.user);
-
         Pedido.findAll({
             where: {
                

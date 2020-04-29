@@ -94,7 +94,6 @@ load('controllers')
 
 // catch 404 and forward to error handler
 app.use('/*', function(req, res, next) {
-    console.log("HERE")
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
