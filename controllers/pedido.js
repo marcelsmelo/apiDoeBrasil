@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 let Usuario = require('../models/Usuario')
 let Pedido = require('../models/Pedido')
 let Doacao = require('../models/Doacao')
@@ -22,14 +23,19 @@ module.exports = {
         })
     },
     buscarTodos:(req, res, next)=>{
+        console.log(req.user);
+
         Pedido.findAll({
             where: {
                
             },
-            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
             include:[{
                 model: Usuario,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
+                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }, 
+                on:{
+                    id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("usuario.id")),
+                },
                 where:{'cidade': req.user.cidade}
             }]
         })
@@ -49,6 +55,9 @@ module.exports = {
             include:[{
                 model: Usuario,
                 attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
+                on:{
+                    id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("usuario.id")),
+                },
                 where:{'cidade': req.user.cidade}
             }]
         })
