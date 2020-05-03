@@ -1,6 +1,10 @@
 let Usuario = require('../models/Usuario')
 let Doacao = require('../models/Doacao')
 let Pedido = require('../models/Pedido')
+let Parceiro = require('../models/Parceiro')
+let PontoEntrega = require('../models/PontoEntrega')
+
+//TODO: Selecionar Doação para retirada (parceiro)
 
 module.exports = {
     buscarPorId:(req, res, next)=>{
@@ -64,8 +68,14 @@ module.exports = {
             },
             attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
             include:[{
-                model: Usuario,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }
+                model: Pedido,
+                attributes: { exclude: ['createdAt', 'updatedAt'] }
+            },{   
+                model: Parceiro,
+                attributes: { exclude: ['createdAt', 'updatedAt'] } 
+            },{
+                model: PontoEntrega,
+                attributes: { exclude: ['createdAt', 'updatedAt'] } 
             }]
         })
         .then(doacoes=>{
@@ -83,8 +93,14 @@ module.exports = {
             },
             attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
             include:[{
-                model: Usuario,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }
+                model: Pedido,
+                attributes: { exclude: ['createdAt', 'updatedAt'] }
+            },{   
+                model: Parceiro,
+                attributes: { exclude: ['createdAt', 'updatedAt'] } 
+            },{
+                model: PontoEntrega,
+                attributes: { exclude: ['createdAt', 'updatedAt'] } 
             }]
         })
         .then(doacoes=>{

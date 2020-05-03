@@ -120,7 +120,7 @@
   },
   "/doacao/status/{status}": {
     "get": {
-      "description": "Busca todas as Doações no Status informado na cidade do usuário logado",
+      "description": "Busca todas as Doações no Status informado na cidade do usuário logado (Permitido apenas para parceiros)",
       "tags":['Doação'],
       "security": [
           { "BearerAuth": [] }

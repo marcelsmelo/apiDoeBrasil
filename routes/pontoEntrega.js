@@ -1,5 +1,5 @@
 const auth = require('../lib/auth')
-//TODO: Documentar API
+
 module.exports = (app) => {
     const controller = app.controllers.pontoEntrega;
 

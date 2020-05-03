@@ -5,8 +5,8 @@ module.exports = (app) => {
 
     app.get('/doacao/:id', auth.jwtVerify, controller.buscarPorId);
 
-    app.get('/doacao', auth.jwtVerify, controller.buscarTodas);
-    app.get('/doacao/status/:status', auth.jwtVerify, controller.buscarPorStatus);
+    app.get('/doacao', auth.jwtVerify, controller.buscarTodas);//TODO: /doacao/em-aberto Transformar para doações não atendidas na cidade (sometne parceiros)
+    app.get('/doacao/status/:status', auth.jwtVerify, auth.groupVerify(['A', 'R', 'P']), controller.buscarPorStatus); //TODO: Somente para parceiros, com fitlro de parceiro
 
     app.get('/minhas-doacoes/', auth.jwtVerify, controller.minhasDoacoes);
     app.get('/minhas-doacoes/status/:status', auth.jwtVerify, controller.minhasPorStatus);
