@@ -25,7 +25,7 @@ module.exports = {
     buscarNaoAtendidos:(req, res, next)=>{
         Pedido.findAll({
             where: {
-               
+               status: 0
             },
             attributes: {exclude: ['createdAt', 'updatedAt'] },
             include:[{
