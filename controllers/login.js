@@ -30,7 +30,8 @@ module.exports = {
     login: (req, res, next)=>{
         const { telefone, senha } = req.body
 
-        logger.debug(`[LOGIN] Dados recebidos: ${req.body}`)
+        console.log('BODY', req.body)
+        logger.debug(`[LOGIN] Dados recebidos: ${telefone} ${senha}`)
 
         Usuario.findOne({
             where: {

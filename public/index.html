@@ -76,29 +76,25 @@
          let senha = document.querySelector('#senha').value;
          console.log('Usuario: '+telefone)
          console.log('Senha: '+ senha)
-
-        let myHeaders = new Headers();
-        myHeaders.append('Content-Type', 'text/plain')
         
 
-         fetch('http://marcelmelo-dev.umbler.net/login',{
+         fetch('/login',{
             method: 'POST',
-            headers:myHeaders,
-            body:{
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
                telefone: telefone,
                senha: senha
-            }
+            })
          })
          .then(response =>{
-            if(response.status != 200){
-               console.error('ERROR ', response)
-               return 
-            }
             console.log("resposta: ", response)
-            return response.json
+            return response.json()
          })
          .then(data=>{
-            console.log("DATA: ", data)
+            console.log("DATA: ", data.token)
          })
          .catch(error=>{
             console.error('ERROR ', error)

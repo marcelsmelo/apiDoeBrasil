@@ -103,7 +103,7 @@
       }
     }
   },
-  "/pedido/nao-atendidos": {
+  "/pedidos-nao-atendidos": {
     "get": {
       "description": "Busca todos os pedidos Não Atendidos (status = 0 ) da cidade do usuário logado",
       "tags":['Pedido'],
