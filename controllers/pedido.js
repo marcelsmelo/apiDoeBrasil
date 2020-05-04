@@ -22,12 +22,12 @@ module.exports = {
             res.status(500).json({msg: "Erro ao buscar pedido", 'error': error.message})
         })
     },
-    buscarTodos:(req, res, next)=>{
+    buscarNaoAtendidos:(req, res, next)=>{
         Pedido.findAll({
             where: {
                
             },
-            attributes: { exclude: ['createdAt', 'updatedAt'] },
+            attributes: {exclude: ['createdAt', 'updatedAt'] },
             include:[{
                 model: Usuario,
                 attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }, 
@@ -56,7 +56,7 @@ module.exports = {
                 on:{
                     id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("usuario.id")),
                 },
-                where:{'cidade': req.user.cidade}
+                where:{'cidade': req.user.cidade, 'parceiroId': req.user.parceiroId}
             }]
         })
         .then(pedidos=>{
@@ -202,7 +202,8 @@ module.exports = {
             atendidoPorGroup: 'P'
         },{
             where: {
-                id: req.params.id
+                id: req.params.id,
+                status: 0
             }
         })
         .then(ok=>{
@@ -221,6 +222,7 @@ module.exports = {
             },
             include:[{
                 model: Usuario,
+                required:true,
                 attributes:['id', 'nome', 'telefone', 'group', 'parceiroId'],
                 trought:{attribute:['atendidoPor']},
                 where: {'parceiroId': req.user.parceiroId}
@@ -232,5 +234,27 @@ module.exports = {
         .catch(error=>{
             res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
         })
-    }
+    },
+    //TODO: Documentar
+    minhasEntregas:(req, res, next)=>{
+        //Buscar todas entregas que os parceiros devem aos pedidos por eles selecionados
+        Pedido.findAll({
+            where: {
+                status: 2
+            },
+            include:[{
+                model: Usuario,
+                required:true,
+                attributes:['id', 'nome', 'telefone', 'group', 'parceiroId'],
+                trought:{attribute:['atendidoPor']},
+                where: {'parceiroId': req.user.parceiroId}
+            }]
+        })
+        .then(pedidos=>{
+            res.status(200).json(pedidos)
+        })
+        .catch(error=>{
+            res.status(500).json({msg: "Erro ao buscar pedidos", 'error': error.message})
+        })
+    },
 }

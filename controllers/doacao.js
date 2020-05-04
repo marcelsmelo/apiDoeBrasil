@@ -4,8 +4,6 @@ let Pedido = require('../models/Pedido')
 let Parceiro = require('../models/Parceiro')
 let PontoEntrega = require('../models/PontoEntrega')
 
-//TODO: Selecionar Doação para retirada (parceiro)
-
 module.exports = {
     buscarPorId:(req, res, next)=>{
         Doacao.findOne({
@@ -25,9 +23,12 @@ module.exports = {
             res.status(500).json({msg: "Erro ao cadastrar doação", 'error': error.message})
         })
     },
-    buscarTodas:(req, res, next)=>{
+    buscarAbertas:(req, res, next)=>{
         Doacao.findAll({
-            where: {},
+            where: {
+                status: 1,
+                parceiroId: null
+            },
             attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
             include:[{
                 model: Usuario,
@@ -45,7 +46,8 @@ module.exports = {
     buscarPorStatus:(req, res, next)=>{
         Doacao.findAll({
             where: {
-                status: req.params.status
+                status: req.params.status,
+                parceiroId: req.user.parceiroId
             },
             attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
             include:[{
@@ -116,6 +118,8 @@ module.exports = {
         if(req.body.pedidoId){//Usuário vinculou a doação com um pedido, deve realizar a entrega
             status = 0
             req.body.dispEntrega = true;
+            req.body.parceiroId = null,
+            req.body.pontoEntregaId = null;
         }else{//Se a doação não for vinculada a um pedido
             //Realizar o usuário for realizar a entrega, deve ter selecionado um parceiro e um ponto de entrega
             if(req.body.dispEntrega && req.body.parceiroId && req.body.pontoEntregaId) status = 0 
@@ -260,6 +264,47 @@ module.exports = {
         })
         .catch(error=>{
             res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
+        })
+    },
+    //TODO: Documentar
+    selecionarParaRetirada:(req, res, next)=>{
+        //Seleciona as doações marcadas para retirada que não foram definidas os parceiros
+        //O parceiro terá oportunidade de selecionar a doação para buscá-la
+        Doacao.update({
+            status: 1,
+            parceiroId: req.user.parceiroId
+        },{
+            where: {
+                id: req.params.id,
+                parceiroId: null
+            }
+        })
+        .then(ok=>{
+            res.status(200).json({msg: "Doação selecionada para retirada pelo parceiro!"})
+        })
+        .catch(error=>{
+            res.status(500).json({msg: "Erro ao atualizar Doação!" , 'error':error.message})
+        })
+    },
+    //TODO: Documentar
+    minhasRetiradas:(req, res, next)=>{
+        //Entrega todas as doações marcadas para retirada pelo parceiro (ou pelos usuários) na casa do doador. 
+        Doacao.findAll({
+            where: {
+                status: 1,
+                parceiroId: req.user.parceiroId
+            },
+            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
+            include:[{   
+                model: Usuario,
+                attributes: { exclude: ['createdAt', 'updatedAt', 'group']} 
+            }]
+        })
+        .then(doacoes=>{
+            res.status(200).json(doacoes)
+        })
+        .catch(error=>{
+            res.status(500).json({msg:"Erro ao buscar doações", 'error': error.message})
         })
     }
 }

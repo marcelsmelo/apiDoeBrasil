@@ -83,22 +83,6 @@
     }
   },
   "/doacao/": {
-    "get": {
-      "description": "Busca todas as doações da cidade do usuário logado",
-      "tags":['Doação'],
-      "security": [
-          { "BearerAuth": [] }
-        ],
-      "parameters":[],
-      "responses": {
-        "200":{
-          "$ref": "#/components/responses/arrayDoacoes"
-        },
-        "500":{
-          "$ref": "#/components/responses/genericError"
-        }
-      }
-    },
     "post": {
       "description": "Adiciona uma nova Doação vinculadas ao usuário logado <br> O status da doação dependerá dos dados informados podendo ser:<br>0 - Aguardando Entrega <br>1 - Aguardando retirada",
       "tags":['Doação'],
@@ -117,6 +101,24 @@
         }
       }
     }
+  },
+  "/doacao/em-aberto": {
+    "get": {
+      "description": "Busca todas as doações Em Aberto (aguardando um parceiro para buscá-las) na cidade do parceiro logado. (Permitido apenas para parceiros)",
+      "tags":['Doação'],
+      "security": [
+          { "BearerAuth": [] }
+        ],
+      "parameters":[],
+      "responses": {
+        "200":{
+          "$ref": "#/components/responses/arrayDoacoes"
+        },
+        "500":{
+          "$ref": "#/components/responses/genericError"
+        }
+      }
+    },
   },
   "/doacao/status/{status}": {
     "get": {
@@ -241,6 +243,52 @@
       "responses": {
         "200":{
           "$ref": "#/components/responses/singleMsg"
+        },
+        "500":{
+          "$ref": "#/components/responses/genericError"
+        }
+      }
+    }
+  },
+   "/doacao/selecionar/{id}": {
+    "put": {
+      "description": "Seleciona a Doação para retirada pelo Parceiro Logado (Somente para Parceiros)",
+      "tags":['Doação'],
+      "security": [
+          { "BearerAuth": [] }
+        ],
+      "parameters":[
+        {
+          'name': "id",
+          'description': "ID do doação",
+          'in': "path",
+         'requiered':true,
+          "schema": {
+            'type': 'integer'
+          }
+        }
+      ],
+      "responses": {
+        "200":{
+          "$ref": "#/components/responses/singleMsg"
+        },
+        "500":{
+          "$ref": "#/components/responses/genericError"
+        }
+      }
+    }
+  },
+    "/doacao/minhas-retiradas": {
+    "get": {
+      "description": "Busca Doações aguardando retirada pelo Parceiro Logado (Somente para Parceiros)",
+      "tags":['Doação'],
+      "security": [
+          { "BearerAuth": [] }
+        ],
+      "parameters":[],
+      "responses": {
+        "200":{
+          "$ref": "#/components/responses/arrayDoacoes"
         },
         "500":{
           "$ref": "#/components/responses/genericError"

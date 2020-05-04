@@ -130,7 +130,7 @@
       }
     }
    },
-   "/meus-ponto-entrega/": {
+   "/meus-pontos-entrega/": {
     "get": {
       "description": "Busca todos os Pontos de Entrega vinculados Parceiro logado (Somente o Parceiro responsável)",
       "tags":['Ponto de Entrega'],

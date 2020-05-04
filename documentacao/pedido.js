@@ -82,23 +82,8 @@
       }
     }
   },
+  
   "/pedido/": {
-    "get": {
-      "description": "Busca todos os pedidos da cidade do usuário logado",
-      "tags":['Pedido'],
-      "security": [
-          { "BearerAuth": [] }
-        ],
-      "parameters":[],
-      "responses": {
-        "200":{
-          "$ref": "#/components/responses/arrayPedidos"
-        },
-        "500":{
-          "$ref": "#/components/responses/genericError"
-        }
-      }
-    },
     "post": {
       "description": "Adiciona um novo Pedido vinculados ao usuário logado",
       "tags":['Pedido'],
@@ -118,9 +103,27 @@
       }
     }
   },
+  "/pedido/nao-atendidos": {
+    "get": {
+      "description": "Busca todos os pedidos Não Atendidos (status = 0 ) da cidade do usuário logado",
+      "tags":['Pedido'],
+      "security": [
+          { "BearerAuth": [] }
+        ],
+      "parameters":[],
+      "responses": {
+        "200":{
+          "$ref": "#/components/responses/arrayPedidos"
+        },
+        "500":{
+          "$ref": "#/components/responses/genericError"
+        }
+      }
+    }
+  },
   "/pedido/status/{status}": {
     "get": {
-      "description": "Busca todos os pedidos pelo Status informado na cidade do usuário logado",
+      "description": "Busca todos os pedidos pelo Status informado na cidade do usuário logado e atendidos pelo Parceiro Logado (Somente para Parceiros)",
       "tags":['Pedido'],
       "security": [
           { "BearerAuth": [] }
@@ -269,6 +272,24 @@
       "responses": {
         "200":{
           "$ref": "#/components/responses/singleMsg"
+        },
+        "500":{
+          "$ref": "#/components/responses/genericError"
+        }
+      }
+    }
+  },
+  "/pedido/minhas-entregas": {
+    "get": {
+      "description": "Busca todos os Pedidos a serem entregues pelo Parceiro Logado (Permitido somente para Parceiros)",
+      "tags":['Pedido'],
+      "security": [
+          { "BearerAuth": [] }
+        ],
+      "parameters":[],
+      "responses": {
+        "200":{
+          "$ref": "#/components/responses/arrayPedidos"
         },
         "500":{
           "$ref": "#/components/responses/genericError"

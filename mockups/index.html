@@ -17,111 +17,81 @@
   </head>
 
   <body>
-    <div class="container">
-    <div class="col s12 m7">
-    <h3 class="header center">Pedidos em aberto</h3>
-    <ul class="collection">
-      <li class="collection-item">
-          <div class="card horizontal">
-            <div class="card-image" style="width: 10px; background-color: red">
-            </div>
-            <div class="card-stacked">
-              <div class="card-content">
-                <h5>Rua FC 05 - Felício Chaves</h5>
-              </div>
-              <div class="card-action">
-                <div class="chip orange" style="color: white;"><b>Alimentos</b></div>
-                <div class="chip indigo" style="color: white;"><b>Limpeza</b></div>
-                <div class="chip cyan" style="color: white;"><b>Higiene Pessoal</b></div>
-                <div class="chip green" style="color: white;"><b>Máscara</b></div>
-              </div>
-            </div>
-          </div>
-      </li>
-      <li class="collection-item">
-        <div class="card horizontal">
-          <div class="card-image" style="width: 10px; background-color: green">
-          </div>
-          <div class="card-stacked">
-            <div class="card-content">
-              <h5>Rua Pará - Centro</h5>
-            </div>
-            <div class="card-action">
-                <div class="chip orange" style="color: white;"><b>Alimentos</b></div>
-                <div class="chip indigo" style="color: white;"><b>Limpeza</b></div>
-                <div class="chip green" style="color: white;"><b>Máscara</b></div>
-              </div>
-          </div>
+   <div class="navbar-fixed">
+      <nav>
+        <div class="nav-wrapper blue darken-4">
+          <a href="#!" class="brand-logo">Logo</a>
         </div>
-    </li>
-    <li class="collection-item">
-        <div class="card horizontal">
-          <div class="card-image" style="width: 10px; background-color: yellow">
-          </div>
-          <div class="card-stacked">
-            <div class="card-content">
-              <h5>Rua MV2 - Monte Verde</h5>
-            </div>
-            <div class="card-action">
-                <div class="chip orange" style="color: white;"><b>Alimentos</b></div>
-            </div>
-          </div>
-        </div>
-    </li>
-    <li class="collection-item">
-        <div class="card horizontal">
-          <div class="card-image" style="width: 10px; background-color: red">
-          </div>
-          <div class="card-stacked">
-            <div class="card-content">
-              <h5>Rua MV5 - Monte verde</h5>
-            </div>
-            <div class="card-action">
-                <div class="chip orange" style="color: white;"><b>Alimentos</b></div>
-                <div class="chip indigo" style="color: white;"><b>Limpeza</b></div>
-            </div>
-          </div>
-        </div>
-    </li>
-    <li class="collection-item">
-        <div class="card horizontal">
-          <div class="card-image" style="width: 10px; background-color: yellow">
-          </div>
-          <div class="card-stacked">
-            <div class="card-content">
-              <h5>Rua FC 05 - Felício Chaves</h5>
-            </div>
-            <div class="card-action">
-              <div class="chip">Alimentos</div>
-              <div class="chip">Limpeza</div>
-              <div class="chip">Higiene Pessoal</div>
-              <div class="chip">Máscara</div>
-            </div>
-          </div>
-        </div>
-    </li>
-    <li class="collection-item">
-        <div class="card horizontal">
-          <div class="card-image" style="width: 10px; background-color: red">
-          </div>
-          <div class="card-stacked">
-            <div class="card-content">
-              <h5>Rua FC 05 - Felício Chaves</h5>
-            </div>
-            <div class="card-action">
-              <div class="chip">Alimentos</div>
-              <div class="chip">Limpeza</div>
-              <div class="chip">Higiene Pessoal</div>
-              <div class="chip">Máscara</div>
-            </div>
-          </div>
-        </div>
-    </li>
-    </ul>
-    </div>
+      </nav>
     </div>
 
+    <div class="container">
+        <br><br><br><br><br>
+         <div class="row ">
+            <div class="col offset-m3 s12 m6">
+              <div class="card hoverable">
+               <div class="row">
+                 
+                  <div class="card-content white-text">
+                     <h3 class="center" style="color:#0d47a1">Login</h3>
+                  </div>
+                  
+               
+               </div>
+               <div class="row">
+                  <div class="input-field col s10 offset-s1">
+                    <input id="telefone" type="text" class="validate">
+                    <label for="telefone">Telefone</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s10 offset-s1">
+                    <input id="senha" type="password" class="validate">
+                    <label for="senha">Senha</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <a class="waves-effect waves-light btn blue darken-4 col s4 offset-s4" id="logar"><i class="material-icons right">send</i>Logar</a>
+                </div>
+                <br>
+                </div>
+              </div>
+            </div>
+         </div>
+
+    </div>
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+       M.AutoInit();
+      window.addEventListener('load', init)
+
+      function init(){
+         document.querySelector('#logar').addEventListener('click', logar);
+         
+      }
+
+      function logar(){
+         let telefone = document.querySelector('#telefone').value;
+         let senha = document.querySelector('#senha').value;
+         console.log('Usuario: '+telefone)
+         console.log('Senha: '+ senha)
+
+         fetch('')
+         .then(response =>{
+
+         })
+         .then(data=>{
+
+         })
+         .catch(error=>{
+
+         })
+         
+      }
+
+       
+       
+    </script>
   </body>
 </html>
