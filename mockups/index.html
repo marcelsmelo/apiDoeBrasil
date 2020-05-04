@@ -77,17 +77,27 @@
          console.log('Usuario: '+telefone)
          console.log('Senha: '+ senha)
 
-         fetch('')
+         fetch('http://marcelmelo-dev.umbler.net/login',{
+            method: 'POST',
+            body:{
+               telefone: telefone,
+               senha: senha
+            }
+         })
          .then(response =>{
-
+            if(response.status != 200){
+               console.error('ERROR ', response)
+               return 
+            }
+            console.log("resposta: ", response)
+            return response.json
          })
          .then(data=>{
-
+            console.log("DATA: ", data)
          })
          .catch(error=>{
-
+            console.error('ERROR ', error)
          })
-         
       }
 
        

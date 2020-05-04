@@ -3,6 +3,7 @@ const path = require('path');
 const favicon = require('serve-favicon');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 //Documentação Swagger
 //Importar Swagger-ui-Express e SwaggerJSDoc
@@ -82,7 +83,7 @@ let swaggerDefinition = {
   //Rota para acessar a documentação
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-
+  app.use(cors());
 
 /**********************
  ******** ROTAS *******
