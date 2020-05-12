@@ -3,7 +3,7 @@
   {
     "/cidades/{uf}": {
       "post": {
-        "description": "Adiciona um novo o usuário",
+        "description": "Retorna as cidades do estado passado como parâmetro",
         "tags":['Cidades'],
         "parameters":[{
           name: "uf",

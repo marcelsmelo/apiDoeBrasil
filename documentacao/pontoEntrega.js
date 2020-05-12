@@ -25,11 +25,14 @@
         },
         "500":{
           "$ref": "#/components/responses/genericError"
+        },
+        "401":{
+          "$ref": "#/components/responses/autenticacaoError"
         }
       }
     },
     "put": {
-      "description": "Altera o Ponto de Entrega pelo ID informado (Somente o parceiro responsável)",
+      "description": "Altera o Ponto de Entrega pelo ID informado (Disponível apenas pelo Parceiro responsável)",
       "tags":['Ponto de Entrega'],
       "security": [
           { "BearerAuth": [] }
@@ -52,11 +55,17 @@
         },
         "500":{
           "$ref": "#/components/responses/genericError"
+        },
+        "401":{
+          "$ref": "#/components/responses/autenticacaoError"
+        },
+        "403":{
+          "$ref": "#/components/responses/acessoError"
         }
       }
     },
     "delete": {
-      "description": "Remove o Ponto de Entrega pelo ID informado (somente o parceiro responsável)",
+      "description": "Remove o Ponto de Entrega pelo ID informado (Disponível apenas para Parceiro responsável)",
       "tags":['Ponto de Entrega'],
       "security": [
           { "BearerAuth": [] }
@@ -78,13 +87,19 @@
         },
         "500":{
           "$ref": "#/components/responses/genericError"
+        },
+        "401":{
+          "$ref": "#/components/responses/autenticacaoError"
+        },
+        "403":{
+          "$ref": "#/components/responses/acessoError"
         }
       }
     }
   },
   "/ponto-entrega/" : {
     "post": {
-      "description": "Adiciona um novo Ponto de Entrega vinculados ao Parceiro logado (Somente o parceiro responsável)",
+      "description": "Adiciona um novo Ponto de Entrega vinculado ao Parceiro logado (Disponível apenas para o Parceiros)",
       "tags":['Ponto de Entrega'],
       "security": [
           { "BearerAuth": [] }
@@ -98,6 +113,12 @@
         },
         "500":{
           "$ref": "#/components/responses/genericError"
+        },
+        "401":{
+          "$ref": "#/components/responses/autenticacaoError"
+        },
+        "403":{
+          "$ref": "#/components/responses/acessoError"
         }
       }
     }
@@ -126,13 +147,16 @@
         },
         "500":{
           "$ref": "#/components/responses/genericError"
+        },
+        "401":{
+          "$ref": "#/components/responses/autenticacaoError"
         }
       }
     }
    },
    "/meus-pontos-entrega/": {
     "get": {
-      "description": "Busca todos os Pontos de Entrega vinculados Parceiro logado (Somente o Parceiro responsável)",
+      "description": "Busca todos os Pontos de Entrega vinculados Parceiro logado (Disponível apenas para o Parceiro responsável)",
       "tags":['Ponto de Entrega'],
       "security": [
           { "BearerAuth": [] }
@@ -144,6 +168,12 @@
         },
         "500":{
           "$ref": "#/components/responses/genericError"
+        },
+        "401":{
+          "$ref": "#/components/responses/autenticacaoError"
+        },
+        "403":{
+          "$ref": "#/components/responses/acessoError"
         }
       }
     }

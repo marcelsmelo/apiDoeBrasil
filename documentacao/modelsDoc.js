@@ -15,7 +15,8 @@
             "complemento":{"type":"string"},
             "cidade":{"type":"string"},
             "estados":{"type":"string"},
-            "group": {"type": "string", "enum":["U", "R", "P", "A"]}
+            "group": {"type": "string", "enum":["U", "P", "A"]},
+            "parceiroId": {"type":"integer"}
           }
         },
         "Pedido":{
@@ -26,10 +27,11 @@
             "artigoLimpeza":{"type":"boolean"},
             "mascara": {"type":"boolean"},
             "observacoes": {"type":"string"},
+            "status": {"type": "string", "enum":[0,1,2]},
             "usuarioId":{"type:":"integer"},
-            "atendidoPor":{"type": "integer"},
-            "atendidoPorGroup":{"type": "string"},
-            "status": {"type": "string", "enum":[0,1,2]}
+            "atendidoPorUsuario":{"type": "integer"},
+            "atendidoPorParceiro":{"type": "string"},
+            
           }
         },
         "Doacao":{
@@ -41,8 +43,8 @@
             "mascara": {"type":"boolean"},
             "observacoes": {"type":"string"},
             "dispEntrega":{"type":"boolean"},
-            "usuarioId":{"type:":"integer"},
             "status": {"type": "string", "enum":[0,1,2,3]},
+            "usuarioId":{"type:":"integer"},
             "pedidoId": {"type:":"integer"},
             "parceiroId":{"type:":"integer"},
             "pontoEntregaId": {"type:":"integer"}
@@ -53,6 +55,7 @@
             "id":{"type":"integer"},
             "nome":{"type":"string"},
             "telefone":{"type":"string"},
+            "senha":{"type":"string"},
             "rua": {"type":"string"},
             "numero": {"type":"string"},
             "bairro":{"type":"string"},

@@ -14,7 +14,7 @@ let swaggerJSDoc = require('swagger-jsdoc');
 global.logger = require('winston');
 logger.remove(logger.transports.Console)
 logger.add(logger.transports.Console, { colorize: true });
-logger.level = 'debug';
+logger.level = 'error';
 
 let app = express();
 const load = require('express-load');
@@ -41,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 // app.use(morgan('dev'));
 
-app.use(morgan(':date[clf] - :method :url :status :response-time ms - :res[content-length]'))
+//app.use(morgan(':date[clf] - :method :url :status :response-time ms - :res[content-length]'))
 app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: false }));

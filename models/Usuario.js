@@ -46,7 +46,7 @@ const Usuario = sequelize.define('usuario', {
         }
     },
     group:{
-        type: Sequelize.ENUM('U', 'R', 'A', 'P') ,
+        type: Sequelize.ENUM('U', 'P', 'A') ,
         allowNull: false,
         defaultValue: 'U'
     },
@@ -56,7 +56,7 @@ const Usuario = sequelize.define('usuario', {
         get() {
             return() => this.getDataValue('token')
         }
-    }, 
+    },
     rua: {
         type: Sequelize.STRING,
         allowNull: false
@@ -113,21 +113,24 @@ Usuario.prototype.comparePassword = function(enteredPassword) {
 }
 
 
-Usuario.prototype.generateAuthToken = function() {
-    return new Promise((success, reject) => {
+Usuario.prototype.generateAuthToken = function(loginType) {
+   return new Promise((success, reject) => {
       // Generate an auth token for the user
       const usuario = this
+      
+      let data = {usuarioId: usuario.id, parceiroId: usuario.parceiroId, loginType}
+
       //Cria o token
       const token = jwt.sign(
-        {id: usuario.id}, //Dado que será salvo no token 
-        'supersegredo') //Palavra chave secreta para criptografia
-//        {expiresIn: '7d'}) //Tempo de duração do Token
+         data, //Dado que será salvo no token 
+         'supersegredo') //Palavra chave secreta para criptografia
+//       {expiresIn: '7d'}) //Tempo de duração do Token
 
       usuario.token = token
 
       //Salvar o Token no documento do usuário
       usuario.save()
-      .then(user =>{
+      .then(() =>{
           //Retornar uma Promises de sucesso
           success({
             token: token

@@ -1,7 +1,9 @@
 const Sequelize = require('sequelize')
 const sequelize = require('../database/dbMysql');
 const Usuario = require('./Usuario');
+const Parceiro = require('./Parceiro');
 
+//TOOD: Remover atendidoPorGroup e adicionar vínculo direto com Parceiro
 const Pedido = sequelize.define('pedido', {
     id: {
         type: Sequelize.INTEGER.UNSIGNED,
@@ -33,10 +35,6 @@ const Pedido = sequelize.define('pedido', {
         type: Sequelize.INTEGER.UNSIGNED,
         defaultValue: 0
     },
-    atendidoPorGroup:{
-        type: Sequelize.STRING, 
-        allowNull: true
-    },
     removido:{
         type: Sequelize.BOOLEAN,
         defaultValue: false,
@@ -48,9 +46,15 @@ const Pedido = sequelize.define('pedido', {
 
 Pedido.belongsTo(Usuario);
 
-Pedido.belongsTo(Usuario, {
-    foreignKey: 'atendidoPor'
+Pedido.belongsTo(Usuario, { 
+    foreignKey: 'atendidoPorUsuario',
+    defaultValue: null
 });
+
+Pedido.belongsTo(Parceiro,{
+    foreignKey: 'atendidoPorParceiro',
+    defaultValue: null
+})
 
 
 module.exports = Pedido;

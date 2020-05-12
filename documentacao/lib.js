@@ -73,7 +73,7 @@
         }
       },
       "arrayPedidos":{
-        "description": "Array de pedidos solicitados",
+        "description": "Array de Pedidos solicitados",
         "content":{
           "application/json":{
             "schema":{
@@ -96,7 +96,7 @@
         }
       },
       "arrayDoacoes":{
-        "description": "Array de doações solicitadas",
+        "description": "Array de Doações solicitadas",
         "content":{
           "application/json":{
             "schema":{
@@ -163,7 +163,35 @@
             }
           }
         }
-      }
+      },
+      "autenticacaoError":{
+        "description": "Erro na autenticação ou verificação do token de acesso!",
+        "content":{
+          "application/json":{
+            "schema":{
+              "type":"object",
+              "properties":{
+                "msg": { "type":"string"},
+                "error":{ "type": "string"}
+              }
+            }
+          }
+        }
+      },
+      "acessoError":{
+        "description": "O usuário não tem acesso a esta rota!",
+        "content":{
+          "application/json":{
+            "schema":{
+              "type":"object",
+              "properties":{
+                "msg": { "type":"string"},
+                "error":{ "type": "string"}
+              }
+            }
+          }
+        }
+      },
     }
   }
 }

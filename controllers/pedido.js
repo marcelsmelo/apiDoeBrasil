@@ -2,259 +2,229 @@ const Sequelize = require('sequelize');
 let Usuario = require('../models/Usuario')
 let Pedido = require('../models/Pedido')
 let Doacao = require('../models/Doacao')
+const Op = Sequelize.Op
 
 module.exports = {
-    buscarPorId:(req, res, next)=>{
-        Pedido.findOne({
+   //Busca um pedido por ID
+   buscarPorId: async (req, res, next)=>{
+      try{
+         let pedido = await Pedido.findOne({
             where: {
-                id: req.params.id
+               id: req.params.id
             },
             attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
             include:[{
-                model: Usuario,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }
+                  model: Usuario,
+                  attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }
             }]
-        })
-        .then(pedido=>{
-            res.status(200).json(pedido)
-        })
-        .catch(error=>{
-            res.status(500).json({msg: "Erro ao buscar pedido", 'error': error.message})
-        })
-    },
-    buscarNaoAtendidos:(req, res, next)=>{
-        Pedido.findAll({
-            where: {
-               status: 0
-            },
-            attributes: {exclude: ['createdAt', 'updatedAt'] },
-            include:[{
-                model: Usuario,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }, 
-                on:{
-                    id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("usuario.id")),
-                },
-                where:{'cidade': req.user.cidade}
-            }]
-        })
-        .then(pedidos=>{
-            res.status(200).json(pedidos)
-        })
-        .catch(error=>{
-            res.status(500).json({msg: "Erro ao buscar pedidos", 'error': error.message})
-        })
-    },
-    buscarPorStatus:(req, res, next)=>{
-        Pedido.findAll({
-            where: {
-               status: req.params.status
-            },
-            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
-            include:[{
-                model: Usuario,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
-                on:{
-                    id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("usuario.id")),
-                },
-                where:{'cidade': req.user.cidade, 'parceiroId': req.user.parceiroId}
-            }]
-        })
-        .then(pedidos=>{
-            res.status(200).json(pedidos)
-        })
-        .catch(error=>{
-            res.status(500).json({msg: "Erro ao buscar pedidos", 'error': error.message})
-        })
-    },
-    meusPedidos:(req, res, next)=>{
-        Pedido.findAll({
-            where: {
-                usuarioId: req.user.id
-            }
-        })
-        .then(pedidos=>{
-            res.status(200).json(pedidos)
-        })
-        .catch(error=>{
-            res.status(500).json({msg: "Erro ao buscar pedidos", 'error': error.message})
-        })
-    },
-    meusPorStatus:(req, res, next)=>{
-        Pedido.findAll({
-            where: {
-                usuarioId: req.user.id,
-                status: req.params.status
-            }
-        })
-        .then(pedidos=>{
-            res.status(200).json(pedidos)
-        })
-        .catch(error=>{
-            res.status(500).json({msg: "Erro ao buscar pedidos", 'error': error.message})
-        })
-    },
-    
-    cadastrar:(req, res, next)=>{
-        let pedido = new Pedido({
-             generoAlimenticio: req.body.generoAlimenticio,
-             higienePessoal: req.body.higienePessoal, 
-             artigoLimpeza: req.body.artigoLimpeza, 
-             mascara: req.body.mascara, 
-             observacoes: req.body.observacoes,
-             status: 0, //Marcar como não atendida
-             usuarioId: req.user.id})
+         })
+         res.status(200).json(pedido)
+      }catch(error){
+         res.status(500).json({msg: "Erro ao buscar pedido", 'error': error.message})
+      }
+   },
 
-        pedido.save()
-        .then(novoPedido =>{
-            res.status(200).json(novoPedido)
-        })
-        .catch(error=>{
-            res.status(500).json({msg: "Erro ao cadastrar pedido", 'error': error.message})
-        })
-    },
-    editar: (req, res, next)=>{
-        Pedido.update({
+   //Buscar todos os Pedidos abertos pelo Usuário Logado ou atendidos pelo Parceiro Logado
+   buscarTodos: async (req, res, next)=>{
+      let condition={}
+      
+      if(req.user.group == 'U') condition.usuarioId = req.user.id
+      else condition.atendidoPorParceiro = req.user.parceiroId
+
+      try{
+         let pedidos = await Pedido.findAll({
+            where: condition,
+            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
+         })
+         res.status(200).json(pedidos)
+      }catch(error){
+         res.status(500).json({msg: "Erro ao buscar pedidos", 'error': error.message})
+      }
+   },
+
+   //Busca os pedidos por Status criados pelo usuário logado ou atendidos pelo Parceiro Logado
+   buscarPorStatus: async (req, res, next)=>{
+      let condition={}
+      condition.status = req.params.status
+
+      if(req.user.group == 'U') condition.usuarioId = req.user.id
+      else condition.atendidoPorParceiro = req.user.parceiroId
+
+      try{
+         let pedidos = await Pedido.findAll({
+            where: condition,
+            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
+         })
+         res.status(200).json(pedidos)
+      }catch(error){
+         res.status(500).json({msg: "Erro ao buscar pedidos", 'error': error.message})
+      }
+   },
+
+   //Busca os pedidos em aberto na cidade do usuário logado (status=0) excluindo os abertos pelo usuário logado
+   naoAtendidos: async (req, res, next)=>{
+      let condition = {}
+      condition.status = 0
+
+      if(req.user.group == 'U') condition.usuarioId = {[Op.ne]: req.user.id}
+
+      try{
+         let pedidos = await Pedido.findAll({
+            where: condition,
+            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
+            include:[{
+               model: Usuario,
+               attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }, 
+               on:{
+                   id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("usuario.id")),
+               },
+               where:{'cidade': req.user.cidade}
+           }]
+         })
+         res.status(200).json(pedidos)
+      }catch(error){
+         res.status(500).json({msg: "Erro ao buscar pedidos", 'error': error.message})
+      }
+   },
+   //Cadastra um novo pedido vinculado ao usuário logado
+   cadastrar: async (req, res, next)=>{
+      if(!req.body.generoAlimenticio && !req.body.higienePessoal &&
+         !req.body.artigoLimpeza && !req.body.mascara){
+            res.status(500).json({msg: "Erro ao cadastrar pedido", 'error': 'Solicite pelo menos um material!'})
+            return;
+      }
+
+      let pedido = new Pedido({
             generoAlimenticio: req.body.generoAlimenticio,
             higienePessoal: req.body.higienePessoal, 
             artigoLimpeza: req.body.artigoLimpeza, 
             mascara: req.body.mascara, 
             observacoes: req.body.observacoes,
-        },{
+            status: 0, //Marcar como não atendida
+            usuarioId: req.user.id})
+
+      try{
+         let novoPedido = await pedido.save()
+         res.status(200).json(novoPedido)
+      }catch(error){
+         res.status(500).json({msg: "Erro ao cadastrar pedido", 'error': error.message})
+      }
+   },
+   //Edita um pedido pertencente ao usuário logado
+   editar: async (req, res, next)=>{
+      try{
+         let pedido = await Pedido.findOne({
             where: {
-                id: req.params.id,
-                usuarioId: req.user.id
+               id: req.params.id,
+               usuarioId: req.user.id
             }
-        }).then(ok=>{
+         })
+   
+         if(!pedido)
+            return res.status(403).json({msg: 'Alteração não autorizada! O usuário logado não tem permissão para realizar essa operação', error: null});
+         
+         if(pedido.status == 0){
+            pedido.generoAlimenticio = req.body.generoAlimenticio
+            pedido.higienePessoal = req.body.higienePessoal
+            pedido.artigoLimpeza = req.body.artigoLimpeza
+            pedido.mascara = req.body.mascara
+            pedido.observacoes = req.body.observacoes
+            await pedido.save()
             res.status(200).json({msg: "Pedido editado com sucesso!"})
-        })
-        .catch(error=>{
-            res.status(500).json({msg: "Erro ao editar pedido", 'error': error.message})
-        })
-    },
-    remover:(req, res, next)=>{
-        Pedido.update({
-            removida: true
-        },{
+         }else{
+            throw new Error('Alteração não autorizada! O pedido já foi selecionado para entrega ou finalizado')
+         }
+      }catch(error){
+         res.status(500).json({msg: "Erro ao editar pedido", 'error': error.message})
+      }
+   },
+   //Remove um pedido pertencente ao usuário logado
+   remover: async (req, res, next)=>{
+      try{
+         let success = await Pedido.update({
+            removido: true
+         },{
             where: {
-                id: req.params.id,
-                usuarioId: req.user.id
+               id: req.params.id,
+               usuarioId: req.user.id,
+               status: 0
             }
-        })
-        .then(()=>{
-            res.status(200).json({msg: "Pedido removido com sucesso!"})
-        })
-        .catch(error=>{
-            res.status(500).json({msg: "Erro ao remover pedido!" , 'error': error.message})
-        })
-    },
-    confirmar:(req, res, next)=>{
-        Pedido.update({
-            status: 2
-        },{
-            where: {
-                id: req.params.id,
-                usuarioId: req.user.id,
-                status: 1
-            }
-        })
-        .then(()=>{
-            //Verificar se há uma doação vinculada ao pedido. Caso exista, finalizar doação
-            //Se status=2 e pedidoId!= null (pedido precisa finalizar/confirmar)
+         })
+         
+         if(success[0]) res.status(200).json({msg: "Pedido removido com sucesso!"})
+        else throw new Error('Alteração não autorizada! O usuário logado não tem permissão ou o pedido já foi selecionado para atendimento.')
+      }catch(error){
+         res.status(500).json({msg: "Erro ao remover pedido!" , 'error': error.message})
+      }
+   },
+   //Permite que o usuário ou parceiro finalize o pedido. Somente o parceiro que atende ao pedido
+   finalizar: (req, res, next)=>{
+      let condition = {}
+      condition.id = req.params.id
+      condition.status = 1
+
+      if(req.user.group = 'U') condition.usuarioId = req.user.id
+      else condition.atendidoPorParceiro = req.user.parceiroId
+
+      Pedido.update({
+         status: 2
+      },{
+         where: condition
+      }).then((success)=>{
+         //Verificar se há uma doação vinculada ao pedido. Caso exista, finalizar doação
+         //Se status=2 e pedidoId!= null (pedido precisa finalizar/confirmar)
+         if(success[0]){//Pedido foi finalizado
             Doacao.update({
-                status : 3
+               status : 3
             }, {
-                where: {
-                    pedidoId: req.params.id
-                }
+               where:{pedidoId: req.params.id}
             })
             .then(()=>{
-                res.status(200).json({msg: "Doação confirmada e finalizada!"})
+               res.status(200).json({msg: "Doação confirmada e finalizada!"})
             })
             .catch(error=>{
-                res.status(500).json({msg: "Erro ao atualizar Doação/Pedido!" , 'error':error.message})
-            })
-            
-        })
-        .catch(error=>{
-            res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
-        })
-    },
-    alterarStatus:(req, res, next)=>{
-        Pedido.update({
-            status: req.body.status
-        },{
-            where: {
-                id: req.params.id,
-                usuarioId: req.user.id
-            }
-        })
-        .then(ok=>{
-            res.status(200).json({msg: "Status da entrega atualizada!"})
-        })
-        .catch(error=>{
-            res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
-        })
-    },
-    atenderPedido:(req, res, next)=>{
-        Pedido.update({
+               res.status(500).json({msg: "Erro ao atualizar Doação/Pedido!" , 'error':error.message})
+            })      
+         }
+        else throw new Error('Alteração não autorizada! O usuário logado não tem permissão ou o pedido já está em aberto.')
+      })
+      .catch(error=>{
+         res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
+      })
+   },
+   //Permite que o Parceiro logado selecione um pedido para atendimento
+   selecionarParaAtender: async (req, res, next)=>{
+      try{
+         let success = await Pedido.update({
             status: 1,
-            atendidoPor: req.user.id,
-            atendidoPorGroup: 'P'
-        },{
+            atendidoPorParceiro: req.user.parceiroId,
+         },{
             where: {
-                id: req.params.id,
-                status: 0
+               id: req.params.id,
+               status: 0
             }
-        })
-        .then(ok=>{
-            res.status(200).json({msg: "Entrega selecionada para atendimento pelo parceiro!"})
-        })
-        .catch(error=>{
-            res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
-        })
-    },
-    finalizar:(req, res, next)=>{
-        Pedido.update({
-            status: 2
-        },{
-            where: {
-                id: req.params.id
-            },
-            include:[{
-                model: Usuario,
-                required:true,
-                attributes:['id', 'nome', 'telefone', 'group', 'parceiroId'],
-                trought:{attribute:['atendidoPor']},
-                where: {'parceiroId': req.user.parceiroId}
-            }]
-        })
-        .then(ok=>{
-            res.status(200).json({msg: "Entrega finalizada pelo parceiro!"})
-        })
-        .catch(error=>{
-            res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
-        })
-    },
-    //TODO: Documentar
-    minhasEntregas:(req, res, next)=>{
-        //Buscar todas entregas que os parceiros devem aos pedidos por eles selecionados
-        Pedido.findAll({
-            where: {
-                status: 2
-            },
-            include:[{
-                model: Usuario,
-                required:true,
-                attributes:['id', 'nome', 'telefone', 'group', 'parceiroId'],
-                trought:{attribute:['atendidoPor']},
-                where: {'parceiroId': req.user.parceiroId}
-            }]
-        })
-        .then(pedidos=>{
-            res.status(200).json(pedidos)
-        })
-        .catch(error=>{
-            res.status(500).json({msg: "Erro ao buscar pedidos", 'error': error.message})
-        })
-    },
+         })
+         if(success[0]) res.status(200).json({msg: "Entrega selecionada para atendimento pelo parceiro!"})
+         else throw new Error('Alteração não autorizada!')
+         
+      }catch(error){
+         res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
+      }
+   },
+
+   //Permite que o ADMIN altere o status de qualquer Pedido
+   alterarStatus: async (req, res, next)=>{
+      try{
+         await Pedido.update({
+            status: req.body.status
+         },{
+             where: {
+               id: req.params.id
+            }
+         })
+         res.status(200).json({msg: "Status da entrega atualizada!"})
+      }catch(error){
+         res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
+      }
+   },
 }

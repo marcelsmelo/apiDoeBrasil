@@ -5,23 +5,19 @@ module.exports = (app) => {
 
     app.get('/doacao/:id', auth.jwtVerify, controller.buscarPorId);
 
-    app.get('/minhas-doacoes/', auth.jwtVerify, controller.minhasDoacoes);
-    app.get('/minhas-doacoes/status/:status', auth.jwtVerify, controller.minhasPorStatus);
+    app.get('/doacao/', auth.jwtVerify, controller.buscarTodas)
+    app.get('/doacao/status/:status', auth.jwtVerify, controller.buscarPorStatus); 
 
-    app.post('/doacao', auth.jwtVerify, controller.cadastrar);
-    app.put('/doacao/:id',auth.jwtVerify, controller.editar)
-    app.delete('/doacao/:id', auth.jwtVerify, controller.remover);
+    app.post('/doacao', auth.jwtVerify, auth.groupVerify(['U']), controller.cadastrar);
+    app.put('/doacao/:id',auth.jwtVerify, auth.groupVerify(['U']), controller.editar)
+    app.delete('/doacao/:id', auth.jwtVerify, auth.groupVerify(['U']), controller.remover);
 
-    app.put('/doacao/confirmar/:id', auth.jwtVerify, controller.confirmar);
+    app.put('/doacao/finalizar/:id', auth.jwtVerify, controller.finalizar);
+
+    //Operação exclusivas para Parceiros
+    app.get('/parceiro/doacao/disponivel', auth.jwtVerify, auth.groupVerify(['P', 'A']), controller.disponivelParceiro)
+    app.put('/parceiro/doacao/selecionar/:id', auth.jwtVerify, auth.groupVerify(['P', 'A']), controller.selecionarParaRetirada);
     
-    //TODO: Mover para Parceiro
-    //TODO: Documentar
-    app.get('/parceiro/doacao/em-aberto', auth.jwtVerify, auth.groupVerify(['A', 'R', 'P']), controller.buscarAbertas);
-    app.get('/parceiro/doacao/status/:status', auth.jwtVerify, auth.groupVerify(['A', 'R', 'P']), controller.buscarPorStatus); 
-    app.get('/parceiro/doacao/retirada', auth.jwtVerify, auth.groupVerify(['A', 'R', 'P']), controller.minhasRetiradas);
-    app.put('/parceiro/doacao/finalizar/:id', auth.jwtVerify, auth.groupVerify(['A', 'R', 'P']), controller.finalizar);
-    app.put('/parceiro/doacao/selecionar/:id', auth.jwtVerify, auth.groupVerify(['A', 'R', 'P']), controller.selecionarParaRetirada);
-    
-
+    //Operações exclusivas para SuperAdmin
     app.put('/doacao/status/:id', auth.jwtVerify, auth.groupVerify(['A']), controller.alterarStatus); 
 }

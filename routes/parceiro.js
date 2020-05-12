@@ -6,8 +6,11 @@ module.exports = (app) => {
     app.get('/parceiro/:id', auth.jwtVerify, controller.buscarPorId);
     app.get('/parceiro', auth.jwtVerify, controller.buscarTodos);
    
-    app.post('/parceiro', auth.jwtVerify, controller.cadastrar);
-    app.put('/parceiro/:id',auth.jwtVerify, auth.groupVerify(['R']), controller.editar)
-    app.delete('/parceiro/:id', auth.jwtVerify, auth.groupVerify(['R']), controller.remover);
+    app.post('/parceiro', controller.cadastrar);
+    app.put('/parceiro',auth.jwtVerify, auth.groupVerify(['P']), controller.editar)
+    app.delete('/parceiro', auth.jwtVerify, auth.groupVerify(['P']), controller.remover);
+
+    app.post('/parceiro/login', controller.login);
+    app.post('/parceiro/logout', auth.jwtVerify, auth.groupVerify(['P']), controller.logout);
 
 }
