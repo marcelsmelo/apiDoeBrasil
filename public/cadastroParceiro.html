@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Import Google Icon Font-->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <div class="navbar-fixed">
+      <nav>
+        <div class="nav-wrapper blue darken-4">
+          <a href="index.html" class="brand-logo">Logo</a>
+        </div>
+      </nav>
+    </div>
+
+    <p class="center" style="color: #0d47a1; font-size: 2em;">
+      Cadastro Parceiro
+    </p>
+    <div class="container">
+      <div class="row">
+        <form class="col s12" name="parceiroForm">
+          <div class="row">
+            <div class="input-field col s12">
+               <i class="material-icons prefix">account_circle</i>
+               <input id="nome" type="text" />
+               <label for="nome">Nome</label>
+            </div>
+            <div class="input-field col s12 m6">
+               <i class="material-icons prefix">phone</i>
+              <input id="telefone" type="text" />
+              <label for="telefone">Telefone</label>
+            </div>
+            <div class="input-field col s12 m6">
+               <i class="material-icons prefix">lock</i>
+              <input id="senha" type="password" />
+              <label for="senha">Senha</label>
+            </div>
+            <div class="input-field col s12 m8">
+               <i class="material-icons prefix">place</i>
+              <input id="rua" type="text" />
+              <label for="rua">Rua</label>
+            </div>
+            <div class="input-field col s12 m4">
+               <i class="material-icons prefix">map</i>
+               <input id="numero" type="text" />
+               <label for="numero">Número</label>
+             </div>
+             <div class="input-field col s12 m6">
+               <i class="material-icons prefix">place</i>
+               <input id="bairro" type="text" />
+               <label for="bairro">Bairro</label>
+             </div>
+             <div class="input-field col s12 m6">
+               <i class="material-icons prefix">view_headline</i>
+               <input id="complemento" type="text" />
+               <label for="complemento">Complemento</label>
+             </div>
+
+             <div class="input-field col s12 m6">
+               <i class="material-icons prefix">location_city</i>
+               <select id="estado">
+                 <option value="" disabled selected>Selecione um Estado</option>
+                 <option value="MG">Minas Gerais</option>
+                 <option value="SP">São Paulo</option>
+                 <option value="GO">Goias</option>
+               </select>
+               <label>Estado</label>
+             </div>
+
+             <div class="input-field col s12 m6">
+               <i class="material-icons prefix">location_city</i>
+               <select  id="cidade">
+                 <option value="" disabled selected>Selecione uma cidade</option>
+                 <option value="1">Option 1</option>
+                 <option value="2">Option 2</option>
+                 <option value="3">Option 3</option>
+               </select>
+               <label>Cidade</label>
+             </div>
+          </div>
+          <div class="row">
+            <a class="waves-effect waves-light btn blue darken-4 col offset-s3 offset-m4 s6 m4 " id="cadastrar"><i class="material-icons right">send</i>Cadastrar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+      M.AutoInit();
+      window.addEventListener("load", init);
+
+      function init() {
+        //verificaLogado();
+        M.FormSelect.init(document.querySelectorAll('select'), {});
+        document.querySelector('#cadastrar').addEventListener('click', cadastrar);
+        document.querySelector('#estado').addEventListener('change', carregarCidades);
+      }
+
+      function verificaLogado() {
+        let token = localStorage.getItem("token");
+        console.log(token);
+        if (token) window.location = "logado.html";
+      }
+
+      function carregarCidades(){
+         let form = document.forms['parceiroForm']
+         let estadoSelecionado = form.estado.options[form.estado.selectedIndex].value
+         let tamanho = form.cidade.options.length
+         for(let i=0; i<tamanho; i++){
+            form.cidade.options[0] = null
+         }
+
+         fetch("/cidades/"+estadoSelecionado, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        })
+         .then((response) => {
+            if(response.status == 200)
+               return response.json();
+            else
+               throw new Error('Erro ao buscar cidades')
+         })
+         .then((data) => {
+            let cidades = data.cidades;
+            for(let i=0; i<cidades.length; i++){
+               form.cidade.options.add(new Option(cidades[i], cidades[i]))
+            }
+            M.FormSelect.init(form.cidade)
+         })
+         .catch((error) => {
+            alert('Erro ao carregar cidades!')
+            console.error(error)
+         });
+      }
+
+      function cadastrar() {
+         let form = document.forms['parceiroForm']
+
+         let data = {
+            nome: form.nome.value,
+            telefone: form.telefone.value,
+            senha: form.senha.value,
+            rua: form.rua.value,
+            numero: form.numero.value,
+            bairro: form.bairro.value,
+            complemento: form.complemento.value,
+            estado: form.estado.options[form.estado.selectedIndex].value,
+            cidade: form.cidade.options[form.cidade.selectedIndex].value
+          }
+
+        fetch("/parceiro", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+         .then((response) => {
+            if(response.status == 201)
+               return response.json();
+            else
+               throw new Error('Erro ao realizar cadastro')
+         })
+         .then((data) => {
+          M.toast({html: 'Parceiro criado com sucesso!'});
+            window.location = "/index.html";
+         })
+         .catch((error) => {
+            alert('Erro ao realizar o cadastro. Tente novamente!')
+            console.error(error)
+         });
+      }
+    </script>
+  </body>
+</html>

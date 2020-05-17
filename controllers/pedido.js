@@ -54,6 +54,13 @@ module.exports = {
          let pedidos = await Pedido.findAll({
             where: condition,
             attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
+            include:[{
+               model: Usuario,
+               attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
+               on:{
+                  id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("usuario.id")),
+              }
+            }]
          })
          res.status(200).json(pedidos)
       }catch(error){
@@ -163,8 +170,9 @@ module.exports = {
       condition.id = req.params.id
       condition.status = 1
 
-      if(req.user.group = 'U') condition.usuarioId = req.user.id
+      if(req.user.group == 'U') condition.usuarioId = req.user.id
       else condition.atendidoPorParceiro = req.user.parceiroId
+
 
       Pedido.update({
          status: 2

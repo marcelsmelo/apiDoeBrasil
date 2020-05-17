@@ -47,26 +47,29 @@
     </div>
 
     <div class="container-fluid">
-
       <div class="row">
-      <div class="col s12">
-        <ul class="tabs">
-          <li id="tab1" class="tab col s6"><a class="active" href="#test1">Pedidos</a></li>
-          <li id="tab2" class="tab col s6"><a href="#test2">Doações</a></li>
-        </ul>
+        <div class="col s12">
+          <ul class="tabs">
+            <li id="tab1" class="tab col s4"><a class="active" href="#test1">EM ABERTO</a></li>
+            <li id="tab2" class="tab col s4"><a href="#test2">MINHAS ENTREGAS</a></li>
+            <li id="tab3" class="tab col s4"><a href="#test3">ATENDIDOS</a></li>
+          </ul>
+        </div>
       </div>
-    </div>
       <div class="row">
         <div id="test1" class="col s12 m10 offset-m1">
-          <h5 class="header center">Pedidos</h5>
-          <ul class="collection" id="pedidos"></ul>
+            <h3 class="header center">Pedidos em aberto</h3>
+            <ul class="collection" id="disponivel"></ul>
         </div>
         <div id="test2" class="col s12 m10 offset-m1">
-          <h5 class="header center">Doações</h5>
-          <ul class="collection" id="doacoes"></ul>
+          <h3 class="header center">Pedidos - Minhas Entregas</h3>
+          <ul class="collection" id="entregas"></ul>
+        </div>
+        <div id="test3" class="col s12 m10 offset-m1">
+          <h3 class="header center">Pedidos Atendidos</h3>
+          <ul class="collection" id="atendidos"></ul>
         </div>
       </div>
-       
     </div>
     <div class="row">
       <div class="fixed-action-btn">
@@ -88,12 +91,34 @@
 
       function init(){
         verificaLogado();
-        M.Tabs.init(document.querySelectorAll('.tabs'), {});
-        M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), {toolbarEnabled: true, hoverEnabled: false, toolbarEnabled: false});
+        carregarPedidos('/pedidos-nao-atendidos', localStorage.getItem('token'), document.querySelector('#disponivel'))
+        M.Tabs.init(document.querySelectorAll('.tabs'),{});
+        M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), {});
         document.querySelector("#deslogar").addEventListener('click', deslogar);
-        document.querySelector('#tab1').addEventListener('click', carregarPedidos)
-        document.querySelector('#tab2').addEventListener('click', carregarDoacao)
-        carregarPedidos();
+        document.querySelector('#tab1').addEventListener('click', load)
+        document.querySelector('#tab2').addEventListener('click', load)
+        document.querySelector('#tab3').addEventListener('click', load)
+      }
+
+      function load(param){
+        let token = localStorage.getItem('token');
+        let url = "";
+        let componente = {};
+        switch(this.id){
+          case 'tab1':
+            url = "/pedidos-nao-atendidos"
+            componente = document.querySelector('#disponivel')
+            break;
+          case 'tab2':
+            url = "/pedido/status/1"
+            componente = document.querySelector('#entregas')
+            break;
+          case 'tab3':
+            url = "/pedido/status/2"
+            componente = document.querySelector('#atendidos')
+            break;
+        }
+        carregarPedidos(url, token, componente)
       }
 
       function verificaLogado(){
@@ -116,6 +141,9 @@
             if(response.status == 200){
               localStorage.removeItem('token');
               window.location = 'login.html'
+            }else if(response.status == 401){
+              localStorage.removeItem('token');
+              window.location = 'login.html'
             }
             else throw new Error('Erro ao deslogar')
          })
@@ -125,11 +153,9 @@
          });
       }
 
-
-      function carregarPedidos(){
+      function carregarPedidos(url, token, componente){
         let texto = ""
-        let token = localStorage.getItem('token');
-        fetch('/pedidos-nao-atendidos', {
+        fetch(url, {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -150,14 +176,28 @@
          .then(data=>{
            console.log(data)
            for(let i=0; i<data.length; i++){
-              texto += '<li class="collection-item"><div class="card horizontal">'
-              texto+='<div class="card-image" style="width: 10px; background-color: red">'
+              texto += '<li class="collection-item col s12"><div class="card horizontal">'
+              if(data[i].status == 0) texto+='<div class="card-image" style="width: 10px; background-color: red">'
+              else if(data[i].status == 1) texto+='<div class="card-image" style="width: 10px; background-color: blue">'
+              else if(data[i].status == 2) texto+='<div class="card-image" style="width: 10px; background-color: green">'
+              
               texto += '</div><div class="card-stacked"><div class="card-content">'
-              texto += `<a class="waves-effect waves-teal btn-flat right" onclick="atenderPedido(${data[i].id})"><i class="material-icons left">add</i>Atender</a>`
-              texto += `<h6><i class="material-icons left">place</i> Rua ${data[i].usuario.rua} - ${data[i].usuario.bairro}</h6>`
-
+              
+              if(data[i].status == 0){
+                texto += `<a class="waves-effect waves-teal btn-flat right" onclick="atenderPedido(${data[i].id})"><i class="material-icons left">add</i>Atender</a>`
+                texto += `<h5 class="col s12 m10"><i class="material-icons left">place</i> Rua ${data[i].usuario.rua} - ${data[i].usuario.bairro}</h5>`
+              }else if(data[i].status == 1){
+                texto += `<a class="waves-effect waves-teal btn-flat right" onclick="finalizarPedido(${data[i].id})"><i class="material-icons left">check</i>Finalizar</a>`
+                texto += `<h5><i class="material-icons left">person</i>${data[i].usuario.nome}</h5>`
+                texto += `<h6><i class="material-icons left">phone</i>${data[i].usuario.telefone}</h6>`
+                texto += `<h6><i class="material-icons left">place</i>Rua ${data[i].usuario.rua} - Bairro ${data[i].usuario.bairro}</h6>`
+              }else if(data[i].status == 2){
+                texto += `<h5><i class="material-icons left">place</i> Rua ${data[i].usuario.rua} - ${data[i].usuario.bairro}</h5>`
+              }
+              
+      
               if(data[i].observacoes){
-                texto += `<br><h6><i class="material-icons left">playlist_add</i><b>Observações:</b></h6>
+                texto += `<br><h6 class="col s12"><i class="material-icons left">playlist_add</i><b>Observações:</b></h6>
                           <span>${data[i].observacoes}</span>`
               }
                           
@@ -171,7 +211,7 @@
               texto += '</div> </div> </div> </li>'
            }
            
-            document.querySelector("#pedidos").innerHTML = texto;
+            componente.innerHTML = texto;
          })
          .catch((error) => {
             alert('Erro ao buscar Pedidos. Tente novamente!')
@@ -194,7 +234,8 @@
         })
          .then((response) => {
             if(response.status == 200){
-              carregarPedidos()
+              M.toast({html: 'Pedido selecionado com sucesso!'});
+              carregarPedidos('/pedidos-nao-atendidos', localStorage.getItem('token'), document.querySelector('#disponivel'))
             }else if(response.status == 401){
               localStorage.removeItem('token');
               window.location = 'login.html'
@@ -207,69 +248,12 @@
          });
       }
 
-      function carregarDoacao(){
-        let texto = ""
-        let token = localStorage.getItem('token');
-        fetch('parceiro/doacao/disponivel', {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "authorization": token
-          },
-        })
-         .then((response) => {
-           console.log(response)
-            if(response.status == 200){
-              return response.json()
-            }else if(response.status == 401){
-              localStorage.removeItem('token');
-              window.location = 'login.html'
-            }
-            else throw new Error('Erro ao buscar Doações')
-         })
-         .then(data=>{
-           console.log(data)
-           for(let i=0; i<data.length; i++){
-              texto += '<li class="collection-item"><div class="card horizontal">'
-              texto+='<div class="card-image" style="width: 10px; background-color: red">'
-              texto += '</div><div class="card-stacked"><div class="card-content">'
-              
-              texto += `<a class="waves-effect waves-teal btn-flat right" onclick="selecionarDoacao(${data[i].id})"><i class="material-icons left">check</i>Selecionar</a>`
-            
-              texto += `<h5><i class="material-icons left">person</i>${data[i].usuario.nome}</h5>`
-              texto += `<h6><i class="material-icons left">phone</i>${data[i].usuario.telefone}</h6>`
-              texto += `<h6><i class="material-icons left">place</i>Rua ${data[i].usuario.rua} - Bairro ${data[i].usuario.bairro}</h6>`
-              
-              if(data[i].observacoes){
-                texto += `<br><h6><i class="material-icons left">playlist_add</i><b>Observações:</b></h6>
-                          <span>${data[i].observacoes}</span>`
-              }
-                          
-              texto += '</div> <div class="card-action">'
-
-              if(data[i].generoAlimenticio) texto += '<div class="chip orange" style="color: white;"><b>Alimentos</b></div>'
-              if(data[i].higienePessoal) texto += '<div class="chip indigo" style="color: white;"><b>Limpeza</b></div>'
-              if(data[i].artigoLimpeza) texto += '<div class="chip cyan" style="color: white;"><b>Higiene Pessoal</b></div>'
-              if(data[i].mascara) texto += '<div class="chip green" style="color: white;"><b>Máscara</b></div>'
-
-              texto += '</div> </div> </div> </li>'
-           }
-           
-            document.querySelector('#doacoes').innerHTML = texto;
-         })
-         .catch((error) => {
-            alert('Erro ao buscar Pedidos. Tente novamente!')
-            console.error(error)
-         });
-      }
-
-      function selecionarDoacao(doacaoId){
-        let resp = confirm('Deseja realmente selecionar a Doação para retirada?')
+      function finalizarPedido(pedidoId){
+        let resp = confirm('Deseja realmente finalizar o pedido?')
         if(!resp) return ;
-
+  
         let token = localStorage.getItem('token');
-        fetch("/parceiro/doacao/selecionar/"+doacaoId, {
+        fetch("/pedido/finalizar/"+pedidoId, {
           method: "PUT",
           headers: {
             Accept: "application/json",
@@ -279,21 +263,21 @@
         })
          .then((response) => {
             if(response.status == 200){
-              // alert("Pedido selecionado com sucesso!")
-              carregarDoacao()
+              M.toast({html: 'Doação finalizado com sucesso!'});
+              carregarPedidos('/pedido/status/1', localStorage.getItem('token'), document.querySelector('#entregas'))
             }else if(response.status == 401){
               localStorage.removeItem('token');
               window.location = 'login.html'
             }
-            else throw new Error('Erro ao selecionar Pedido')
+            else{
+              throw new Error('Erro ao finalizar Pedido')
+            } 
          })
          .catch((error) => {
-            alert('Erro ao selecionar Pedido. Tente novamente!')
+            alert('Erro ao finalizar Pedido. Tente novamente!')
             console.error(error)
          });
       }
-
-
     </script>
   </body>
 </html>

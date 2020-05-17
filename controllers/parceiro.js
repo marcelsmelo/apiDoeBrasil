@@ -50,6 +50,7 @@ module.exports = {
          let novoParceiro = await parceiro.save()
          res.status(201).json(novoParceiro)
       }catch(error){
+         console.log('ERROR', error)
          res.status(500).json({msg: "Erro ao cadastrar parceiro", 'error': error.message})
       }
    },
@@ -110,13 +111,13 @@ module.exports = {
             if(parceiro.comparePassword(senha)){//Senha informada está correta
                parceiro.generateAuthToken() //Gerar o token JWT
                .then(sucesso =>{//Token gerado com sucesso
-                  res.status(200).json(sucesso)
+                  return res.status(200).json(sucesso)
                })
                .catch(error =>{//Erro ao gerar o Token JWT
-                  res.status(500).json({msg:"Erro ao realizar o login", "error": error.message})
+                  return res.status(500).json({msg:"Erro ao realizar o login", "error": error.message})
                })
             }else{//Senha informada está incorreta
-               loginUsuario(telefone, senha)
+               loginUsuario(telefone, senha, res)
             }
          }
       })

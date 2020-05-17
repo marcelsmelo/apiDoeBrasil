@@ -96,7 +96,7 @@
      }
     },
     "/usuario/parceiro/{id}": {
-      "post": {
+      "put": {
         "description": "Permite que o Parceiro cadastrado selecione o Usuário (ID) como Parceiro <br> Disponível apenas para Parceiros",
         "tags":['Usuário'],
         "security": [

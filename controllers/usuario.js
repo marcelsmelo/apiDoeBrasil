@@ -97,6 +97,51 @@ module.exports = {
       }
    },
 
+   removerComoParceiro: async (req, res, next)=>{
+      try{
+         let success = await Usuario.update({
+            group: 'U',
+            parceiroId: null
+         }, {
+            where: {
+               id: req.params.id
+            }
+         })
+         if(!success[0]) throw new Error('Usuário não atualizado!')
+         res.status(200).send({ msg: 'Usuário não é mais um parceiro' });
+      }catch(error){
+         res.status(500).send({msg: 'Erro ao atualizar usuário!', "error": error.message});
+      }
+   },
+
+
+   usuariosParceiro: async (req, res, next)=>{
+      try{
+         let usuarios = await Usuario.findAll({
+            where:{
+               parceiroId: req.user.parceiroId,
+               cidade: req.user.cidade
+            }
+         })
+         res.status(200).json(usuarios)
+      }catch(error){
+         res.status(500).send({msg: 'Erro ao buscar usuários!', "error": error.message});
+      }
+   },
+
+   usuariosSemParceiro: async (req, res, next)=>{
+      try{
+         let usuarios = await Usuario.findAll({
+            where:{
+               parceiroId: null,
+               cidade: req.user.cidade
+            }
+         })
+         res.status(200).json(usuarios)
+      }catch(error){
+         res.status(500).send({msg: 'Erro ao buscar usuários!', "error": error.message});
+      }
+   },
 
    //Busca todas cidades vinculados ao UF informado
    getCidadeFromUF: (req, res, next)=>{
