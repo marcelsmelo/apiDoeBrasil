@@ -8,7 +8,8 @@ module.exports = {
       try{
          let parceiro = await Parceiro.findOne({
                where: {
-                  id: req.params.id
+                  id: req.params.id,
+                  removed: false
                },
                attributes: { exclude: ['createdAt', 'updatedAt'] }
             })
@@ -22,7 +23,8 @@ module.exports = {
       try{
          let parceiros = await Parceiro.findAll({
                where: {
-                  cidade: req.user.cidade
+                  cidade: req.user.cidade,
+                  removed: false
                },
                attributes: { exclude: ['createdAt', 'updatedAt']}
          })
@@ -71,7 +73,8 @@ module.exports = {
             cidade: req.body.cidade
          },{
             where: {
-               id: req.user.parceiroId
+               id: req.user.parceiroId,
+               removed: false
             }
          })
          return res.status(200).json({msg: "Parceiro editado com sucesso!"})
@@ -86,10 +89,11 @@ module.exports = {
       
       try{
          await Parceiro.update({
-                  removido: true
+                  removed: true
                },{
                where: {
-                  id: req.user.parceiroId
+                  id: req.user.parceiroId,
+                  removed: false
                }
          })
          return res.status(200).json({msg: "Parceiro removido com sucesso!"})
@@ -102,7 +106,7 @@ module.exports = {
       const { telefone, senha } = req.body
 
       Parceiro.findOne({
-            where: { 'telefone': telefone }
+            where: { 'telefone': telefone, removed: false }
       })
       .then(parceiro=>{
          if(!parceiro){//Parceiro (telefone) não foi encontrado
@@ -164,7 +168,7 @@ module.exports = {
 
 function loginUsuario(telefone, senha, res){
    Usuario.findOne({
-      where: {'telefone': telefone, group:'P'}
+      where: {'telefone': telefone, group:'P', removed: false}
    })
    .then(user=>{
       if(!user){//Usuário (username) não foi encontrado

@@ -54,11 +54,11 @@ const PontoEntrega = sequelize.define('pontoEntrega', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    removido:{
+    removed:{
         type: Sequelize.BOOLEAN,
         defaultValue: false,
         get() {
-            return() => this.getDataValue('removida')
+            return() => this.getDataValue('removed')
         }
     }
 }, { sequelize, modelName: 'pontos_entrega' });

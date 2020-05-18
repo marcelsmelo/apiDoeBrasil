@@ -10,7 +10,8 @@ module.exports = {
       try{
          let pedido = await Pedido.findOne({
             where: {
-               id: req.params.id
+               id: req.params.id,
+               removed: false
             },
             attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
             include:[{
@@ -27,6 +28,7 @@ module.exports = {
    //Buscar todos os Pedidos abertos pelo Usuário Logado ou atendidos pelo Parceiro Logado
    buscarTodos: async (req, res, next)=>{
       let condition={}
+      condition.removed = false
       
       if(req.user.group == 'U') condition.usuarioId = req.user.id
       else condition.atendidoPorParceiro = req.user.parceiroId
@@ -46,6 +48,7 @@ module.exports = {
    buscarPorStatus: async (req, res, next)=>{
       let condition={}
       condition.status = req.params.status
+      condition.removed = false
 
       if(req.user.group == 'U') condition.usuarioId = req.user.id
       else condition.atendidoPorParceiro = req.user.parceiroId
@@ -72,6 +75,7 @@ module.exports = {
    naoAtendidos: async (req, res, next)=>{
       let condition = {}
       condition.status = 0
+      condition.removed = false
 
       if(req.user.group == 'U') condition.usuarioId = {[Op.ne]: req.user.id}
 
@@ -123,7 +127,8 @@ module.exports = {
          let pedido = await Pedido.findOne({
             where: {
                id: req.params.id,
-               usuarioId: req.user.id
+               usuarioId: req.user.id,
+               removed: false
             }
          })
    
@@ -149,7 +154,7 @@ module.exports = {
    remover: async (req, res, next)=>{
       try{
          let success = await Pedido.update({
-            removido: true
+            removed: true
          },{
             where: {
                id: req.params.id,
@@ -169,6 +174,7 @@ module.exports = {
       let condition = {}
       condition.id = req.params.id
       condition.status = 1
+      condition.removed = false
 
       if(req.user.group == 'U') condition.usuarioId = req.user.id
       else condition.atendidoPorParceiro = req.user.parceiroId
@@ -209,7 +215,8 @@ module.exports = {
          },{
             where: {
                id: req.params.id,
-               status: 0
+               status: 0,
+               removed: false
             }
          })
          if(success[0]) res.status(200).json({msg: "Entrega selecionada para atendimento pelo parceiro!"})
@@ -227,7 +234,8 @@ module.exports = {
             status: req.body.status
          },{
              where: {
-               id: req.params.id
+               id: req.params.id,
+               removed: false
             }
          })
          res.status(200).json({msg: "Status da entrega atualizada!"})

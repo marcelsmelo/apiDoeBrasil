@@ -76,11 +76,11 @@ const Parceiro = sequelize.define('parceiro', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    removido:{
+    removed:{
         type: Sequelize.BOOLEAN,
         defaultValue: false,
         get() {
-            return() => this.getDataValue('removida')
+            return() => this.getDataValue('removed')
         }
     }
 }, { sequelize, modelName: 'parceiro' });

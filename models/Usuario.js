@@ -86,6 +86,13 @@ const Usuario = sequelize.define('usuario', {
     cidade: {
         type: Sequelize.STRING,
         allowNull: false
+    },
+    removed:{
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        get() {
+            return() => this.getDataValue('removed')
+        }
     }
 }, { sequelize, modelName: 'usuarios' });
 

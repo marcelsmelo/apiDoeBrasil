@@ -7,7 +7,8 @@ module.exports = {
       try{
          let pontosEntrega = await PontoEntrega.findOne({
             where: {
-               id: req.params.id
+               id: req.params.id, 
+               removed: false
             },
             attributes: { exclude: ['createdAt', 'updatedAt', 'parceiroId']},
             include:[{
@@ -26,7 +27,8 @@ module.exports = {
          let pontosEntrega = await PontoEntrega.findAll({
             where: {
                cidade: req.user.cidade,
-               parceiroId: req.params.parceiroId
+               parceiroId: req.params.parceiroId,
+               removed: false
             },
             attributes: { exclude: ['createdAt', 'updatedAt', 'parceiroId'] },
             include:[{
@@ -44,7 +46,8 @@ module.exports = {
       try{
          let pontosEntrega = await PontoEntrega.findAll({
             where: {
-               cidade: req.user.cidade
+               cidade: req.user.cidade,
+               removed: false
             },
             attributes: { exclude: ['createdAt', 'updatedAt', 'parceiroId'] },
             include:[{
@@ -63,7 +66,8 @@ module.exports = {
       try{
          let pontosEntrega = await PontoEntrega.findAll({
             where: {
-               parceiroId: req.user.parceiroId
+               parceiroId: req.user.parceiroId,
+               removed: false
             },
             attributes: { exclude: ['createdAt', 'updatedAt', 'parceiroId'] }
          })
@@ -109,7 +113,8 @@ module.exports = {
             },{
                where: {
                   id: req.params.id,
-                  parceiroId: req.user.parceiroId
+                  parceiroId: req.user.parceiroId,
+                  removed: false
                }
          })
          if(!success[0]) throw new Error('Nenhum ponto de entrega alterado')
@@ -122,11 +127,12 @@ module.exports = {
    remover: async (req, res, next)=>{
       try{
          let success = await PontoEntrega.update({
-            removido: true
+            removed: true
          },{
             where: {
                id: req.params.id,
-               parceiroId: req.user.parceiroId
+               parceiroId: req.user.parceiroId,
+               removed: false
             }
          })
          if(!success[0]) throw new Error('Nenhum ponto de entrega removido!')

@@ -40,11 +40,11 @@ const Doacao = sequelize.define('doacao', {
         type: Sequelize.BOOLEAN,
         defaultValue: false
     },
-    removida:{
+    removed:{
         type: Sequelize.BOOLEAN,
         defaultValue: false,
         get() {
-            return() => this.getDataValue('removida')
+            return() => this.getDataValue('removed')
         }
     }
 }, { sequelize, modelName: 'doacao', tableName: 'doacoes' });

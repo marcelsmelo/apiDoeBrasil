@@ -18,7 +18,7 @@ module.exports = {
 
       try{
          let usuario = await user.save()
-         res.status(201).json({msg:"Usuário criado com sucesso", "usuario": user})
+         res.status(201).json({msg:"Usuário criado com sucesso", "usuario": usuario})
       }catch(error){
          res.status(500).json({msg:"Erro ao cadastrar o usuário!", "error": error.message})
       }
@@ -30,7 +30,8 @@ module.exports = {
 
       Usuario.findOne({
             where: {
-                'telefone': telefone
+               'telefone': telefone,
+               removed: false
             }
         })
         .then(user=>{
@@ -87,7 +88,8 @@ module.exports = {
             parceiroId: req.user.parceiroId
          }, {
             where: {
-               id: req.params.id
+               id: req.params.id,
+               removed: false
             }
          })
          if(!success[0]) throw new Error('Usuário não atualizado!')
@@ -104,7 +106,8 @@ module.exports = {
             parceiroId: null
          }, {
             where: {
-               id: req.params.id
+               id: req.params.id,
+               removed: false
             }
          })
          if(!success[0]) throw new Error('Usuário não atualizado!')
@@ -120,7 +123,8 @@ module.exports = {
          let usuarios = await Usuario.findAll({
             where:{
                parceiroId: req.user.parceiroId,
-               cidade: req.user.cidade
+               cidade: req.user.cidade,
+               removed: false
             }
          })
          res.status(200).json(usuarios)
@@ -134,7 +138,8 @@ module.exports = {
          let usuarios = await Usuario.findAll({
             where:{
                parceiroId: null,
-               cidade: req.user.cidade
+               cidade: req.user.cidade,
+               removed: false
             }
          })
          res.status(200).json(usuarios)

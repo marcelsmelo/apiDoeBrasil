@@ -35,11 +35,11 @@ const Pedido = sequelize.define('pedido', {
         type: Sequelize.INTEGER.UNSIGNED,
         defaultValue: 0
     },
-    removido:{
+    removed:{
         type: Sequelize.BOOLEAN,
         defaultValue: false,
         get() {
-            return() => this.getDataValue('removida')
+            return() => this.getDataValue('removed')
         }
     }
 }, { sequelize, modelName: 'pedido',  tableName: 'pedidos' });

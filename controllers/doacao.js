@@ -10,7 +10,8 @@ module.exports = {
       try{
          let doacao = await Doacao.findOne({
             where: {
-               id: req.params.id
+               id: req.params.id,
+               removed: false
             },
             attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
             include:[{
@@ -26,8 +27,12 @@ module.exports = {
     //Busca todas doações criadas pelo Usuario ou vinculadas ao Parceiro
     buscarTodas: async (req, res, next)=>{
        let condition = {}
+       condition.removed = false;
+
        if(req.user.group == 'U') condition.usuarioId = req.user.id
        else condition.parceiroId = req.user.parceiroId
+       
+       
 
        try{
          let doacoes = await Doacao.findAll({
@@ -53,6 +58,7 @@ module.exports = {
    buscarPorStatus: async (req, res, next)=>{
       let condition = {}
       condition.status = req.params.status 
+      condition.removed = false
 
       if(req.user.group == 'U') condition.usuarioId = req.user.id
       else condition.parceiroId = req.user.parceiroId
@@ -79,7 +85,8 @@ module.exports = {
          let doacoes = await Doacao.findAll({
             where: {
                status: 1,
-               parceiroId: null
+               parceiroId: null,
+               removed: false
             },
             attributes: {exclude: ['createdAt', 'updatedAt', 'usuarioId']},
             include:[{
@@ -162,7 +169,8 @@ module.exports = {
          let doacao = await Doacao.findOne({
             where: {
                id: req.params.id,
-               usuarioId: req.user.id
+               usuarioId: req.user.id, 
+               removed: false
             }
          })
 
@@ -201,7 +209,7 @@ module.exports = {
          if(!doacao) return res.status(403).json({msg:'Alteração não autorizada! O usuário logado não tem permissão para fazer essa operação.', error: null})
          if(doacao.status == 2 || doacao.status == 3) throw new Error('Alteração não autorizada! A doação já foi finalizada.')
 
-         doacao.removida = true;
+         doacao.removed = true;
          
          if(doacao.pedidoId){
             let pedido = await Pedido.findOne({
@@ -221,17 +229,6 @@ module.exports = {
             await doacao.save()
             res.status(200).json({msg: "Doação removida com sucesso!"})
          }
-
-         // let success = await Doacao.update({
-         //          removida: true
-         //       },{
-         //       where: {
-         //           id: req.params.id,
-         //           usuarioId: req.user.id
-         //       }
-         //    })
-         // if(success[0])  res.status(200).json({msg: "Doação removida com sucesso!"})
-         // else throw new Error('Alteração não autorizada! O usuário logado não tem permissão para fazer essa operação.')
       }catch(error){
          res.status(500).json({msg: "Erro ao remover doação!" , 'error' :error.message})
       }
@@ -255,7 +252,8 @@ module.exports = {
 
       try{
          let success = await Doacao.update(data,{
-                  where: condition
+                  where: condition,
+                  removed: false
                })
          if(success[0]) res.status(200).json({msg: "Doação confirmada e aguardando finalização!"})
          else return res.status(403).json({msg:'Alteração não autorizada! O usuário logado não tem permissão para fazer essa operação.', error: null})
@@ -274,7 +272,8 @@ module.exports = {
                parceiroId: req.user.parceiroId
             },{
             where: {
-               id: req.params.id
+               id: req.params.id,
+               removed: false
             }
          })
          if(!success[0]) throw new Error('Doação não atualizada!')
@@ -292,7 +291,8 @@ module.exports = {
          },{
             where: {
                id: req.params.id,
-               usuarioId: req.user.id
+               usuarioId: req.user.id,
+               removed: false
             }
          })
 
