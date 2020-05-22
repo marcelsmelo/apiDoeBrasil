@@ -99,7 +99,7 @@ module.exports = {
             include:[{
                model: Usuario,
                required: true,
-               attributes: [], 
+               attributes: ['rua', 'bairro', 'cidade', 'estado'], 
                on:{
                    id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("usuario.id")),
                },
