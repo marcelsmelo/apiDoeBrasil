@@ -354,29 +354,41 @@ describe("Pedidos test",()=>{
       })
    })
 
-   after(done =>{
-      Pedido.destroy({
-         where: {},
-         cascade: true
-      })
-      .then(success=>{
+   it("Get all Open Pedidos from User's Logged City - None", (done) => {
+      chai.request(base_url)
+      .get('/pedidos-nao-atendidos/')
+      .set('authorization', 'Bearer '+tokenGiver)
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.be.an('array')
+         expect(res.body.length).to.be.equal(0)
          done()
       })
-      .catch(error=>{
-         done(error)
-      })
-   })
+   });
 
-   after(done =>{
-      Doacao.destroy({
-         where: {},
-         cascade: true
-      })
-      .then(success=>{
-         done()
-      })
-      .catch(error=>{
-         done(error)
-      })
-   })
+   // after(done =>{
+   //    Pedido.destroy({
+   //       where: {},
+   //       cascade: true
+   //    })
+   //    .then(success=>{
+   //       done()
+   //    })
+   //    .catch(error=>{
+   //       done(error)
+   //    })
+   // })
+
+   // after(done =>{
+   //    Doacao.destroy({
+   //       where: {},
+   //       cascade: true
+   //    })
+   //    .then(success=>{
+   //       done()
+   //    })
+   //    .catch(error=>{
+   //       done(error)
+   //    })
+   // })
 })

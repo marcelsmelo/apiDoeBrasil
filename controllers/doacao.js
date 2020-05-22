@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 let Usuario = require('../models/Usuario')
 let Doacao = require('../models/Doacao')
 let Pedido = require('../models/Pedido')
@@ -16,7 +17,19 @@ module.exports = {
             attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
             include:[{
                model: Usuario,
-               attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }
+               attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
+               required: true
+            },{
+               model: Pedido,
+               attributes: { exclude: ['createdAt', 'updatedAt']},
+               include:[{
+                  required: true,
+                  model: Usuario,
+                  attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
+                  on:{
+                     id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("pedido->usuario.id")),
+                 }
+               }]
             }]
          })
          res.status(200).json(doacao)
@@ -32,8 +45,6 @@ module.exports = {
        if(req.user.group == 'U') condition.usuarioId = req.user.id
        else condition.parceiroId = req.user.parceiroId
        
-       
-
        try{
          let doacoes = await Doacao.findAll({
             where: condition,
@@ -140,7 +151,8 @@ module.exports = {
          if(req.body.pedidoId){
             Pedido.update({
                status: 1,
-               atendidoPorUsuario: req.user.id
+               atendidoPorUsuarioId: req.user.id,
+               answeredAt: new Date().toString()
             },{
                where:{
                   id: req.body.pedidoId,
@@ -215,13 +227,14 @@ module.exports = {
             let pedido = await Pedido.findOne({
                where:{
                   id: doacao.pedidoId,
-                  atendidoPorUsuario: req.user.id
+                  atendidoPorUsuarioId: req.user.id
                }
             })
 
             if(!pedido) throw new Error('Erro ao atualizar Pedido')
             pedido.status = 0
-            pedido.atendidoPorUsuario = null
+            pedido.atendidoPorUsuarioId = null
+            pedido.answeredAt = null
             await pedido.save()
             await doacao.save()
             res.status(200).json({msg: "Doação removida com sucesso!"})
@@ -244,9 +257,11 @@ module.exports = {
       
       if(req.user.group == 'U'){
          data.status = 2
+         data.deliveredAt = new Date().toString()
          condition.usuarioId = req.user.id
       }else{
          data.status = 3
+         data.finishedAt = new Date().toString()
          condition.parceiroId = req.user.parceiroId
       }
 
@@ -269,7 +284,8 @@ module.exports = {
       try{
          let success = await Doacao.update({
                status: 1,
-               parceiroId: req.user.parceiroId
+               parceiroId: req.user.parceiroId,
+               answeredAt: new Date().toString()
             },{
             where: {
                id: req.params.id,

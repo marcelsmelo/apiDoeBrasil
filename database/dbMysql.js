@@ -5,7 +5,7 @@ module.exports =  new Sequelize(config.database, config.username, config.passwor
     host: config.host,
     port: config.port,
     dialect: 'mysql',
-    logging: false,
+    logging: true,
     pool:{
         max: 10,
         min: 0,

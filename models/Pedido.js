@@ -35,6 +35,14 @@ const Pedido = sequelize.define('pedido', {
         type: Sequelize.INTEGER.UNSIGNED,
         defaultValue: 0
     },
+    answeredAt:{
+        type: Sequelize.DATE,
+        defaultValue: null
+    },
+    finishedAt:{
+        type: Sequelize.DATE,
+        defaultValue: null
+    },
     removed:{
         type: Sequelize.BOOLEAN,
         defaultValue: false,
@@ -46,13 +54,15 @@ const Pedido = sequelize.define('pedido', {
 
 Pedido.belongsTo(Usuario);
 
-Pedido.belongsTo(Usuario, { 
-    foreignKey: 'atendidoPorUsuario',
+Pedido.belongsTo(Usuario, {
+    as:'atendidoPorUsuario',
+    // foreignKey: 'atendidoPorUsuario',
     defaultValue: null
 });
 
 Pedido.belongsTo(Parceiro,{
-    foreignKey: 'atendidoPorParceiro',
+    as: 'atendidoPorParceiro',
+    // foreignKey: 'atendidoPorParceiro',
     defaultValue: null
 })
 

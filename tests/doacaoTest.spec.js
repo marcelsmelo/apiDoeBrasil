@@ -368,30 +368,30 @@ describe("Donation tests",()=>{
       })
    });
 
-   // after(done =>{
-   //    Pedido.destroy({
-   //       where: {},
-   //       cascade: true
-   //    })
-   //    .then(success=>{
-   //       done()
-   //    })
-   //    .catch(error=>{
-   //       done(error)
-   //    })
-   // })
+   after(done =>{
+      Pedido.destroy({
+         where: {},
+         cascade: true
+      })
+      .then(success=>{
+         done()
+      })
+      .catch(error=>{
+         done(error)
+      })
+   })
 
-   // after(done =>{
-   //    Doacao.destroy({
-   //       where: {},
-   //       cascade: true
-   //    })
-   //    .then(success=>{
-   //       done()
-   //    })
-   //    .catch(error=>{
-   //       done(error)
-   //    })
-   // })
+   after(done =>{
+      Doacao.destroy({
+         where: {},
+         cascade: true
+      })
+      .then(success=>{
+         done()
+      })
+      .catch(error=>{
+         done(error)
+      })
+   })
 
 });

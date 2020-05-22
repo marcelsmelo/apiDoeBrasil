@@ -96,6 +96,16 @@ module.exports = {
                   removed: false
                }
          })
+
+         await Usuario.update({
+            group: 'U',
+            parceiroId: null,
+            token: null
+         },{
+            where: {
+               parceiroId: req.user.parceiroId
+            }
+         })
          return res.status(200).json({msg: "Parceiro removido com sucesso!"})
       }catch(error){
          return res.status(500).json({msg: "Erro ao remover Parceiro!" , 'error': error.message})

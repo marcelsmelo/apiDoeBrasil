@@ -34,7 +34,7 @@ describe("Parceiro Tests",()=>{
 
    let userPartner = {
       nome: 'User Partner',
-      telefone: '+55 34 99636-8899',
+      telefone: '+55 34 97777-8888',
       senha: '123456789',
       rua: 'FC 05',
       numero: 'QA L6',
@@ -246,19 +246,6 @@ describe("Parceiro Tests",()=>{
       })
    })
 
-   it('Permit remove a created Parceiro by the owner', (done)=>{
-      chai.request(base_url)
-      .delete('/parceiro/')
-      .send(partner)
-      .set('authorization', 'Bearer '+tokenParceiro)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.a('object')
-         expect(res.body).to.have.property('msg')
-         done();
-      })
-   })
-
    //app.get('/parceiro/doacao/disponivel', auth.jwtVerify, auth.groupVerify(['P', 'A']), controller.disponivelParceiro)
    it('Get all available Doacoes on the Partner city', (done)=>{
       chai.request(base_url)
@@ -381,6 +368,31 @@ describe("Parceiro Tests",()=>{
          done();
       })
    });
+
+   it('Permit remove a created Parceiro by the owner', (done)=>{
+      chai.request(base_url)
+      .delete('/parceiro/')
+      .send(partner)
+      .set('authorization', 'Bearer '+tokenParceiro)
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.be.a('object')
+         expect(res.body).to.have.property('msg')
+         done();
+      })
+   })
+
+   it('Not permit User login as Usuario-Parceiro ', (done)=>{
+      chai.request(base_url)
+      .post('/parceiro/login')
+      .send({telefone: userPartner.telefone, senha: userPartner.senha})
+      .end((err, res)=>{
+         expect(res).to.have.status(500)
+         expect(res.body).to.have.property('msg')
+         expect(res.body.error).to.be.null;
+         done();
+      })
+   })
 
    after(done=>{
       Parceiro.destroy({

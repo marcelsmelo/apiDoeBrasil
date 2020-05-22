@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 let Usuario = require('../models/Usuario')
 let Pedido = require('../models/Pedido')
+let Parceiro = require('../models/Parceiro')
 let Doacao = require('../models/Doacao')
 const Op = Sequelize.Op
 
@@ -13,10 +14,21 @@ module.exports = {
                id: req.params.id,
                removed: false
             },
-            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
+            attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'mascara', 'observacoes', 'status'],
             include:[{
                   model: Usuario,
-                  attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }
+                  required: true,
+                  attributes: { exclude: ['createdAt', 'updatedAt', 'group', 'parceiroId'] },
+                  on:{
+                     id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("usuario.id")),
+                  }},{
+                  model: Usuario,
+                  as: 'atendidoPorUsuario',
+                  attributes: ['id', 'nome', 'telefone'],
+                  },{
+                  model: Parceiro,
+                  as: 'atendidoPorParceiro',
+                  attributes: ['id', 'nome', 'telefone']
             }]
          })
          res.status(200).json(pedido)
@@ -31,12 +43,12 @@ module.exports = {
       condition.removed = false
       
       if(req.user.group == 'U') condition.usuarioId = req.user.id
-      else condition.atendidoPorParceiro = req.user.parceiroId
+      else condition.atendidoPorParceiroId = req.user.parceiroId
 
       try{
          let pedidos = await Pedido.findAll({
             where: condition,
-            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
+            attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'mascara', 'observacoes', 'status'],
          })
          res.status(200).json(pedidos)
       }catch(error){
@@ -51,14 +63,15 @@ module.exports = {
       condition.removed = false
 
       if(req.user.group == 'U') condition.usuarioId = req.user.id
-      else condition.atendidoPorParceiro = req.user.parceiroId
+      else condition.atendidoPorParceiroId = req.user.parceiroId
 
       try{
          let pedidos = await Pedido.findAll({
             where: condition,
-            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
+            attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'mascara', 'observacoes', 'status'],
             include:[{
                model: Usuario,
+               required: true,
                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
                on:{
                   id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("usuario.id")),
@@ -82,10 +95,11 @@ module.exports = {
       try{
          let pedidos = await Pedido.findAll({
             where: condition,
-            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
+            attributes:['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'mascara', 'observacoes', 'status'],
             include:[{
                model: Usuario,
-               attributes: { exclude: ['createdAt', 'updatedAt', 'group'] }, 
+               required: true,
+               attributes: [], 
                on:{
                    id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("usuario.id")),
                },
@@ -177,11 +191,12 @@ module.exports = {
       condition.removed = false
 
       if(req.user.group == 'U') condition.usuarioId = req.user.id
-      else condition.atendidoPorParceiro = req.user.parceiroId
+      else condition.atendidoPorParceiroId = req.user.parceiroId
 
 
       Pedido.update({
-         status: 2
+         status: 2,
+         finishedAt: new Date().toString()
       },{
          where: condition
       }).then((success)=>{
@@ -189,7 +204,8 @@ module.exports = {
          //Se status=2 e pedidoId!= null (pedido precisa finalizar/confirmar)
          if(success[0]){//Pedido foi finalizado
             Doacao.update({
-               status : 3
+               status : 3,
+               finishedAt: new Date().toString()
             }, {
                where:{pedidoId: req.params.id}
             })
@@ -211,7 +227,8 @@ module.exports = {
       try{
          let success = await Pedido.update({
             status: 1,
-            atendidoPorParceiro: req.user.parceiroId,
+            atendidoPorParceiroId: req.user.parceiroId,
+            answeredAt: new Date().toString()
          },{
             where: {
                id: req.params.id,

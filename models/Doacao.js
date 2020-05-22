@@ -40,6 +40,18 @@ const Doacao = sequelize.define('doacao', {
         type: Sequelize.BOOLEAN,
         defaultValue: false
     },
+    answeredAt:{
+        type: Sequelize.DATE,
+        defaultValue: null
+    },
+    deliveredAt:{
+        type: Sequelize.DATE,
+        defaultValue: null
+    },
+    finishedAt:{
+        type: Sequelize.DATE,
+        defaultValue: null
+    },
     removed:{
         type: Sequelize.BOOLEAN,
         defaultValue: false,
