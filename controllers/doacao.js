@@ -50,8 +50,20 @@ module.exports = {
             where: condition,
             attributes: {exclude: ['createdAt', 'updatedAt', 'usuarioId']},
             include:[{
+               model: Usuario,
+               attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
+               required: true
+            },{
                   model: Pedido,
-                  attributes: { exclude: ['createdAt', 'updatedAt'] }
+                  attributes: { exclude: ['createdAt', 'updatedAt'] },
+                  include:[{
+                     required: true,
+                     model: Usuario,
+                     attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
+                     on:{
+                        id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("pedido->usuario.id")),
+                    }
+                  }]
                },{   
                   model: Parceiro,
                   attributes: { exclude: ['createdAt', 'updatedAt'] } 
