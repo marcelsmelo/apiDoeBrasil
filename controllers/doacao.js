@@ -8,13 +8,14 @@ let PontoEntrega = require('../models/PontoEntrega')
 module.exports = {
    //Busca doação por ID
     buscarPorId: async (req, res, next)=>{
+      let condition = {}
+      condition.removed = false;
+      condition.id = req.params.id
+
       try{
          let doacao = await Doacao.findOne({
-            where: {
-               id: req.params.id,
-               removed: false
-            },
-            attributes: { exclude: ['createdAt', 'updatedAt', 'usuarioId'] },
+            where: condition,
+            attributes:  ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'mascara', 'observacoes', 'status', 'dispEntrega'],
             include:[{
                model: Usuario,
                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
@@ -30,6 +31,12 @@ module.exports = {
                      id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("pedido->usuario.id")),
                  }
                }]
+            },{   
+               model: Parceiro,
+               attributes: { exclude: ['createdAt', 'updatedAt'] } 
+            },{
+               model: PontoEntrega,
+               attributes: { exclude: ['createdAt', 'updatedAt'] } 
             }]
          })
          res.status(200).json(doacao)
@@ -48,28 +55,28 @@ module.exports = {
        try{
          let doacoes = await Doacao.findAll({
             where: condition,
-            attributes: {exclude: ['createdAt', 'updatedAt', 'usuarioId']},
+            attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'mascara', 'observacoes', 'status', 'dispEntrega'],
             include:[{
                model: Usuario,
-               attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
+               attributes:['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
                required: true
-            },{
+               },{
                   model: Pedido,
-                  attributes: { exclude: ['createdAt', 'updatedAt'] },
+                  attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'mascara', 'observacoes', 'status'],
                   include:[{
                      required: true,
                      model: Usuario,
-                     attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
+                     attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
                      on:{
                         id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("pedido->usuario.id")),
                     }
                   }]
                },{   
                   model: Parceiro,
-                  attributes: { exclude: ['createdAt', 'updatedAt'] } 
+                  attributes: ['id', 'nome', 'telefone'] 
                },{
                   model: PontoEntrega,
-                  attributes: { exclude: ['createdAt', 'updatedAt'] } 
+                  attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado']
             }]
          })
          res.status(200).json(doacoes)
@@ -89,13 +96,29 @@ module.exports = {
       try{
           let doacoes = await Doacao.findAll({
              where: condition,
-             attributes: {exclude: ['createdAt', 'updatedAt', 'usuarioId']},
+             attributes:  ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'mascara', 'observacoes', 'status', 'dispEntrega'],
              include:[{
-                model: Usuario,
-                required:true,
-                attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
-                where:{'cidade': req.user.cidade}
-             }]
+               model: Usuario,
+               attributes:['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
+               required: true
+               },{
+                  model: Pedido,
+                  attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'mascara', 'observacoes', 'status'],
+                  include:[{
+                     required: true,
+                     model: Usuario,
+                     attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
+                     on:{
+                        id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("pedido->usuario.id")),
+                    }
+                  }]
+               },{   
+                  model: Parceiro,
+                  attributes: ['id', 'nome', 'telefone'],
+               },{
+                  model: PontoEntrega,
+                  attributes:['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
+            }]
           })
           res.status(200).json(doacoes)
        }catch (error){
@@ -111,11 +134,11 @@ module.exports = {
                parceiroId: null,
                removed: false
             },
-            attributes: {exclude: ['createdAt', 'updatedAt', 'usuarioId']},
+            attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'mascara', 'observacoes', 'status', 'dispEntrega'],
             include:[{
                model: Usuario,
                required:true,
-               attributes: { exclude: ['createdAt', 'updatedAt', 'group'] },
+               attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
                   where:{'cidade': req.user.cidade}
             }]
          })
@@ -138,8 +161,7 @@ module.exports = {
          if(req.body.dispEntrega && req.body.parceiroId && req.body.pontoEntregaId) status = 0 
          else if(!req.body.dispEntrega) status = 1 //Parceiro irá retirar a doação na casa do doador
          else { //Não foi selecionado um parceiro
-            res.status(500).json({msg:"Erro: Selecione um parceiro e ponto de entrega para entrega da doação", 'error': null})
-            return;
+            return res.status(500).json({msg:"Erro: Selecione um parceiro e ponto de entrega para entrega da doação", 'error': null})
          }
       }
       //TODO: Verificar dados iguais ao pedido, caso vinculado

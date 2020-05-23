@@ -18,7 +18,7 @@ module.exports = {
             include:[{
                   model: Usuario,
                   required: true,
-                  attributes: { exclude: ['createdAt', 'updatedAt', 'group', 'parceiroId'] },
+                  attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
                   on:{
                      id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("usuario.id")),
                   }},{
@@ -72,10 +72,17 @@ module.exports = {
             include:[{
                model: Usuario,
                required: true,
-               attributes: ['rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
+               attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
                on:{
                   id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("usuario.id")),
-              }
+               }},{
+               model: Usuario,
+               as: 'atendidoPorUsuario',
+               attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
+               },{
+               model: Parceiro,
+               as: 'atendidoPorParceiro',
+               attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
             }]
          })
          res.status(200).json(pedidos)

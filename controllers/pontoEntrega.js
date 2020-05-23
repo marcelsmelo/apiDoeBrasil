@@ -10,10 +10,10 @@ module.exports = {
                id: req.params.id, 
                removed: false
             },
-            attributes: { exclude: ['createdAt', 'updatedAt', 'parceiroId']},
+            attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
             include:[{
                model: Parceiro,
-               attributes: { exclude: ['createdAt', 'updatedAt'] }
+               attributes: ['id', 'nome', 'telefone']
             }]
          })
          res.status(200).json(pontosEntrega)
@@ -30,7 +30,7 @@ module.exports = {
                parceiroId: req.params.parceiroId,
                removed: false
             },
-            attributes: { exclude: ['createdAt', 'updatedAt', 'parceiroId'] },
+            attributes:['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
             include:[{
                model: Parceiro,
                attributes: ['id', 'nome', 'telefone']
@@ -49,7 +49,7 @@ module.exports = {
                cidade: req.user.cidade,
                removed: false
             },
-            attributes: { exclude: ['createdAt', 'updatedAt', 'parceiroId'] },
+            attributes:['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
             include:[{
                model: Parceiro,
                attributes: ['id', 'nome', 'telefone']
@@ -69,7 +69,7 @@ module.exports = {
                parceiroId: req.user.parceiroId,
                removed: false
             },
-            attributes: { exclude: ['createdAt', 'updatedAt', 'parceiroId'] }
+            attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado']
          })
         
          res.status(200).json(pontosEntrega)

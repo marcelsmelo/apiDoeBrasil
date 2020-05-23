@@ -64,7 +64,7 @@ describe("Donation tests",()=>{
          higienePessoal: false, 
          artigoLimpeza: true, 
          mascara: false, 
-         observacoes: 'Entrega após as 18h'
+         observacoes: 'Entrega após as 18h (PEDIDO)'
       }
 
       chai.request(base_url)
@@ -87,7 +87,7 @@ describe("Donation tests",()=>{
          artigoLimpeza: true, 
          mascara: false,
          dispEntrega: false,
-         observacoes: 'Entrega após as 18h'
+         observacoes: 'Entrega após as 18h, sem pedido e dispEntrega false 01'
       }
 
       chai.request(base_url)
@@ -110,7 +110,7 @@ describe("Donation tests",()=>{
          artigoLimpeza: true, 
          mascara: false,
          dispEntrega: false,
-         observacoes: 'Entrega após as 30h'
+         observacoes: 'Entrega após as 30h, sem pedido e dispEntre=false 02'
       }
 
       chai.request(base_url)
@@ -133,7 +133,7 @@ describe("Donation tests",()=>{
          artigoLimpeza: true, 
          mascara: false,
          pedidoId: pedidoId,
-         observacoes: 'Entrega após as 18h'
+         observacoes: 'Entrega após as 18h. with pedido'
       }
 
       chai.request(base_url)
@@ -169,7 +169,7 @@ describe("Donation tests",()=>{
          artigoLimpeza: true, 
          mascara: false,
          dispEntrega: true,
-         observacoes: 'Entrega após as 18h'
+         observacoes: 'Entrega após as 18h (Não permitido)'
       }
 
       chai.request(base_url)

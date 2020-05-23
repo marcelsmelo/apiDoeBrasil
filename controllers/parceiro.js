@@ -11,7 +11,7 @@ module.exports = {
                   id: req.params.id,
                   removed: false
                },
-               attributes: { exclude: ['createdAt', 'updatedAt'] }
+               attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado']
             })
          res.status(200).json(parceiro)
       }catch(error){
@@ -26,7 +26,7 @@ module.exports = {
                   cidade: req.user.cidade,
                   removed: false
                },
-               attributes: { exclude: ['createdAt', 'updatedAt']}
+               attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado']
          })
          res.status(200).json(parceiros)
       }catch(error){
