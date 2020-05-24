@@ -42,7 +42,7 @@
             </div>
             <div class="input-field col s12 m6">
                <i class="material-icons prefix">phone</i>
-              <input id="telefone" type="text" />
+              <input id="telefone" type="text"/>
               <label for="telefone">Telefone</label>
             </div>
             <div class="input-field col s12 m6">
@@ -71,9 +71,9 @@
                <label for="complemento">Complemento</label>
              </div>
 
-           
-               <i class="material-icons prefix col s1 m1 small">location_city</i>
-               <select id="estado" class="browser-default col s11 m5">
+             <div class="input-field col s12 m6">
+               <i class="material-icons prefix">location_city</i>
+               <select id="estado">
                  <option value="" disabled selected>Selecione um Estado</option>
                  <option value="AC">Acre</option>
                  <option value="AL">Alagoas</option>
@@ -102,14 +102,16 @@
                  <option value="SE">Sergipe</option>
                  <option value="TO">Tocantins</option>
                </select>
+               <label>Estado</label>
+             </div>
 
-
-            
-               <i class="material-icons prefix col s1 m1 small">location_city</i>
-               <select  id="cidade" class="browser-default col s11 m5">
+             <div class="input-field col s12 m6">
+               <i class="material-icons prefix">location_city</i>
+               <select  id="cidade">
                  <option value="" disabled selected>Selecione uma cidade</option>
-               </select >
-              
+               </select>
+               <label>Cidade</label>
+             </div>
           </div>
           <div class="row">
             <a class="waves-effect waves-light btn blue darken-4 col offset-s3 offset-m4 s6 m4 " id="cadastrar"><i class="material-icons right">send</i>Cadastrar</a>
@@ -128,6 +130,9 @@
         M.FormSelect.init(document.querySelectorAll('select'), {});
         document.querySelector('#cadastrar').addEventListener('click', cadastrar);
         document.querySelector('#estado').addEventListener('change', carregarCidades);
+        document.querySelector('li[id^="select-options"]').addEventListener('touchend', function (e) {
+            e.stopPropagation();
+        });
       }
 
       function verificaLogado() {
