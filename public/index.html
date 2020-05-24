@@ -39,6 +39,7 @@
         </ul>
       </div>
     </div>
+    <br>
       <div class="row">
         <div id="test1" class="col s12">
           <h5 class="header center">Pedidos</h5>
@@ -73,7 +74,7 @@
 
       function init(){
         verificaLogado();
-        M.Tabs.init(document.querySelectorAll('.tabs'), {swipeable: true});
+        M.Tabs.init(document.querySelectorAll('.tabs'), {swipeable: false});
         M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), {toolbarEnabled: true, hoverEnabled: false, toolbarEnabled: false});
         document.querySelector("#deslogar").addEventListener('click', deslogar);
         document.querySelector('#tab1').addEventListener('click', carregarPedidos)
@@ -153,7 +154,8 @@
               if(data[i].artigoLimpeza) texto += '<div class="chip cyan" style="color: white;"><b>Higiene Pessoal</b></div>'
               if(data[i].mascara) texto += '<div class="chip green" style="color: white;"><b>Máscara</b></div>'
 
-              texto += '</div> </div> </div> </li>'
+              texto += '<div style=></div></div> </div> </div> </li>'
+              
            }
            
             document.querySelector("#pedidos").innerHTML = texto;
@@ -238,7 +240,7 @@
               if(data[i].artigoLimpeza) texto += '<div class="chip cyan" style="color: white;"><b>Higiene Pessoal</b></div>'
               if(data[i].mascara) texto += '<div class="chip green" style="color: white;"><b>Máscara</b></div>'
 
-              texto += '</div> </div> </div> </li>'
+              texto += '</div> </div> </div> </li">'
            }
            
             document.querySelector('#doacoes').innerHTML = texto;

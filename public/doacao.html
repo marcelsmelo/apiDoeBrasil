@@ -41,6 +41,7 @@
           </ul>
         </div>
       </div>
+      <br>
       <div class="row">
         <div id="test1" class="col s12">
             <h3 class="header center">Doações disponíveis</h3>
@@ -92,7 +93,7 @@
       function init(){
         verificaLogado();
         carregarDoacao('/parceiro/doacao/disponivel', localStorage.getItem('token'), document.querySelector('#disponivel'))
-        M.Tabs.init(document.querySelectorAll('.tabs'),{swipeable: true});
+        M.Tabs.init(document.querySelectorAll('.tabs'),{swipeable: false});
         M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), {});
         document.querySelector("#deslogar").addEventListener('click', deslogar);
         document.querySelector('#tab1').addEventListener('click', load)

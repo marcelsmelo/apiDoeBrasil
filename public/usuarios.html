@@ -73,7 +73,7 @@
       function init(){
         verificaLogado();
         carregarUsuarios('/usuario/parceiro', localStorage.getItem('token'), document.querySelector('#meusParceiros'))
-        M.Tabs.init(document.querySelectorAll('.tabs'),{swipeable: true});
+        M.Tabs.init(document.querySelectorAll('.tabs'),{swipeable: false});
         M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), {});
         document.querySelector("#deslogar").addEventListener('click', deslogar);
         document.querySelector('#tab1').addEventListener('click', load)
