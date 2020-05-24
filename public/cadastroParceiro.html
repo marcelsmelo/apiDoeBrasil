@@ -130,7 +130,8 @@
         M.FormSelect.init(document.querySelectorAll('select'), {});
         document.querySelector('#cadastrar').addEventListener('click', cadastrar);
         document.querySelector('#estado').addEventListener('change', carregarCidades);
-        document.querySelector('li[id^="select-options"]').addEventListener('touchend', function (e) {
+        document.querySelector('li[id^="select-options"]').addEventListener('click', function (e) {
+          console.log(e)
             e.stopPropagation();
         });
       }
