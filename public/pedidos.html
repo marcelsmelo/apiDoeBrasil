@@ -14,33 +14,16 @@
 
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      .tabs .indicator{
-          background-color:#3949ab;/*your color*/
-      }
-
-      .tabs .tab a:hover, .tabs .tab a.active{
-        background-color: transparent;
-        color: #3949ab;
-      }
-
-      .tabs .tab a:focus, .tabs .tab a:focus.active{
-        background-color: #e8eaf6;
-        color: #3949ab;
-      } 
-
-      .tabs .tab a{
-        color: #3949ab;
-      }
-
-    </style>
+    <link rel="stylesheet" href="style.css">
   </head>
 
   <body>
     <div class="navbar-fixed container-fluid">
       <nav class="row">
         <div class="nav-wrapper blue darken-4 col s12">
-          <a href="index.html" class="brand-logo left col offset-s1" >Logo</a>
+          <a href="index.html" class="brand-logo left col offset-s1" >
+            <img src="logo2.svg" alt="Logo" style="width: 90%; height:60px;">
+          </a>
           <a class="waves-effect waves-light btn right  blue darken-4" id="deslogar" style="margin-top: 10px;"> <i class="material-icons left" style="position: relative; bottom:35%;">exit_to_app</i>Sair</a>
         </div>
       </nav>
@@ -50,22 +33,22 @@
       <div class="row">
         <div class="col s12">
           <ul class="tabs">
-            <li id="tab1" class="tab col s4"><a class="active" href="#test1">EM ABERTO</a></li>
-            <li id="tab2" class="tab col s4"><a href="#test2">MINHAS ENTREGAS</a></li>
-            <li id="tab3" class="tab col s4"><a href="#test3">ATENDIDOS</a></li>
+            <li id="tab1" class="tab col s4"><a class="active" href="#test1"><i class="material-icons">add_to_queue</i><span> EM ABERTO</span></a></li>
+            <li id="tab2" class="tab col s4"><a href="#test2"><i class="material-icons">airport_shuttle</i><span> ENTREGAS</span></a></li>
+            <li id="tab3" class="tab col s4"><a href="#test3"><i class="material-icons">check</i><span> ATENDIDOS</span></a></li>
           </ul>
         </div>
       </div>
       <div class="row">
-        <div id="test1" class="col s12 m10 offset-m1">
+        <div id="test1" class="col s12">
             <h3 class="header center">Pedidos em aberto</h3>
             <ul class="collection" id="disponivel"></ul>
         </div>
-        <div id="test2" class="col s12 m10 offset-m1">
+        <div id="test2" class="col s12">
           <h3 class="header center">Pedidos - Minhas Entregas</h3>
           <ul class="collection" id="entregas"></ul>
         </div>
-        <div id="test3" class="col s12 m10 offset-m1">
+        <div id="test3" class="col s12">
           <h3 class="header center">Pedidos Atendidos</h3>
           <ul class="collection" id="atendidos"></ul>
         </div>
@@ -80,6 +63,8 @@
           <li><a class="btn-floating blue tooltipped" href="pedidos.html" data-position="left" data-tooltip="Pedidos"><i class="material-icons">favorite</i></a></li>
           <li><a class="btn-floating purple darken-1 tooltipped" href="doacao.html" data-position="left" data-tooltip="Doações"><i class="material-icons">star</i></a></li>
           <li><a class="btn-floating green tooltipped" href="usuarios.html" data-position="left" data-tooltip="Usuários"><i class="material-icons">person</i></a></li>
+          <li><a class="btn-floating red tooltipped" href="pontosEntrega.html" data-position="left" data-tooltip="Pontos de Entrega"><i class="material-icons">location_on</i></a></li>
+          <li><a class="btn-floating yellow tooltipped" href="meusDados.html" data-position="left" data-tooltip="Editar meus dados"><i class="material-icons">edit</i></a></li>
         </ul>
       </div>
     </div>
@@ -92,8 +77,8 @@
       function init(){
         verificaLogado();
         carregarPedidos('/pedidos-nao-atendidos', localStorage.getItem('token'), document.querySelector('#disponivel'))
-        M.Tabs.init(document.querySelectorAll('.tabs'),{});
-        M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), {});
+        M.Tabs.init(document.querySelectorAll('.tabs'),{swipeable: true});
+        M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), {swipeable: true});
         document.querySelector("#deslogar").addEventListener('click', deslogar);
         document.querySelector('#tab1').addEventListener('click', load)
         document.querySelector('#tab2').addEventListener('click', load)

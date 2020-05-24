@@ -79,6 +79,7 @@ module.exports = {
     }, 
     //Cadastra um novo ponto de entrega
     cadastrar: async (req, res, next)=>{
+      console.log(req.body)
       let pontoEntrega = new PontoEntrega({
         nome: req.body.nome,
         telefone: req.body.telefone,
@@ -86,8 +87,8 @@ module.exports = {
         numero: req.body.numero,
         bairro: req.body.bairro,
         complemento: req.body.complemento,
-        estado: req.body.estado,
-        cidade: req.body.cidade,
+        estado: req.user.estado,
+        cidade: req.user.cidade,
         parceiroId: req.user.parceiroId
       })
 
@@ -95,6 +96,7 @@ module.exports = {
          let novoPontoEntrega = await pontoEntrega.save()  
          res.status(200).json(novoPontoEntrega)
       }catch(error){
+         console.log(error)
          res.status(500).json({msg: "Erro ao cadastrar Ponto de Entrega", 'error': error.message})
       }
    },
@@ -108,8 +110,8 @@ module.exports = {
             numero: req.body.numero,
             bairro: req.body.bairro,
             complemento: req.body.complemento,
-            estado: req.body.estado,
-            cidade: req.body.cidade
+            // estado: req.body.estado,
+            // cidade: req.body.cidade
             },{
                where: {
                   id: req.params.id,

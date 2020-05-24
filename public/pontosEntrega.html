@@ -31,24 +31,16 @@
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col s12">
-          <ul class="tabs">
-            <li id="tab1" class="tab col s6"><a class="active" href="#test1"><i class="material-icons">group</i><span> MEUS PARCEIROS</span></a></li>
-            <li id="tab2" class="tab col s6"><a href="#test2"><i class="material-icons">group_add</i><span> USUÁRIOS CIDADE</span></a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="row">
-        <div id="test1" class="col s12">
-            <h3 class="header center">Usuários parceiros</h3>
-            <ul class="collection" id="meusParceiros"></ul>
-        </div>
-        <div id="test2" class="col s12">
-          <h3 class="header center">Usuários cidade</h3>
-          <ul class="collection" id="usuariosCidade"></ul>
-        </div>
+         <p class="center" style="color: #0d47a1; font-size: 2em;">
+            Pontos Entrega
+          </p>
+          <div class="row">
+            <a href="cadastroPontoEntrega.html" class="waves-effect waves-light btn blue darken-4 col offset-s3 offset-m4 s6 m4"><i class="material-icons left">add</i>Adicionar novo</a> 
+          </div>
+         <ul class="collection" id="pontosEntrega"></ul>
       </div>
     </div>
+  
     <div class="row">
       <div class="fixed-action-btn">
         <a class="btn-floating btn-large red">
@@ -71,29 +63,11 @@
 
       function init(){
         verificaLogado();
-        carregarUsuarios('/usuario/parceiro', localStorage.getItem('token'), document.querySelector('#meusParceiros'))
-        M.Tabs.init(document.querySelectorAll('.tabs'),{swipeable: true});
+        carregarPontosEntrega()
+        M.Tabs.init(document.querySelectorAll('.tabs'),{});
         M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), {});
         document.querySelector("#deslogar").addEventListener('click', deslogar);
-        document.querySelector('#tab1').addEventListener('click', load)
-        document.querySelector('#tab2').addEventListener('click', load)
-      }
-
-      function load(param){
-        let token = localStorage.getItem('token');
-        let url = "";
-        let componente = {};
-        switch(this.id){
-          case 'tab1':
-            url = "/usuario/parceiro"
-            componente = document.querySelector('#meusParceiros')
-            break;
-          case 'tab2':
-            url = "/usuario"
-            componente = document.querySelector('#usuariosCidade')
-            break;
-        }
-        carregarUsuarios(url, token, componente)
+        doc
       }
 
       function verificaLogado(){
@@ -128,9 +102,10 @@
          });
       }
 
-      function carregarUsuarios(url, token, componente){
-        let texto = ""
-        fetch(url, {
+      function carregarPontosEntrega(){
+        let token = localStorage.getItem('token')
+         let texto = ""
+        fetch('/meus-pontos-entrega/', {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -146,46 +121,43 @@
               localStorage.removeItem('token');
               window.location = 'login.html'
             }
-            else throw new Error('Erro ao buscar Usuários')
+            else throw new Error('Erro ao buscar Pontos de Entrega')
          })
          .then(data=>{
            console.log(data)
            for(let i=0; i<data.length; i++){
-             
-            texto += '<li class="collection-item"><div class="card horizontal">'
-              if(data[i].status == 0) texto+='<div class="card-image" style="width: 10px; background-color: red">'
-              else if(data[i].status == 1) texto+='<div class="card-image" style="width: 10px; background-color: blue">'
-              else if(data[i].status == 2) texto+='<div class="card-image" style="width: 10px; background-color: green">'
-              
-              texto += '</div><div class="card-stacked"><div class="card-content">'
-
-                if(data[i].parceiroId)
-                  texto += `<a class="waves-effect waves-teal btn-flat right" onclick="removerUsuario(${data[i].id})"><i class="material-icons left">close</i></a>`
-                else
-                  texto += `<a class="waves-effect waves-teal btn-flat right" onclick="selecionarUsuario(${data[i].id})"><i class="material-icons left">person_add</i></a>`
-              
-             
-                texto += `<h5><i class="material-icons left">person</i>${data[i].nome}</h5>`
-                texto += `<h6><i class="material-icons left">phone</i>${data[i].telefone}</h6>`
+               texto += '<li class="collection-item"><div class="card horizontal">'
+               texto+='<div class="card-image" style="width: 10px; background-color: orange">'  
+               texto += '</div><div class="card-stacked"><div class="card-content">'
                
-              texto += '</div> </div> </div> </li>'
+               texto += `<a class="waves-effect waves-teal btn-flat right" onclick="removerPontoEntrega(${data[i].id})"><i class="material-icons left">close</i></a>`
+               
+               texto += `<a style="color: black; text-decoration: underline;"href="cadastroPontoEntrega.html?id=${data[i].id}"><h5><i class="material-icons left">person</i>${data[i].nome}</h5></a>`
+               texto += `<h6><i class="material-icons left">phone</i>${data[i].telefone}</h6>`
+               texto += `<h6><i class="material-icons left">place</i>${data[i].rua} - Nro ${data[i].numero} - ${data[i].bairro} - ${data[i].cidade} - ${data[i].estado}</h6>`
+               
+               texto += '</div> </div> </div> </li>'
 
-           }
+            }
            
-            componente.innerHTML = texto;
+            document.querySelector('#pontosEntrega').innerHTML = texto;
          })
          .catch((error) => {
-            alert('Erro ao buscar Pedidos. Tente novamente!')
+            alert('Erro ao buscar Pontos de Entrega. Tente novamente!')
             console.error(error)
          });
       }
 
-      function selecionarUsuario(usuarioId){
+      function editarPontoEntrega(pontoEntregaId){
+
+      }
+
+      function selecionarUsuario(pontoEntregaId){
         let resp = confirm('Deseja realmente selecionar o usuário como parceiro?')
         if(!resp) return ;
 
         let token = localStorage.getItem('token');
-        fetch("/usuario/parceiro/"+usuarioId, {
+        fetch("/usuario/parceiro/"+pontoEntregaId, {
           method: "PUT",
           headers: {
             Accept: "application/json",
@@ -209,12 +181,12 @@
          });
       }
 
-      function removerUsuario(usuarioId){
-        let resp = confirm('Deseja realmente remover o usuário como parceiro?')
+      function removerPontoEntrega(usuarioId){
+        let resp = confirm('Deseja realmente remover o Ponto de Entrega ?')
         if(!resp) return ;
 
         let token = localStorage.getItem('token');
-        fetch("/usuario/parceiro/"+usuarioId, {
+        fetch("/ponto-entrega/"+usuarioId, {
           method: "DELETE",
           headers: {
             Accept: "application/json",
@@ -224,11 +196,13 @@
         })
          .then((response) => {
             if(response.status == 200){
-              M.toast({html: 'Usuário removido com sucesso!'});
-              carregarUsuarios('/usuario/parceiro', localStorage.getItem('token'), document.querySelector('#meusParceiros'))
+              M.toast({html: 'Ponto de Entrega removido com sucesso!'});
+              carregarPontosEntrega()
             }else if(response.status == 401){
               localStorage.removeItem('token');
               window.location = 'login.html'
+            }else if(response.status == 403){
+               M.toast({html: 'O parceiro não tem permissão para essa operação!'})
             }
             else throw new Error('Erro ao selecionar Usuário')
          })

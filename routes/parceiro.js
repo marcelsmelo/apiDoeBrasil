@@ -5,6 +5,7 @@ module.exports = (app) => {
 
     app.get('/parceiro/:id', auth.jwtVerify, controller.buscarPorId);
     app.get('/parceiro', auth.jwtVerify, controller.buscarTodos);
+    app.get('/parceiro/me/dados', auth.jwtVerify, controller.meusDados);
    
     app.post('/parceiro', controller.cadastrar);
     app.put('/parceiro',auth.jwtVerify, auth.groupVerify(['P']), controller.editar)

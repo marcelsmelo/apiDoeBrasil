@@ -74,7 +74,7 @@
 
              <div class="input-field col s12 m6">
                <i class="material-icons prefix">location_city</i>
-               <select id="estado">
+               <select id="estado" disabled>
                  <option value="" disabled selected>Selecione um Estado</option>
                  <option value="AC">Acre</option>
                  <option value="AL">Alagoas</option>
@@ -108,16 +108,30 @@
 
              <div class="input-field col s12 m6">
                <i class="material-icons prefix">location_city</i>
-               <select  id="cidade">
+               <select  id="cidade" disabled>
                  <option value="" disabled selected>Selecione uma cidade</option>
                </select>
                <label>Cidade</label>
              </div>
           </div>
           <div class="row">
-            <a class="waves-effect waves-light btn blue darken-4 col offset-s3 offset-m4 s6 m4 " id="cadastrar"><i class="material-icons right">send</i>Cadastrar</a>
+            <a class="waves-effect waves-light btn blue darken-4 col offset-s3 offset-m4 s6 m4 " id="editar"><i class="material-icons right">edit</i>Editar</a>
           </div>
         </form>
+      </div>
+      <div class="row">
+        <div class="fixed-action-btn">
+          <a class="btn-floating btn-large red">
+            <i class="large material-icons">menu</i>
+          </a>
+          <ul>
+            <li><a class="btn-floating blue tooltipped" href="pedidos.html" data-position="left" data-tooltip="Pedidos"><i class="material-icons">favorite</i></a></li>
+            <li><a class="btn-floating purple darken-1 tooltipped" href="doacao.html" data-position="left" data-tooltip="Doações"><i class="material-icons">star</i></a></li>
+            <li><a class="btn-floating green tooltipped" href="usuarios.html" data-position="left" data-tooltip="Usuários"><i class="material-icons">person</i></a></li>
+            <li><a class="btn-floating red tooltipped" href="pontosEntrega.html" data-position="left" data-tooltip="Pontos de Entrega"><i class="material-icons">location_on</i></a></li>
+            <li><a class="btn-floating yellow tooltipped" href="meusDados.html" data-position="left" data-tooltip="Editar meus dados"><i class="material-icons">edit</i></a></li>
+          </ul>
+        </div>
       </div>
     </div>
     <!-- Compiled and minified JavaScript -->
@@ -127,9 +141,10 @@
       window.addEventListener("load", init);
 
       function init() {
-        //verificaLogado();
+        verificaLogado();
+        carregarDados();
         M.FormSelect.init(document.querySelectorAll('select'), {});
-        document.querySelector('#cadastrar').addEventListener('click', cadastrar);
+        document.querySelector('#editar').addEventListener('click', editar);
         document.querySelector('#estado').addEventListener('change', carregarCidades);
       }
 
@@ -139,41 +154,103 @@
       }
 
       function carregarCidades(){
-         let form = document.forms['parceiroForm']
-         let estadoSelecionado = form.estado.options[form.estado.selectedIndex].value
-         let tamanho = form.cidade.options.length
-         for(let i=0; i<tamanho; i++){
+        return new Promise((resolve, reject)=>{
+          let form = document.forms['parceiroForm']
+          let estadoSelecionado = form.estado.options[form.estado.selectedIndex].value
+          let tamanho = form.cidade.options.length
+          for(let i=0; i<tamanho; i++){
             form.cidade.options[0] = null
-         }
+          }
 
-         fetch("/cidades/"+estadoSelecionado, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        })
-         .then((response) => {
+          fetch("/cidades/"+estadoSelecionado, {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
             if(response.status == 200)
                return response.json();
             else
                throw new Error('Erro ao buscar cidades')
-         })
-         .then((data) => {
+          })
+          .then((data) => {
             let cidades = data.cidades;
             for(let i=0; i<cidades.length; i++){
-               form.cidade.options.add(new Option(cidades[i], cidades[i]))
+              form.cidade.options.add(new Option(cidades[i], cidades[i]))
             }
             M.FormSelect.init(form.cidade)
-         })
-         .catch((error) => {
+            resolve(true)
+          })
+          .catch((error) => {
             alert('Erro ao carregar cidades!')
             console.error(error)
-         });
+            reject(true)
+          });
+        })
       }
 
-      function cadastrar() {
+      function carregarDados(){
+        let token = localStorage.getItem("token");
+        let form = document.forms['parceiroForm']
+
+        fetch("/parceiro/me/dados", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "authorization": token
+          }
+        })
+        .then((response) => {
+          if(response.status == 200)
+            return response.json();
+          else if(response.status == 401){
+            localStorage.removeItem('token');
+            window.location = 'login.html'
+          }else if(response.status == 403){
+            M.toast({html: 'O usuário logado não tem acesso a esta operação!'});
+          }else throw new Error('Erro ao realizar cadastro')
+        })
+        .then((data) => {
+          form.nome.value = data.nome
+          form.telefone.value = data.telefone
+          form.rua.value = data.rua
+          form.numero.value = data.numero
+          form.bairro.value = data.bairro
+          form.complemento.value = data.complemento
+          M.updateTextFields();
+          let estados = form.estado.options
+          for(let i=0; i<estados.length; i++){
+            if(estados[i].value == data.estado){
+              estados.selectedIndex = i
+              
+              M.FormSelect.init(form.estado)
+            }
+          }
+          carregarCidades()
+          .then(()=>{
+            let cidades = form.cidade.options
+            for(let i=0; i<cidades.length; i++){
+              if(cidades[i].value == data.cidade){
+                cidades.selectedIndex = i
+                M.FormSelect.init(form.cidade)
+                return;
+              }
+            }
+            return;
+          })
+      })
+      .catch((error) => {
+        alert('Erro ao salvar dados. Tente novamente!')
+        console.error(error)
+      });
+    }
+
+      function editar() {
          let form = document.forms['parceiroForm']
+         let token = localStorage.getItem('token')
 
          let data = {
             nome: form.nome.value,
@@ -183,30 +260,32 @@
             numero: form.numero.value,
             bairro: form.bairro.value,
             complemento: form.complemento.value,
-            estado: form.estado.options[form.estado.selectedIndex].value,
-            cidade: form.cidade.options[form.cidade.selectedIndex].value
+            // estado: form.estado.options[form.estado.selectedIndex].value,
+            // cidade: form.cidade.options[form.cidade.selectedIndex].value
         }
 
         fetch("/parceiro", {
-          method: "POST",
+          method: "PUT",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
+            "authorization": token
           },
           body: JSON.stringify(data),
         })
          .then((response) => {
+           console.log(response)
             if(response.status == 200)
                return response.json();
             else
-               throw new Error('Erro ao realizar cadastro')
+               throw new Error('Erro ao realizar a edição')
          })
          .then((data) => {
-          M.toast({html: 'Parceiro criado com sucesso!'});
-            window.location = "/login.html";
+          M.toast({html: 'Parceiro editado com sucesso!'});
+          window.location = "/index.html";
          })
          .catch((error) => {
-            alert('Erro ao realizar o cadastro. Tente novamente!')
+            alert('Erro ao realizar a edição. Tente novamente!')
             console.error(error)
          });
       }

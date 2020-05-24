@@ -18,6 +18,30 @@ module.exports = {
          res.status(500).json({msg: "Erro ao buscar parceiro", 'error': error.message})
       }
    },
+
+   meusDados: async (req, res, next)=>{//TODO: Documentar
+      let dados = {}
+      try{
+         if(req.user.usuarioId){
+            dados = await Usuario.findOne({
+               where:{
+                  id: req.user.id,
+                  removed: false
+               } 
+            })
+         }else{
+            dados = await Parceiro.findOne({
+               where:{
+                  id: req.user.parceiroId,
+                  removed: false
+               } 
+            })
+         }
+         return res.status(200).json(dados)
+      }catch(error){
+         return res.status(500).json({msg: "Erro ao buscar informações", 'error': error.message})
+      }
+   },
    //Busca todos os parceiros da cidade
    buscarTodos: async (req, res, next)=>{
       try{
@@ -50,7 +74,7 @@ module.exports = {
       
       try{
          let novoParceiro = await parceiro.save()
-         res.status(201).json(novoParceiro)
+         res.status(200).json(novoParceiro)
       }catch(error){
          console.log('ERROR', error)
          res.status(500).json({msg: "Erro ao cadastrar parceiro", 'error': error.message})
