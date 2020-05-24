@@ -44,5 +44,6 @@
   }
 
   .tabs{
-    position: fixed !important;
+    position: fixed !important; 
+    z-index: 10000;
   }
