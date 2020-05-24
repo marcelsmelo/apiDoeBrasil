@@ -78,7 +78,7 @@
       function init(){
         verificaLogado();
         carregarPedidos('/pedidos-nao-atendidos', localStorage.getItem('token'), document.querySelector('#disponivel'))
-        M.Tabs.init(document.querySelectorAll('.tabs'),{swipeable: true});
+        M.Tabs.init(document.querySelectorAll('.tabs'),{swipeable: false});
         M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), {swipeable: true});
         document.querySelector("#deslogar").addEventListener('click', deslogar);
         document.querySelector('#tab1').addEventListener('click', load)
@@ -170,10 +170,10 @@
               texto += '</div><div class="card-stacked"><div class="card-content">'
               
               if(data[i].status == 0){
-                texto += `<a class="waves-effect waves-teal btn-flat right" onclick="atenderPedido(${data[i].id})"><i class="material-icons left">add</i>Atender</a>`
+                texto += `<a class="waves-effect waves-teal btn-flat right hide-on-small-only show-on-medium-and-up" onclick="atenderPedido(${data[i].id})"><i class="material-icons left">add</i>Atender</a>`
                 texto += `<h5 class="col s12 m10"><i class="material-icons left">place</i> Rua ${data[i].usuario.rua} - ${data[i].usuario.bairro}</h5>`
               }else if(data[i].status == 1){
-                texto += `<a class="waves-effect waves-teal btn-flat right" onclick="finalizarPedido(${data[i].id})"><i class="material-icons left">check</i>Finalizar</a>`
+                texto += `<a class="waves-effect waves-teal btn-flat right hide-on-small-only show-on-medium-and-up" onclick="finalizarPedido(${data[i].id})"><i class="material-icons left">check</i>Finalizar</a>`
                 texto += `<h5><i class="material-icons left">person</i>${data[i].usuario.nome}</h5>`
                 texto += `<h6><i class="material-icons left">phone</i>${data[i].usuario.telefone}</h6>`
                 texto += `<h6><i class="material-icons left">place</i>Rua ${data[i].usuario.rua} - Bairro ${data[i].usuario.bairro}</h6>`
@@ -194,6 +194,11 @@
               if(data[i].artigoLimpeza) texto += '<div class="chip cyan" style="color: white;"><b>Higiene Pessoal</b></div>'
               if(data[i].mascara) texto += '<div class="chip green" style="color: white;"><b>Máscara</b></div>'
 
+              if(data[i].status == 0){
+                texto += `<a class="waves-effect waves-teal btn center show-on-small hide-on-med-and-up green darken-1" onclick="atenderPedido(${data[i].id})"><i class="material-icons left">add</i>Atender</a>`
+              }else if(data[i].status == 1){
+                texto += `<a class="waves-effect waves-teal btn center show-on-small hide-on-med-and-up green darken-1" onclick="finalizarPedido(${data[i].id})"><i class="material-icons left">check</i>Finalizar</a>`
+              }
               texto += '</div> </div> </div> </li>'
            }
            

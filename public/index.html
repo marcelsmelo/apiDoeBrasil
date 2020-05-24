@@ -139,7 +139,7 @@
               texto += '<li class="collection-item"><div class="card horizontal">'
               texto+='<div class="card-image" style="width: 10px; background-color: red">'
               texto += '</div><div class="card-stacked"><div class="card-content">'
-              texto += `<a class="waves-effect waves-teal btn-flat right" onclick="atenderPedido(${data[i].id})"><i class="material-icons left">add</i>Atender</a>`
+              texto += `<a class="waves-effect waves-teal btn-flat right hide-on-small-only show-on-medium-and-up" onclick="atenderPedido(${data[i].id})"><i class="material-icons left">add</i>Atender</a>`
               texto += `<h6><i class="material-icons left">place</i> Rua ${data[i].usuario.rua} - ${data[i].usuario.bairro}</h6>`
 
               if(data[i].observacoes){
@@ -153,6 +153,8 @@
               if(data[i].higienePessoal) texto += '<div class="chip indigo" style="color: white;"><b>Limpeza</b></div>'
               if(data[i].artigoLimpeza) texto += '<div class="chip cyan" style="color: white;"><b>Higiene Pessoal</b></div>'
               if(data[i].mascara) texto += '<div class="chip green" style="color: white;"><b>Máscara</b></div>'
+
+              texto += `<a class="waves-effect waves-teal btn center show-on-small hide-on-med-and-up green darken-1" onclick="atenderPedido(${data[i].id})"><i class="material-icons left">add</i>Atender</a>`
 
               texto += '<div style=></div></div> </div> </div> </li>'
               
@@ -222,7 +224,7 @@
               texto+='<div class="card-image" style="width: 10px; background-color: red">'
               texto += '</div><div class="card-stacked"><div class="card-content">'
               
-              texto += `<a class="waves-effect waves-teal btn-flat right" onclick="selecionarDoacao(${data[i].id})"><i class="material-icons left">check</i>Selecionar</a>`
+              texto += `<a class="waves-effect waves-teal btn-flat right hide-on-small-only show-on-medium-and-up" onclick="selecionarDoacao(${data[i].id})"><i class="material-icons left">check</i>Selecionar</a>`
             
               texto += `<h5><i class="material-icons left">person</i>${data[i].usuario.nome}</h5>`
               texto += `<h6><i class="material-icons left">phone</i>${data[i].usuario.telefone}</h6>`
@@ -239,6 +241,8 @@
               if(data[i].higienePessoal) texto += '<div class="chip indigo" style="color: white;"><b>Limpeza</b></div>'
               if(data[i].artigoLimpeza) texto += '<div class="chip cyan" style="color: white;"><b>Higiene Pessoal</b></div>'
               if(data[i].mascara) texto += '<div class="chip green" style="color: white;"><b>Máscara</b></div>'
+
+              texto += `<a class="waves-effect waves-teal btn center show-on-small hide-on-med-and-up green darken-1" onclick="selecionarDoacao(${data[i].id})"><i class="material-icons left">check</i>Selecionar</a>`
 
               texto += '</div> </div> </div> </li">'
            }

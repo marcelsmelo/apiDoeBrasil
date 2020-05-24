@@ -195,12 +195,13 @@
               
               texto += '</div><div class="card-stacked"><div class="card-content">'
               
+              
               if(data[i].status == 1 && !data[i].parceiroId){
-                texto += `<a class="waves-effect waves-teal btn-flat right" onclick="selecionarDoacao(${data[i].id})"><i class="material-icons left">check</i>Selecionar</a>`
+                texto += `<a class="waves-effect waves-teal btn-flat right hide-on-small-only show-on-medium-and-up" onclick="selecionarDoacao(${data[i].id})"><i class="material-icons left">check</i>Selecionar</a>`
               }else if(data[i].status == 2 ){
-                texto += `<a class="waves-effect waves-teal btn-flat right" onclick="finalizarDoacao(${data[i].id}, ${componente.id})"><i class="material-icons left">close</i>Confirmar</a>`
+                texto += `<a class="waves-effect waves-teal btn-flat right hide-on-small-only show-on-medium-and-up" onclick="finalizarDoacao(${data[i].id}, ${componente.id})"><i class="material-icons left">close</i>Confirmar</a>`
               }else if(data[i].status != 3 ){
-                texto += `<a class="waves-effect waves-teal btn-flat right" onclick="finalizarDoacao(${data[i].id}, ${componente.id})"><i class="material-icons left">close</i>Finalizar</a>`
+                texto += `<a class="waves-effect waves-teal btn-flat right hide-on-small-only show-on-medium-and-up" onclick="finalizarDoacao(${data[i].id}, ${componente.id})"><i class="material-icons left">close</i>Finalizar</a>`
               }
 
               texto += `<h5><i class="material-icons left">person</i>${data[i].usuario.nome}</h5>`
@@ -219,6 +220,14 @@
               if(data[i].higienePessoal) texto += '<div class="chip indigo" style="color: white;"><b>Limpeza</b></div>'
               if(data[i].artigoLimpeza) texto += '<div class="chip cyan" style="color: white;"><b>Higiene Pessoal</b></div>'
               if(data[i].mascara) texto += '<div class="chip green" style="color: white;"><b>Máscara</b></div>'
+
+              if(data[i].status == 1 && !data[i].parceiroId){
+                texto += `<br><a class="col s12 waves-effect waves-teal btn center show-on-small hide-on-med-and-up green darken-1" onclick="selecionarDoacao(${data[i].id})"><i class="material-icons left">check</i>Selecionar</a>`
+              }else if(data[i].status == 2 ){
+                texto += `<br><a class="col s12 waves-effect waves-teal btn center show-on-small hide-on-med-and-up green darken-1" onclick="finalizarDoacao(${data[i].id}, ${componente.id})"><i class="material-icons left">close</i>Confirmar</a>`
+              }else if(data[i].status != 3 ){
+                texto += `<br><a class="col s12 waves-effect waves-teal btn center show-on-small hide-on-med-and-up green darken-1" onclick="finalizarDoacao(${data[i].id}, ${componente.id})"><i class="material-icons left">close</i>Finalizar</a>`
+              }
 
               texto += '</div> </div> </div> </li>'
            }
