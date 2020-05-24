@@ -15,6 +15,11 @@
      font-size: 2em;
    }
 
+   #logo{
+    width: 45%; 
+    height:50px;
+  }
+
  }
 
  .tabs .indicator{
@@ -46,4 +51,9 @@
   .tabs{
     position: fixed !important; 
     z-index: 10000;
+  }
+
+  #logo{
+    width: 87%; 
+    height:60px;
   }
