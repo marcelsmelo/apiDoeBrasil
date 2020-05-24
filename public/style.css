@@ -42,3 +42,7 @@
   .header{
     font-size: 2em;
   }
+
+  .tabs{
+    position: fixed !important;
+  }
