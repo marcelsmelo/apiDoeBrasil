@@ -4,6 +4,7 @@ let Doacao = require('../models/Doacao')
 let Pedido = require('../models/Pedido')
 let Parceiro = require('../models/Parceiro')
 let PontoEntrega = require('../models/PontoEntrega')
+const Op = Sequelize.Op
 
 module.exports = {
    //Busca doação por ID
@@ -87,11 +88,21 @@ module.exports = {
    //Busca as Doações pelo seu Status criadas pelo Usuário logado 
    buscarPorStatus: async (req, res, next)=>{
       let condition = {}
-      condition.status = req.params.status 
+      
       condition.removed = false
 
-      if(req.user.group == 'U') condition.usuarioId = req.user.id
-      else condition.parceiroId = req.user.parceiroId
+      if(req.user.group == 'U'){
+         condition.usuarioId = req.user.id 
+         if(req.params.status == 3){
+            condition.status = {[Op.or]: [2, 3]}
+         }else{
+            condition.status = req.params.status 
+         }
+      }
+      else{
+         condition.parceiroId = req.user.parceiroId
+         condition.status = req.params.status 
+      } 
 
       try{
           let doacoes = await Doacao.findAll({
@@ -127,13 +138,16 @@ module.exports = {
    },
    //Busca todas doações disponíveis para o Parceiro
    disponivelParceiro: async (req, res, next)=>{
+      let condition = {}
+      condition.status = 1
+      condition.removed = false
+      condition.parceiroId = null
+
+      if(req.user.group == 'U') condition.usuarioId = req.user.id
+
       try{
          let doacoes = await Doacao.findAll({
-            where: {
-               status: 1,
-               parceiroId: null,
-               removed: false
-            },
+            where: condition,
             attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'mascara', 'observacoes', 'status', 'dispEntrega'],
             include:[{
                model: Usuario,

@@ -68,7 +68,7 @@ module.exports = {
       try{
          let pedidos = await Pedido.findAll({
             where: condition,
-            attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'mascara', 'observacoes', 'status'],
+            //attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'mascara', 'observacoes', 'status'],
             include:[{
                model: Usuario,
                required: true,
@@ -78,13 +78,14 @@ module.exports = {
                }},{
                model: Usuario,
                as: 'atendidoPorUsuario',
-               attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
+               //attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
                },{
                model: Parceiro,
                as: 'atendidoPorParceiro',
-               attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
+              // attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
             }]
          })
+         console.log(pedidos)
          res.status(200).json(pedidos)
       }catch(error){
          res.status(500).json({msg: "Erro ao buscar pedidos", 'error': error.message})

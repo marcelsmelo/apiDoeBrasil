@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Import Google Icon Font-->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <div class="navbar-fixed container-fluid">
+      <nav class="row">
+        <div class="nav-wrapper blue darken-4 col s12">
+          <a href="index.html" class="left col s8 m3" >
+            <img src="logo2.svg" alt="Logo" id="logo">
+          </a>
+          <a class="waves-effect waves-light btn right  blue darken-4 col s4 m1" id="deslogar" style="margin-top: 10px;"> <i class="material-icons left" style="position: relative; bottom:35%;">exit_to_app</i>Sair</a>
+        </div>
+      </nav>
+    </div>
+
+    <p class="center" style="color: #0d47a1; font-size: 2em;">
+      Realizar Pedido
+    </p>
+    <div class="container">
+      <div class="row">
+        <form class="col s12" name="pedidoForm">
+
+         <p>
+            <label>
+              <input type="checkbox" id="alimentacao"/>
+              <span><span class="chip orange" style="color: white;"><b>Alimentação</b></span></span>
+            </label>
+          </p>
+
+          <p>
+            <label>
+              <input type="checkbox" id="higienePessoal"/>
+              <span><span class="chip cyan" style="color: white;"><b>Higiene Pessoal</b></span></span>
+            </label>
+          </p>
+
+          <p>
+            <label>
+              <input type="checkbox" id="limpeza"/>
+              <span><span class="chip indigo" style="color: white;"><b>Artigo de Limpeza</b></span></span>
+            </label>
+          </p>
+
+          <p>
+            <label>
+              <input type="checkbox" id="mascara"/>
+              <span><span class="chip green" style="color: white;"><b>Máscara</b></span></span>
+            </label>
+          </p>
+
+          <div class="row">
+            <form class="col s12">
+              <div class="row">
+                <div class="input-field col s12">
+                  <i class="material-icons prefix">playlist_add</i>
+                  <textarea id="observacao" class="materialize-textarea"></textarea>
+                  <label for="observacao">Observações</label>
+                </div>
+              </div>
+            </form>
+          </div>
+          
+          <div class="row">
+            <a class="waves-effect waves-light btn blue darken-4 col offset-s3 offset-m4 s6 m4 " id="cadastrar"><i class="material-icons right">send</i>Cadastrar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+      M.AutoInit();
+      window.addEventListener("load", init);
+      var pedidoId = 0;
+
+      function init(){
+        verificaLogado();
+        pedidoId = window.location.search.replace('?id=','')
+        if(pedidoId){
+          document.querySelector('#cadastrar').addEventListener('click', editar);
+          carregarDados(pedidoId)
+          document.querySelector('#cadastrar').innerHTML=`<i class="material-icons right">edit</i>Editar`
+        }else{
+          document.querySelector('#cadastrar').addEventListener('click', cadastrar);
+        }  
+      }
+
+      function verificaLogado() {
+        let token = localStorage.getItem("token-user");
+        if (!token) window.location = "login.html";
+      }
+
+      function carregarDados(){
+        let token = localStorage.getItem("token-user");
+        let form = document.forms['pedidoForm']
+
+        fetch("/pedido/"+pedidoId, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "authorization": token
+          }
+        })
+        .then((response) => {
+          if(response.status == 200)
+            return response.json();
+          else if(response.status == 401){
+            localStorage.removeItem('token-user');
+            window.location = 'login.html'
+          }else if(response.status == 403){
+            M.toast({html: 'O usuário logado não tem acesso a esta operação!'});
+          }else throw new Error('Erro ao buscar pedido. Tente novamente!')
+        })
+        .then((data) => {
+          form.alimentacao.checked = data.generoAlimenticio
+          form.higienePessoal.checked = data.higienePessoal
+          form.limpeza.checked = data.artigoLimpeza
+          form.mascara.checked = data.mascara
+          form.observacao.value = data.observacoes
+          M.updateTextFields();
+        }) 
+        .catch((error) => {
+            alert('Erro ao salvar dados. Tente novamente!')
+            console.error(error)
+         }); 
+      }
+
+      function cadastrar(){
+         let form = document.forms['pedidoForm']
+         let token = localStorage.getItem('token-user')
+
+         let data = {
+            generoAlimenticio: form.alimentacao.checked,
+            higienePessoal: form.higienePessoal.checked,
+            artigoLimpeza: form.limpeza.checked,
+            mascara: form.mascara.checked, 
+            observacoes: form.observacao.value
+         }
+
+         fetch("/pedido", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "authorization": token
+          },
+          body: JSON.stringify(data),
+        })
+         .then((response) => {
+            if(response.status == 200)
+               return response.json();
+            else
+               throw new Error('Erro ao realizar pedido. Tente novamente!')
+         })
+         .then((data) => {
+            M.toast({html: 'Pedido criado com sucesso!'});
+            window.location = "/pedidos.html";
+         })
+         .catch((error) => {
+            M.toast({html: 'Erro ao realizar pedido. Tente novamente!'});
+            console.error(error)
+         });
+      }
+
+      function editar(){
+        let form = document.forms['pedidoForm']
+         let token = localStorage.getItem('token-user')
+
+         let data = {
+            generoAlimenticio: form.alimentacao.checked,
+            higienePessoal: form.higienePessoal.checked,
+            artigoLimpeza: form.limpeza.checked,
+            mascara: form.mascara.checked, 
+            observacoes: form.observacao.value
+         }
+
+         fetch("/pedido/"+pedidoId, {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "authorization": token
+          },
+          body: JSON.stringify(data),
+        })
+         .then((response) => {
+           console.log(response)
+            if(response.status == 200)
+               return response.json();
+            else
+               throw new Error('Erro ao editar pedido. Tente novamente!')
+         })
+         .then((data) => {
+            M.toast({html: 'Pedido editado com sucesso!'});
+            window.location = "/pedidos.html";
+         })
+         .catch((error) => {
+            M.toast({html: 'Erro ao editar pedido. Tente novamente!'});
+            console.error(error)
+         });
+      }
+
+
+    </script>

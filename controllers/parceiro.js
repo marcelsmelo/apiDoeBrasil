@@ -1,5 +1,6 @@
 let Parceiro = require('../models/Parceiro')
 let Usuario = require('../models/Usuario')
+const email = require('../lib/email');
 
 
 module.exports = {
@@ -69,11 +70,13 @@ module.exports = {
          bairro: req.body.bairro,
          complemento: req.body.complemento,
          estado: req.body.estado,
-         cidade: req.body.cidade
+         cidade: req.body.cidade,
+         removed: true
       })
       
       try{
          let novoParceiro = await parceiro.save()
+         email.sendEmail(novoParceiro)
          res.status(200).json(novoParceiro)
       }catch(error){
          console.log('ERROR', error)

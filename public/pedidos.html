@@ -42,15 +42,24 @@
       <br>
       <div class="row">
         <div id="test1" class="col s12">
-            <h3 class="header center">Pedidos em aberto</h3>
+            <h3 class="header center">Meus Pedidos Abertos</h3>
+            <div class="row">
+              <a href="cadastroPedido.html" class="waves-effect waves-light btn blue darken-4 col offset-s3 offset-l5 offset-m4 s6 m4 l2"><i class="material-icons left">add</i>Novo Pedido</a> 
+            </div>
             <ul class="collection" id="disponivel"></ul>
         </div>
         <div id="test2" class="col s12">
-          <h3 class="header center">Pedidos - Minhas Entregas</h3>
+          <h3 class="header center">Meus Pedidos - Aguardando Entregas</h3>
+          <div class="row">
+            <a href="cadastroPedido.html" class="waves-effect waves-light btn blue darken-4 col offset-s3 offset-l5 offset-m4 s6 m4 l2"><i class="material-icons left">add</i>Novo Pedido</a> 
+          </div>
           <ul class="collection" id="entregas"></ul>
         </div>
         <div id="test3" class="col s12">
-          <h3 class="header center">Pedidos Atendidos</h3>
+          <h3 class="header center">Meus Pedidos Atendidos</h3>
+          <div class="row">
+            <a href="cadastroPedido.html" class="waves-effect waves-light btn blue darken-4 col offset-s3 offset-l5 offset-m4 s6 m4 l2"><i class="material-icons left">add</i>Novo Pedido</a> 
+          </div>
           <ul class="collection" id="atendidos"></ul>
         </div>
       </div>
@@ -77,7 +86,7 @@
 
       function init(){
         verificaLogado();
-        carregarPedidos('/pedidos-nao-atendidos', localStorage.getItem('token'), document.querySelector('#disponivel'))
+        carregarPedidos('/pedido/status/0', localStorage.getItem('token-user'), document.querySelector('#disponivel'))
         M.Tabs.init(document.querySelectorAll('.tabs'),{swipeable: false});
         M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), {swipeable: true});
         document.querySelector("#deslogar").addEventListener('click', deslogar);
@@ -87,12 +96,12 @@
       }
 
       function load(param){
-        let token = localStorage.getItem('token');
+        let token = localStorage.getItem('token-user');
         let url = "";
         let componente = {};
         switch(this.id){
           case 'tab1':
-            url = "/pedidos-nao-atendidos"
+            url = "/pedido/status/0"
             componente = document.querySelector('#disponivel')
             break;
           case 'tab2':
@@ -108,13 +117,13 @@
       }
 
       function verificaLogado(){
-        let token = localStorage.getItem('token');
+        let token = localStorage.getItem('token-user');
         if(!token) window.location = "login.html"
       }
 
       function deslogar(){
-        let token = localStorage.getItem('token');
-        fetch("/parceiro/logout", {
+        let token = localStorage.getItem('token-user');
+        fetch("/usuario/logout", {
           method: "POST",
           headers: {
             Accept: "application/json",
@@ -125,10 +134,10 @@
          .then((response) => {
            console.log(response)
             if(response.status == 200){
-              localStorage.removeItem('token');
+              localStorage.removeItem('token-user');
               window.location = 'login.html'
             }else if(response.status == 401){
-              localStorage.removeItem('token');
+              localStorage.removeItem('token-user');
               window.location = 'login.html'
             }
             else throw new Error('Erro ao deslogar')
@@ -154,7 +163,7 @@
             if(response.status == 200){
               return response.json()
             }else if(response.status == 401){
-              localStorage.removeItem('token');
+              localStorage.removeItem('token-user');
               window.location = 'login.html'
             }
             else throw new Error('Erro ao buscar Pedidos')
@@ -167,85 +176,57 @@
               else if(data[i].status == 1) texto+='<div class="card-image" style="width: 10px; background-color: blue">'
               else if(data[i].status == 2) texto+='<div class="card-image" style="width: 10px; background-color: green">'
               
-              texto += '</div><div class="card-stacked"><div class="card-content">'
-              
-              if(data[i].status == 0){
-                texto += `<a class="waves-effect waves-teal btn-flat right hide-on-small-only show-on-medium-and-up" onclick="atenderPedido(${data[i].id})"><i class="material-icons left">add</i>Atender</a>`
-                texto += `<h5 class="col s12 m10"><i class="material-icons left">place</i> Rua ${data[i].usuario.rua} - ${data[i].usuario.bairro}</h5>`
-              }else if(data[i].status == 1){
-                texto += `<a class="waves-effect waves-teal btn-flat right hide-on-small-only show-on-medium-and-up" onclick="finalizarPedido(${data[i].id})"><i class="material-icons left">check</i>Finalizar</a>`
-                texto += `<h5><i class="material-icons left">person</i>${data[i].usuario.nome}</h5>`
-                texto += `<h6><i class="material-icons left">phone</i>${data[i].usuario.telefone}</h6>`
-                texto += `<h6><i class="material-icons left">place</i>Rua ${data[i].usuario.rua} - Bairro ${data[i].usuario.bairro}</h6>`
-              }else if(data[i].status == 2){
-                texto += `<h5><i class="material-icons left">place</i> Rua ${data[i].usuario.rua} - ${data[i].usuario.bairro}</h5>`
+              texto += '</div><div class="card-stacked"><div class="card-content"><div class="row">'
+
+              if(data[i].atendidoPorUsuario){
+                texto += `<h5><i class="material-icons left">person</i>${data[i].atendidoPorUsuario.nome}</h5>`
+                texto += `<h6><i class="material-icons left">phone</i>${data[i].atendidoPorUsuario.telefone}</h6>`
+              }else if(data[i].atendidoPorParceiro){
+                texto += `<h5><i class="material-icons left">person</i>${data[i].atendidoPorParceiro.nome}</h5>`
+                texto += `<h6><i class="material-icons left">phone</i>${data[i].atendidoPorParceiro.telefone}</h6>`
               }
               
-      
+              //texto += `<h6><i class="material-icons left">place</i>Rua ${data[i].usuario.rua} - Bairro ${data[i].usuario.bairro}</h6>`
+              
               if(data[i].observacoes){
-                texto += `<br><h6 class="col s12"><i class="material-icons left">playlist_add</i><b>Observações:</b></h6>
-                          <span>${data[i].observacoes}</span>`
+                texto += `<div class="col s12"><h6><i class="material-icons left">format_align_justify</i><b>Observações:</b><br>
+                          ${data[i].observacoes}</h6> </div>`
               }
                           
-              texto += '</div> <div class="card-action">'
+              texto += '</div> <div class="row">'
 
               if(data[i].generoAlimenticio) texto += '<div class="chip orange" style="color: white;"><b>Alimentos</b></div>'
               if(data[i].higienePessoal) texto += '<div class="chip indigo" style="color: white;"><b>Limpeza</b></div>'
               if(data[i].artigoLimpeza) texto += '<div class="chip cyan" style="color: white;"><b>Higiene Pessoal</b></div>'
               if(data[i].mascara) texto += '<div class="chip green" style="color: white;"><b>Máscara</b></div>'
+              
+              texto += '</div> <div class="row"><div class="col s12 l4 right">'
 
               if(data[i].status == 0){
-                texto += `<a class="waves-effect waves-teal btn center show-on-small hide-on-med-and-up green darken-1" onclick="atenderPedido(${data[i].id})"><i class="material-icons left">add</i>Atender</a>`
+                texto += `<a class="waves-effect waves-teal btn-flat col s12 l6" href="cadastroPedido.html?id=${data[i].id}"><i class="material-icons left">edit</i>Editar</a>`
+                texto += `<a class="waves-effect waves-teal btn-flat col s12 l6" onclick="removerPedido(${data[i].id})"><i class="material-icons left">close</i>Remover</a>`
               }else if(data[i].status == 1){
-                texto += `<a class="waves-effect waves-teal btn center show-on-small hide-on-med-and-up green darken-1" onclick="finalizarPedido(${data[i].id})"><i class="material-icons left">check</i>Finalizar</a>`
+                texto += `<a class="waves-effect waves-teal btn-flat right col s12 l6" onclick="finalizarPedido(${data[i].id})"><i class="material-icons left">check</i>Finalizar</a>`
               }
-              texto += '</div> </div> </div> </li>'
+              
+              texto += '</div> </div> </div> </div> </li>'
            }
            
             componente.innerHTML = texto;
          })
          .catch((error) => {
-            alert('Erro ao buscar Pedidos. Tente novamente!')
+            M.toast({html: 'Erro ao carregar pedidos. Tente novamente!'});
             console.error(error)
          });
       }
 
-      function atenderPedido(pedidoId){
-        let resp = confirm('Deseja realmente selecionar o pedido para atendimento?')
-        if(!resp) return ;
-
-        let token = localStorage.getItem('token');
-        fetch("/parceiro/pedido/atender/"+pedidoId, {
-          method: "PUT",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "authorization": token
-          },
-        })
-         .then((response) => {
-            if(response.status == 200){
-              M.toast({html: 'Pedido selecionado com sucesso!'});
-              carregarPedidos('/pedidos-nao-atendidos', localStorage.getItem('token'), document.querySelector('#disponivel'))
-            }else if(response.status == 401){
-              localStorage.removeItem('token');
-              window.location = 'login.html'
-            }
-            else throw new Error('Erro ao selecionar Pedido')
-         })
-         .catch((error) => {
-            alert('Erro ao selecionar Pedido. Tente novamente!')
-            console.error(error)
-         });
-      }
-
-      function finalizarPedido(pedidoId){
-        let resp = confirm('Deseja realmente finalizar o pedido?')
+      function removerPedido(pedidoId){
+        let resp = confirm('Deseja realmente apagar o pedido?')
         if(!resp) return ;
   
-        let token = localStorage.getItem('token');
-        fetch("/pedido/finalizar/"+pedidoId, {
-          method: "PUT",
+        let token = localStorage.getItem('token-user');
+        fetch("/pedido/"+pedidoId, {
+          method: "DELETE",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -254,18 +235,18 @@
         })
          .then((response) => {
             if(response.status == 200){
-              M.toast({html: 'Doação finalizado com sucesso!'});
-              carregarPedidos('/pedido/status/1', localStorage.getItem('token'), document.querySelector('#entregas'))
+              M.toast({html: 'Pedido removido com sucesso!'});
+              carregarPedidos('/pedido/status/0', localStorage.getItem('token-user'), document.querySelector('#disponivel'))
             }else if(response.status == 401){
-              localStorage.removeItem('token');
+              localStorage.removeItem('token-user');
               window.location = 'login.html'
             }
             else{
-              throw new Error('Erro ao finalizar Pedido')
+              throw new Error('Erro ao remover Pedido')
             } 
          })
          .catch((error) => {
-            alert('Erro ao finalizar Pedido. Tente novamente!')
+            M.toast({html: 'Erro ao remover pedido. Tente novamente!'});
             console.error(error)
          });
       }
