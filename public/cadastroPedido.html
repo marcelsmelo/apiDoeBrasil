@@ -104,6 +104,7 @@
 
       function init(){
         verificaLogado();
+        document.querySelector("#deslogar").addEventListener('click', deslogar);
         pedidoId = window.location.search.replace('?id=','')
         if(pedidoId){
           document.querySelector('#cadastrar').addEventListener('click', editar);

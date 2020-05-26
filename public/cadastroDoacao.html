@@ -140,6 +140,7 @@
 
       function init(){
         verificaLogado();
+        document.querySelector("#deslogar").addEventListener('click', deslogar);
         doacaoId = window.location.search.split('?id=')[1]
         pedidoId = window.location.search.split('?pedidoId=')[1]
 
