@@ -51,7 +51,7 @@
                   <a class="waves-effect waves-light btn blue darken-4 col s6 m4 offset-s3 offset-m4 " id="logar"><i class="material-icons right">send</i>Logar</a>
                 </div>
                 
-                <p class="center" style="color: #0d47a1">Não possui uma conta? <a href="cadastroUsuario.html">Cadastre-se como usário</a></p>
+                <p class="center" style="color: #0d47a1">Não possui uma conta? <a href="cadastroUsuario.html">Cadastre-se como usuário</a></p>
                 <br>  
               </div>
               </div>
@@ -128,9 +128,7 @@
 				}else if (tel.length == 11) {
 					tel=tel.replace(/(.{2})$/,"-$1")
 				} else if (tel.length == 12) {
-					tel=tel.replace(/(.{2})$/,"-$1")
-				} else if (tel.length == 14) {
-					tel=tel.replace(/(.{4})$/,"-$1")
+					tel=tel.replace(/(.{3})$/,"-$1")
 				} else if (tel.length == 13) {
 					tel=tel.replace(/(.{4})$/,"-$1")
 				} else if (tel.length == 14) {
@@ -142,6 +140,7 @@
         }
 				return tel;
 			}
+
     </script>
   </body>
 </html>
