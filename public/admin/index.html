@@ -89,7 +89,7 @@
 
       function deslogar(){
         let token = localStorage.getItem('token');
-        fetch("/parceiro/logout", {
+        fetch("/usuario/logout", {
           method: "POST",
           headers: {
             Accept: "application/json",
