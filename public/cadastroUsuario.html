@@ -57,7 +57,7 @@
             </div>
             <div class="input-field col s12 m4">
                <i class="material-icons prefix">map</i>
-               <input id="numero" type="text" onkeydown="javascript: fMasc( this, mNum);" />
+               <input id="numero" type="text" onkeydown="javascript: fMasc( this, mNum);" onblur="javascript: fMasc( this, mNum);"/>
                <label for="numero">Número</label>
              </div>
              <div class="input-field col s12 m6">
@@ -131,7 +131,7 @@
         document.querySelector('#estado').addEventListener('change', carregarCidades);
         refreshSelectElements()
       }
-s
+
       function refreshSelectElements(){
         let elements = document.querySelectorAll('li[id^="select-options"]')
         for(let i=0; i<elements.length; i++){

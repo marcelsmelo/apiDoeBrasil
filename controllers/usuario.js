@@ -24,6 +24,21 @@ module.exports = {
       }
    },
 
+   meusDados: async (req, res, next)=>{//TODO: Documentar
+      let dados = {}
+      try{
+         dados = await Usuario.findOne({
+            where:{
+               id: req.user.id,
+               removed: false
+            } 
+         })
+         return res.status(200).json(dados)        
+      }catch(error){
+         return res.status(500).json({msg: "Erro ao buscar informações", 'error': error.message})
+      }
+   },
+
    //Realiza o login do usuário
    login: (req, res, next)=>{
       const { telefone, senha } = req.body
@@ -78,6 +93,36 @@ module.exports = {
          res.status(200).send({ msg: 'Logout realizado com sucesso' });
       }catch(error){
          res.status(500).send({msg: 'Logout não realizado!', "error": error.message});
+      }
+   },
+
+   editar: async (req, res, next)=>{
+      try{
+         let usuario = await Usuario.findOne({
+            where: {
+               id: req.user.id,
+               removed: false
+            }
+         })
+   
+         if(!usuario)
+            return res.status(403).json({msg: 'Alteração não autorizada! O usuário logado não tem permissão para realizar essa operação', error: null});
+         
+
+         usuario.nome = req.body.nome;
+         usuario.telefone = req.body.telefone;
+         usuario.senha = req.body.senha;
+         usuario.rua = req.body.rua; 
+         usuario.numero = req.body.numero;
+         usuario.bairro = req.body.bairro;
+         usuario.complemento = req.body.complemento;
+         // usuario.estado = req.body.estado;
+         // usuario.cidade = req.body.cidade;
+
+         await usuario.save();
+         return res.status(200).json({msg: "Usuário editado com sucesso!"})
+      }catch(error){
+         res.status(500).json({msg: "Erro ao editar usuário", 'error': error.message})
       }
    },
 

@@ -72,11 +72,10 @@
         <ul>
           <li><a class="btn-floating blue tooltipped" href="pedidos.html" data-position="left" data-tooltip="Pedidos"><i class="material-icons">favorite</i></a></li>
           <li><a class="btn-floating purple darken-1 tooltipped" href="doacao.html" data-position="left" data-tooltip="Doações"><i class="material-icons">star</i></a></li>
-          <li><a class="btn-floating green tooltipped" href="usuarios.html" data-position="left" data-tooltip="Usuários"><i class="material-icons">person</i></a></li>
-          <li><a class="btn-floating red tooltipped" href="pontosEntrega.html" data-position="left" data-tooltip="Pontos de Entrega"><i class="material-icons">location_on</i></a></li>
-          <li><a class="btn-floating yellow tooltipped" href="meusDados.html" data-position="left" data-tooltip="Editar meus dados"><i class="material-icons">edit</i></a></li>
+          <li><a class="btn-floating green tooltipped" href="meusDados.html" data-position="left" data-tooltip="Meus dados"><i class="material-icons">person</i></a></li>
         </ul>
       </div>
+    </div>
     </div>
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -207,6 +206,7 @@
                 texto += `<a class="waves-effect waves-teal btn-flat col s12 l6" onclick="removerPedido(${data[i].id})"><i class="material-icons left">close</i>Remover</a>`
               }else if(data[i].status == 1){
                 texto += `<a class="waves-effect waves-teal btn-flat right col s12 l6" onclick="finalizarPedido(${data[i].id})"><i class="material-icons left">check</i>Finalizar</a>`
+                texto += `<a class="waves-effect waves-teal btn-flat col s12 l6" onclick="removerPedido(${data[i].id})"><i class="material-icons left">close</i>Remover</a>`
               }
               
               texto += '</div> </div> </div> </div> </li>'
@@ -216,6 +216,37 @@
          })
          .catch((error) => {
             M.toast({html: 'Erro ao carregar pedidos. Tente novamente!'});
+            console.error(error)
+         });
+      }
+
+      function finalizarPedido(pedidoId){
+        let resp = confirm('Deseja realmente confirmar o recebimento da Doação?')
+        if(!resp) return ;
+  
+        let token = localStorage.getItem('token-user');
+        fetch("/pedido/finalizar/"+pedidoId, {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "authorization": token
+          },
+        })
+         .then((response) => {
+            if(response.status == 200){
+              M.toast({html: 'Pedido finalizado com sucesso!'});
+              carregarPedidos('/pedido/status/1', localStorage.getItem('token-user'), document.querySelector('#entregas'))
+            }else if(response.status == 401){
+              localStorage.removeItem('token-user');
+              window.location = 'login.html'
+            }
+            else{
+              throw new Error('Erro ao finalizar Pedido')
+            } 
+         })
+         .catch((error) => {
+            M.toast({html: 'Erro ao finalizar pedido. Tente novamente!'});
             console.error(error)
          });
       }

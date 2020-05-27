@@ -108,11 +108,14 @@
          })
       }
 
+      var obj, masc
+
       function fMasc(objeto,mascara) {
 				obj=objeto
 				masc=mascara
 				setTimeout("fMascEx()",1)
       }
+
       function fMascEx() {
 				obj.value=masc(obj.value)
 			}
