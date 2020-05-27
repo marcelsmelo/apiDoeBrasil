@@ -160,6 +160,7 @@
         M.FormSelect.init(document.querySelectorAll('select'), {});
         document.querySelector('#parceiro').addEventListener('change', carregarPontosEntrega);
         document.querySelector('#dispEntrega').addEventListener('change', habilitarSelect);
+        refreshSelectElements():
       }
 
       function habilitarSelect(){
@@ -167,6 +168,7 @@
         if(this.checked){
           form.parceiro.disabled = false
           M.FormSelect.init(form.parceiro)
+          refreshSelectElements();
         }else{
           form.parceiro.disabled = true
           form.parceiro.selectedIndex = 0
@@ -174,6 +176,7 @@
           form.pontoEntrega.selectedIndex = 0
           M.FormSelect.init(form.parceiro)
           M.FormSelect.init(form.pontoEntrega)
+          refreshSelectElements();
         }   
       }
 
@@ -343,6 +346,7 @@
                 form.parceiro.disabled = false
                 parceiros.selectedIndex = i
                 M.FormSelect.init(form.parceiro)
+                refreshSelectElements():
               }
             }
 
@@ -354,6 +358,7 @@
                     pontosEntrega.selectedIndex = i
                     console.log(i)
                     M.FormSelect.init(form.pontoEntrega)
+                    refreshSelectElements():
                   }
                 }
               })

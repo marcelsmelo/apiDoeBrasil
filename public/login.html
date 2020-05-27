@@ -37,7 +37,7 @@
                 </div>
                 <div class="row">
                   <div class="input-field col s10 offset-s1">
-                    <input id="telefone" type="text" class="validate" onkeydown="javascript: fMasc( this, mTel );">
+                    <input id="telefone" type="text" class="validate" onkeydown="javascript: fMasc( this, mTel );" onblur="javascript: fMasc( this, mTel );">
                     <label for="telefone">Telefone</label>
                   </div>
                 </div>
@@ -132,11 +132,11 @@
 				} else if (tel.length == 13) {
 					tel=tel.replace(/(\d{4})$/,"-$1")
 				} else if (tel.length == 14) {
+          tel = tel.substring(0, 14);
 					tel=tel.replace(/(\d{4})$/,"-$1")
-          console.log(tel.substring(5,6))
 				}else if(tel.length >= 14){
           tel = tel.substring(0, 14);
-          tel=tel.replace(/(.{4})$/,"-$1")
+          tel=tel.replace(/(\d{4})$/,"-$1")
         }
 				return tel;
 			}

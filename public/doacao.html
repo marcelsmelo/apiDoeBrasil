@@ -42,7 +42,7 @@
       <br>
       <div class="row">       
         <div id="test1" class="col s12">
-          <h3 class="header center">A Retirar pelo Parceiro</h3>
+          <h3 class="header center">Aguardando Retirada</h3>
           <div class="row">
             <a href="cadastroDoacao.html" class="waves-effect waves-light btn blue darken-4 col offset-s3 offset-l5 offset-m4 s6 m4 l2"><i class="material-icons left">add</i>Nova Doação</a> 
           </div>
@@ -50,7 +50,7 @@
         </div>
        
         <div id="test2" class="col s12">
-          <h3 class="header center">Minhas Entregas <br>Pontos de Entrega</h3>
+          <h3 class="header center">Minhas Entregas</h3>
           <div class="row">
             <a href="cadastroDoacao.html" class="waves-effect waves-light btn blue darken-4 col offset-s3 offset-l5 offset-m4 s6 m4 l2"><i class="material-icons left">add</i>Nova Doação</a> 
           </div>
@@ -127,7 +127,7 @@
 
       function deslogar(){
         let token = localStorage.getItem('token-user');
-        fetch("/parceiro/logout", {
+        fetch("/usuario/logout", {
           method: "POST",
           headers: {
             Accept: "application/json",
