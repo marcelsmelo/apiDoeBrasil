@@ -15,7 +15,7 @@ module.exports = (app) => {
     app.put('/doacao/finalizar/:id', auth.jwtVerify, controller.finalizar);
 
     //Operação exclusivas para Parceiros
-    app.get('/parceiro/doacao/disponivel', auth.jwtVerify, controller.disponivelParceiro)
+    app.get('/parceiro/doacao/disponivel', auth.jwtVerify, auth.groupVerify(['P', 'A']), controller.disponivelParceiro)
     app.put('/parceiro/doacao/selecionar/:id', auth.jwtVerify, auth.groupVerify(['P', 'A']), controller.selecionarParaRetirada);
     
     //Operações exclusivas para SuperAdmin

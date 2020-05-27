@@ -20,11 +20,12 @@
   <body>
     <div class="navbar-fixed container-fluid">
       <nav class="row">
-        <div class="nav-wrapper blue darken-4 col s12">
-          <a href="index.html" class="left col s8 m3" >
-            <img src="logo2.svg" alt="Logo" id="logo">
-          </a>
-          <a class="waves-effect waves-light btn right  blue darken-4 col s4 m1" id="deslogar" style="margin-top: 10px;"> <i class="material-icons left" style="position: relative; bottom:35%;">exit_to_app</i>Sair</a>
+        <div class="nav-wrapper deep-purple darken-1 col s12">
+          <a class="waves-effect waves-light left col deep-purple darken-1" id="voltar"><i class="material-icons left large" style="width: 3%; height: 100%;">chevron_left</i></a>
+            <a href="index.html" class="brand-logo col center" style="font-size: 1.7em;">
+              Doe Brasil
+            </a>
+          <a class="waves-effect waves-light btn right deep-purple darken-1 col" id="deslogar" style="margin-top: 10px; margin-right: 2%;"> <i class="material-icons left" style="position: relative; bottom:35%;">exit_to_app</i>Sair</a>
         </div>
       </nav>
     </div>
@@ -67,7 +68,7 @@
                <label for="complemento">Complemento</label>
              </div>
           <div class="row">
-            <a class="waves-effect waves-light btn blue darken-4 col offset-s3 offset-m4 s6 m4 " id="cadastrar"><i class="material-icons right">send</i>Cadastrar</a>
+            <a class="waves-effect waves-light btn deep-purple darken-1 col offset-s3 offset-m4 s6 m4 " id="cadastrar"><i class="material-icons right">send</i>Cadastrar</a>
           </div>
         </form>
         <div class="row">
@@ -98,21 +99,22 @@
           verificaLogado();
           carregarDados(pontoEntregaId)
           document.querySelector('#cadastrar').innerHTML=`<i class="material-icons right">edit</i>Editar`
-          
         }
         
         document.querySelector('#cadastrar').addEventListener('click', cadastrar);
         M.FormSelect.init(document.querySelectorAll('select'), {});
-        //document.querySelector('#estado').addEventListener('change', carregarCidades);
+        document.querySelector('#voltar').addEventListener('click', function(){
+          window.history.back();
+        });
       }
 
       function verificaLogado() {
-        let token = localStorage.getItem("token");
-        if (!token) window.location = "login.html";
+        let token = localStorage.getItem("token-partner");
+        if (!token) window.location = "/admin/login.html";
       }
 
       function carregarDados(pontoEntregaId){
-        let token = localStorage.getItem("token");
+        let token = localStorage.getItem("token-partner");
         let form = document.forms['pontoEntregaForm']
 
         fetch("/ponto-entrega/"+pontoEntregaId, {
@@ -127,8 +129,8 @@
           if(response.status == 200)
             return response.json();
           else if(response.status == 401){
-            localStorage.removeItem('token');
-            window.location = 'login.html'
+            localStorage.removeItem('token-partner');
+            window.location = '/admin/login.html'
           }else if(response.status == 403){
             M.toast({html: 'O usuário logado não tem acesso a esta operação!'});
           }else throw new Error('Erro ao realizar cadastro')
@@ -152,12 +154,10 @@
 
       function cadastrar() {
         let form = document.forms['pontoEntregaForm']
-        let token = localStorage.getItem("token");
+        let token = localStorage.getItem("token-partner");
         
         let url = '/ponto-entrega'
         let method = 'POST'
-
-        console.log('EDITAR', pontoEntregaId)
 
         if(pontoEntregaId){
           url = '/ponto-entrega/'+pontoEntregaId
@@ -189,8 +189,8 @@
             if(response.status == 200)
                return response.json();
             else if(response.status == 401){
-              localStorage.removeItem('token');
-              window.location = 'login.html'
+              localStorage.removeItem('token-partner');
+              window.location = '/admin/login.html'
             }else if(response.status == 403){
                M.toast({html: 'O usuário logado não tem acesso a esta operação!'});
             }else
@@ -198,7 +198,7 @@
          })
          .then((data) => {
           M.toast({html: 'Ponto de Entrega criado com sucesso!'});
-            window.location = "/pontosEntrega.html";
+            window.location = "/admin/pontosEntrega.html";
          })
          .catch((error) => {
             alert('Erro ao realizar o cadastro. Tente novamente!')

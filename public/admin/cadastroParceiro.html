@@ -20,10 +20,11 @@
   <body>
     <div class="navbar-fixed container-fluid">
       <nav class="row">
-        <div class="nav-wrapper blue darken-4 col s12">
-          <a href="index.html" class="left col s10 center" >
-            <img src="logo2.svg" alt="Logo" id="logo" class="center">
-          </a>
+        <div class="nav-wrapper deep-purple darken-1 col s12">
+          <a class="waves-effect waves-light left col deep-purple darken-1" id="voltar"><i class="material-icons left large" style="width: 3%; height: 100%;">chevron_left</i></a>
+            <a href="admin/index.html" class="brand-logo col center" style="font-size: 1.7em;">
+              Doe Brasil
+            </a>
         </div>
       </nav>
     </div>
@@ -42,7 +43,7 @@
             </div>
             <div class="input-field col s12 m6">
                <i class="material-icons prefix">phone</i>
-              <input id="telefone" type="text" onkeydown="javascript: fMasc( this, mTel );"/>
+              <input id="telefone" type="text" onkeydown="javascript: fMasc( this, mTel );" onblur="javascript: fMasc( this, mTel );"/>
               <label for="telefone">Telefone</label>
             </div>
             <div class="input-field col s12 m6">
@@ -57,7 +58,7 @@
             </div>
             <div class="input-field col s12 m4">
                <i class="material-icons prefix">map</i>
-               <input id="numero" type="text" onkeydown="javascript: fMasc( this, mNum);" />
+               <input id="numero" type="text"  onkeydown="javascript: fMasc( this, mNum);" onblur="javascript: fMasc( this, mNum);"/>
                <label for="numero">Número</label>
              </div>
              <div class="input-field col s12 m6">
@@ -114,7 +115,7 @@
              </div>
           </div>
           <div class="row">
-            <a class="waves-effect waves-light btn blue darken-4 col offset-s3 offset-m4 s6 m4 " id="cadastrar"><i class="material-icons right">send</i>Cadastrar</a>
+            <a class="waves-effect waves-light btn deep-purple darken-1 col offset-s3 offset-m4 s6 m4 " id="cadastrar"><i class="material-icons right">send</i>Cadastrar</a>
           </div>
         </form>
       </div>
@@ -126,11 +127,13 @@
       window.addEventListener("load", init);
 
       function init() {
-        //verificaLogado();
         M.FormSelect.init(document.querySelectorAll('select'), {});
         document.querySelector('#cadastrar').addEventListener('click', cadastrar);
         document.querySelector('#estado').addEventListener('change', carregarCidades);
         refreshSelectElements()
+        document.querySelector('#voltar').addEventListener('click', function(){
+          window.history.back();
+        });
       }
 
       function refreshSelectElements(){
@@ -140,11 +143,6 @@
             e.stopPropagation();
           })
         }
-      }
-
-      function verificaLogado() {
-        let token = localStorage.getItem("token");
-        if (!token) window.location = "login.html";
       }
 
       function carregarCidades(){
@@ -166,7 +164,7 @@
             if(response.status == 200)
                return response.json();
             else
-               throw new Error('Erro ao buscar cidades')
+               throw new Error('Erro ao carregar cidades')
          })
          .then((data) => {
             let cidades = data.cidades;
@@ -177,7 +175,7 @@
             refreshSelectElements()
          })
          .catch((error) => {
-            alert('Erro ao carregar cidades!')
+          M.toast({html: 'Erro ao carregar cidades. Tente novamente!'});
             console.error(error)
          });
       }
@@ -209,14 +207,14 @@
             if(response.status == 200)
                return response.json();
             else
-               throw new Error('Erro ao realizar cadastro')
+               throw new Error('Erro ao realizar cadastro. Tente novamente!')
          })
          .then((data) => {
-          M.toast({html: 'Parceiro criado com sucesso!'});
-            window.location = "/login.html";
+            M.toast({html: 'Parceiro criado com sucesso!'});
+            window.location = "/admin/login.html";
          })
          .catch((error) => {
-            alert('Erro ao realizar o cadastro. Tente novamente!')
+            M.toast({html: 'Erro ao cadastrar Parceiro. Tente novamente!'});
             console.error(error)
          });
       }

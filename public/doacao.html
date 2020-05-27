@@ -21,10 +21,11 @@
     <div class="navbar-fixed container-fluid">
       <nav class="row">
         <div class="nav-wrapper blue darken-4 col s12">
-          <a href="index.html" class="left col s8 m3" >
-            <img src="logo2.svg" alt="Logo" id="logo">
-          </a>
-          <a class="waves-effect waves-light btn right  blue darken-4 col s4 m1" id="deslogar" style="margin-top: 10px;"> <i class="material-icons left" style="position: relative; bottom:35%;">exit_to_app</i>Sair</a>
+          <a class="waves-effect waves-light left col blue darken-4" id="voltar"><i class="material-icons left large" style="width: 3%; height: 100%;">chevron_left</i></a>
+            <a href="index.html" class="brand-logo col center" style="font-size: 1.7em;">
+              Doe Brasil
+            </a>
+          <a class="waves-effect waves-light btn right  blue darken-4 col" id="deslogar" style="margin-top: 10px; margin-right: 2%;"> <i class="material-icons left" style="position: relative; bottom:35%;">exit_to_app</i>Sair</a>
         </div>
       </nav>
     </div>
@@ -95,6 +96,10 @@
         document.querySelector('#tab1').addEventListener('click', load)
         document.querySelector('#tab2').addEventListener('click', load)
         document.querySelector('#tab3').addEventListener('click', load)
+
+        document.querySelector('#voltar').addEventListener('click', function(){
+          window.history.back();
+        });
         
       }
 

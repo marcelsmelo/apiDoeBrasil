@@ -111,11 +111,11 @@ module.exports = {
 
          usuario.nome = req.body.nome;
          usuario.telefone = req.body.telefone;
-         usuario.senha = req.body.senha;
          usuario.rua = req.body.rua; 
          usuario.numero = req.body.numero;
          usuario.bairro = req.body.bairro;
          usuario.complemento = req.body.complemento;
+         if(req.body.senha) usuario.senha = req.body.senha;
          // usuario.estado = req.body.estado;
          // usuario.cidade = req.body.cidade;
 

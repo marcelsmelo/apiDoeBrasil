@@ -85,7 +85,6 @@ module.exports = {
               // attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
             }]
          })
-         console.log(pedidos)
          res.status(200).json(pedidos)
       }catch(error){
          res.status(500).json({msg: "Erro ao buscar pedidos", 'error': error.message})

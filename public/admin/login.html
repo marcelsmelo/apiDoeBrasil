@@ -17,10 +17,12 @@
   </head>
 
   <body>
-   <div class="navbar-fixed">
-      <nav>
-        <div class="nav-wrapper blue darken-4">
-
+    <div class="navbar-fixed container-fluid">
+      <nav class="row">
+        <div class="nav-wrapper deep-purple darken-1 col s12">
+            <a href="index.html" class="brand-logo col center" style="font-size: 1.7em;">
+              Doe Brasil
+            </a>
         </div>
       </nav>
     </div>
@@ -30,11 +32,9 @@
          <div class="row ">
             <div class="col offset-m3 s12 m6">
               <div class="card hoverable">
-                <div class="row">
-                  <div class="card-content white-text">
-                    <img src="logo3.svg" alt="Logo" style="width: 60%; margin-left: 20%;" class="center">
-                  </div>
-                </div>                
+                <div class="card-content" style="width: 95%; margin: 0 auto;">
+                  <h5 class="center" style="color: #0D47A1; font-size: 2em">Login Parceiro</h5>
+                </div>           
                 <div class="row">
                   <div class="input-field col s10 offset-s1">
                     <input id="telefone" type="text" class="validate" onkeydown="javascript: fMasc( this, mTel );">
@@ -48,7 +48,7 @@
                   </div>
                 </div>
                 <div class="row">
-                  <a class="waves-effect waves-light btn blue darken-4 col s6 m4 offset-s3 offset-m4 " id="logar"><i class="material-icons right">send</i>Logar</a>
+                  <a class="waves-effect waves-light btn deep-purple darken-3 col s6 m4 offset-s3 offset-m4 " id="logar"><i class="material-icons right">send</i>Logar</a>
                 </div>
                 
                 <p class="center" style="color: #0d47a1">Não possui uma conta? <a href="cadastroParceiro.html">Cadastre-se como parceiro</a></p>
@@ -71,8 +71,8 @@
       }
 
       function verificaLogado(){
-        let token = localStorage.getItem('token');
-        if(token) window.location = "index.html";
+        let token = localStorage.getItem('token-partner');
+        if(token) window.location = "/admin/index.html";
       }
 
       function logar(){
@@ -94,10 +94,11 @@
             return response.json()
          })
          .then(data =>{
+           console.log(data)
             let token = data.token
             if(token){
-               localStorage.setItem('token', data.token)
-               window.location = "index.html"
+               localStorage.setItem('token-partner', data.token)
+               window.location = "/admin/index.html"
             }else{
               M.toast({html: data.msg});
             }

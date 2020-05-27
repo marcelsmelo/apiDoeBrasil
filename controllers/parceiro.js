@@ -89,21 +89,22 @@ module.exports = {
       if(req.user.id) return res.status(403).json({msg: "O Usuário não tem acesso a essa rota"})
       
       try{
-         await Parceiro.update({
-            nome: req.body.nome,
-            telefone: req.body.telefone,
-            rua: req.body.rua,
-            numero: req.body.numero,
-            bairro: req.body.bairro,
-            complemento: req.body.complemento,
-            estado: req.body.estado,
-            cidade: req.body.cidade
-         },{
+         let parceiro = await Parceiro.findOne({
             where: {
                id: req.user.parceiroId,
                removed: false
             }
          })
+
+         parceiro.nome = req.body.nome;
+         parceiro.telefone = req.body.telefone;
+         parceiro.rua = req.body.rua; 
+         parceiro.numero = req.body.numero;
+         parceiro.bairro = req.body.bairro;
+         parceiro.complemento = req.body.complemento;
+         if(req.body.senha) parceiro.senha = req.body.senha;
+
+         await parceiro.save();
          return res.status(200).json({msg: "Parceiro editado com sucesso!"})
       }catch(error){
          return res.status(500).json({msg: "Erro ao editar parceiro", 'error': error.message})

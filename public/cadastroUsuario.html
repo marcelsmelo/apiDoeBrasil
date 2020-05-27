@@ -21,9 +21,10 @@
     <div class="navbar-fixed container-fluid">
       <nav class="row">
         <div class="nav-wrapper blue darken-4 col s12">
-          <a href="index.html" class="left col s10 center" >
-            <img src="logo2.svg" alt="Logo" id="logo" class="center">
-          </a>
+          <a class="waves-effect waves-light left col blue darken-4" id="voltar"><i class="material-icons left large" style="width: 3%; height: 100%;">chevron_left</i></a>
+            <a href="index.html" class="brand-logo col center" style="font-size: 1.7em;">
+              Doe Brasil
+            </a>
         </div>
       </nav>
     </div>
@@ -37,43 +38,43 @@
           <div class="row">
             <div class="input-field col s12">
                <i class="material-icons prefix">account_circle</i>
-               <input id="nome" type="text" />
+               <input id="nome" type="text" required/>
                <label for="nome">Nome</label>
             </div>
             <div class="input-field col s12 m6">
                <i class="material-icons prefix">phone</i>
-              <input id="telefone" type="text" onkeydown="javascript: fMasc( this, mTel );" onblur="javascript: fMasc( this, mTel );"/>
+              <input id="telefone" type="text" required onkeydown="javascript: fMasc( this, mTel );" onblur="javascript: fMasc( this, mTel );"/>
               <label for="telefone">Telefone</label>
             </div>
             <div class="input-field col s12 m6">
                <i class="material-icons prefix">lock</i>
-              <input id="senha" type="password" />
+              <input id="senha" type="password" required/>
               <label for="senha">Senha</label>
             </div>
             <div class="input-field col s12 m8">
                <i class="material-icons prefix">place</i>
-              <input id="rua" type="text" />
+              <input id="rua" type="text" required/>
               <label for="rua">Rua</label>
             </div>
             <div class="input-field col s12 m4">
                <i class="material-icons prefix">map</i>
-               <input id="numero" type="text" onkeydown="javascript: fMasc( this, mNum);" onblur="javascript: fMasc( this, mNum);"/>
+               <input id="numero" type="text" required onkeydown="javascript: fMasc( this, mNum);" onblur="javascript: fMasc( this, mNum);"/>
                <label for="numero">Número</label>
              </div>
              <div class="input-field col s12 m6">
                <i class="material-icons prefix">place</i>
-               <input id="bairro" type="text" />
+               <input id="bairro" type="text" required/>
                <label for="bairro">Bairro</label>
              </div>
              <div class="input-field col s12 m6">
                <i class="material-icons prefix">view_headline</i>
-               <input id="complemento" type="text" />
+               <input id="complemento" type="text" required/>
                <label for="complemento">Complemento</label>
              </div>
 
              <div class="input-field col s12 m6">
                <i class="material-icons prefix">location_city</i>
-               <select id="estado">
+               <select id="estado" required>
                  <option value="" disabled selected>Selecione um Estado</option>
                  <option value="AC">Acre</option>
                  <option value="AL">Alagoas</option>
@@ -108,7 +109,7 @@
              <div class="input-field col s12 m6">
                <i class="material-icons prefix">location_city</i>
                <select  id="cidade">
-                 <option value="" disabled selected>Selecione uma cidade</option>
+                 <option value="" disabled selected required>Selecione uma cidade</option>
                </select>
                <label>Cidade</label>
              </div>
@@ -130,6 +131,10 @@
         document.querySelector('#cadastrar').addEventListener('click', cadastrar);
         document.querySelector('#estado').addEventListener('change', carregarCidades);
         refreshSelectElements()
+
+        document.querySelector('#voltar').addEventListener('click', function(){
+          window.history.back();
+        });
       }
 
       function refreshSelectElements(){
