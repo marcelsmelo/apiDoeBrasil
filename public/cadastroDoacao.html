@@ -160,7 +160,7 @@
         M.FormSelect.init(document.querySelectorAll('select'), {});
         document.querySelector('#parceiro').addEventListener('change', carregarPontosEntrega);
         document.querySelector('#dispEntrega').addEventListener('change', habilitarSelect);
-        refreshSelectElements():
+        refreshSelectElements()
       }
 
       function habilitarSelect(){
@@ -346,7 +346,7 @@
                 form.parceiro.disabled = false
                 parceiros.selectedIndex = i
                 M.FormSelect.init(form.parceiro)
-                refreshSelectElements():
+                refreshSelectElements()
               }
             }
 
@@ -358,7 +358,7 @@
                     pontosEntrega.selectedIndex = i
                     console.log(i)
                     M.FormSelect.init(form.pontoEntrega)
-                    refreshSelectElements():
+                    refreshSelectElements()
                   }
                 }
               })
