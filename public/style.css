@@ -58,7 +58,6 @@
     height:60px;
   }
   
-  .acoes{
-    border-left: 1px solid black;
-    border-right: 1px solid black;
+  .navbar-fixed #topo{
+    background-color: #2E05E9 !important;
   }
