@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('initialProject:server');
 var http = require('http');
 var nCPU = 2;
+var cluster = require('cluster');
 
 /**
  * Get port from environment and store in Express.
@@ -28,6 +29,7 @@ if( cluster.isMaster ) {
   });
   cluster.on( 'exit', function( worker, code, signal ) {
     console.log( 'worker ' + worker.process.pid + ' died.' );
+    cluster.fork();
   });
 }
 else {
