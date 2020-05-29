@@ -184,16 +184,50 @@
               
               texto += '</div><div class="card-stacked"><div class="card-content"><div class="row">'
               
-
-              texto += `<h5><i class="material-icons left">person</i>${data[i].usuario.nome}</h5>`
-              texto += `<h6><i class="material-icons left">phone</i>${data[i].usuario.telefone}</h6>`
-              texto += `<h6><i class="material-icons left">place</i>Rua ${data[i].usuario.rua} - Bairro ${data[i].usuario.bairro}</h6>`
-              
-  
-              if(data[i].observacoes){
-                texto += `<br><div class="col s12"><h6><i class="material-icons left">format_align_justify</i><b>Observações:</b><br>
-                ${data[i].observacoes}</h6> </div>`
+              if(data[i].status == 0){
+                if(data[i].pedido){
+                  texto += `<h6>Realizar a entrega para:</h6>`
+                  texto += `<h5><i class="material-icons left">person</i>${data[i].pedido.usuario.nome}</h5>`
+                  texto += `<h6><i class="material-icons left">phone</i>${data[i].pedido.usuario.telefone}</h6>`
+                  texto += `<h6><i class="material-icons left">place</i>Rua ${data[i].pedido.usuario.rua} - Bairro ${data[i].pedido.usuario.bairro}</h6>`
+                  texto += `<h6><i class="material-icons left">format_align_justify</i>${data[i].pedido.observacoes}</h6>`
+                }else if(data[i].parceiro){
+                  texto += `<h6>Realizar a entrega para:</h6>`
+                  texto += `<h5><i class="material-icons left">person</i>${data[i].parceiro.nome}</h5>`
+                  texto += `<h6><i class="material-icons left">home</i>${data[i].pontoEntrega.nome}</h6>`
+                  texto += `<h6><i class="material-icons left">phone</i>${data[i].pontoEntrega.telefone}</h6>`
+                  texto += `<h6><i class="material-icons left">place</i>Rua ${data[i].pontoEntrega.rua} - Bairro ${data[i].pontoEntrega.bairro}</h6>`
+                }
+              }else if(data[i].status == 1){
+                if(data[i].parceiro){
+                  texto += `<h6>A ser retirado por:</h6>`
+                  texto += `<h5><i class="material-icons left">person</i>${data[i].parceiro.nome}</h5>`
+                  texto += `<h6><i class="material-icons left">phone</i>${data[i].parceiro.telefone}</h6>`
+                }else{
+                  texto += `<h5><i class="material-icons left">query_builder</i>Aguardando seleção por um parceiro cadastrado. </h5>`
+                }
+              }else{
+                if(data[i].pedido){
+                  texto += `<h6>Doação realizada para:</h6>`
+                  texto += `<h5><i class="material-icons left">person</i>${data[i].pedido.usuario.nome}</h5>`
+                  texto += `<h6><i class="material-icons left">phone</i>${data[i].pedido.usuario.telefone}</h6>`
+                }else if(data[i].parceiro){
+                  texto += `<h6>Doação entregue para:</h6>`
+                  texto += `<h5><i class="material-icons left">person</i>${data[i].parceiro.nome}</h5>`
+                  texto += `<h6><i class="material-icons left">phone</i>${data[i].parceiro.telefone}</h6>`
+                }else{
+                  texto += `<h5><i class="material-icons left">close</i>Doação não efetivada!</h5>`
+                }
               }
+              
+              
+              if(data[i].status == 0 || data[i].status == 1){
+                if(data[i].observacoes){
+                  texto += `<br><div class="col s12"><h6><i class="material-icons left">message</i><b>Observações da doação:</b><br>
+                  ${data[i].observacoes}</h6> </div>`
+                }
+              }
+             
                           
               texto += '</div> <div class="row">'
 
@@ -205,7 +239,6 @@
               texto += '</div> <div class="row"><div class="col s12 l5 right">'
 
               if(data[i].status == 0 || data[i].status == 1 ){
-               
                 texto += `<a class="waves-effect waves-teal btn-flat offset-l1 col s12 l4" onclick="finalizarDoacao(${data[i].id}, ${componente.id})"><i class="material-icons left">check</i>Confirmar</a>`
                 texto += `<a class="waves-effect waves-teal btn-flat  col s12 l3" href="cadastroDoacao.html?id=${data[i].id}"><i class="material-icons left">edit</i>Editar</a>`
                 texto += `<a class="waves-effect waves-teal btn-flat  col s12 l4" onclick="removerDoacao(${data[i].id}, ${componente.id})"><i class="material-icons left">close</i>Remover</a>`

@@ -136,7 +136,7 @@
                texto += `<h6><i class="material-icons left">phone</i>${data[i].telefone}</h6>`
                texto += `<h6><i class="material-icons left">place</i>${data[i].rua} - Nro ${data[i].numero} - ${data[i].bairro} - ${data[i].cidade} - ${data[i].estado}</h6>`
                
-               texto += '<div class="row"><div class="col right">'
+               texto += '<div class="row"><div class="col right"><br><br>'
 
                 texto += `<a class="waves-effect waves-teal btn-flat col" href="/admin/cadastroPontoEntrega.html?id=${data[i].id}"><i class="material-icons left">edit</i>Editar</a>`
                texto += `<a class="waves-effect waves-teal btn-flat col" onclick="removerPontoEntrega(${data[i].id})"><i class="material-icons left">close</i>Remover</a>`

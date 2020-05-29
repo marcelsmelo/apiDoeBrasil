@@ -180,18 +180,22 @@
               texto += '</div><div class="card-stacked"><div class="card-content"><div class="row">'
 
               if(data[i].atendidoPorUsuario){
+                texto += `<h6>Atendido pelo usuário:</h6>`
                 texto += `<h5><i class="material-icons left">person</i>${data[i].atendidoPorUsuario.nome}</h5>`
                 texto += `<h6><i class="material-icons left">phone</i>${data[i].atendidoPorUsuario.telefone}</h6>`
               }else if(data[i].atendidoPorParceiro){
+                texto += `<h6>Atendido pelo parceiro:</h6>`
                 texto += `<h5><i class="material-icons left">person</i>${data[i].atendidoPorParceiro.nome}</h5>`
                 texto += `<h6><i class="material-icons left">phone</i>${data[i].atendidoPorParceiro.telefone}</h6>`
+              }else{
+                texto += `<h5><i class="material-icons left">query_builder</i>Aguadando doação por usuário ou parceiro.</h5>`
               }
               
               //texto += `<h6><i class="material-icons left">place</i>Rua ${data[i].usuario.rua} - Bairro ${data[i].usuario.bairro}</h6>`
               
               if(data[i].observacoes){
-                texto += `<div class="col s12"><h6><i class="material-icons left">format_align_justify</i><b>Observações:</b><br>
-                          ${data[i].observacoes}</h6> </div>`
+                texto += `<h6><i class="material-icons left">format_align_justify</i><b>Observações:</b><br>
+                          ${data[i].observacoes}</h6>`
               }
                           
               texto += '</div> <div class="row">'
