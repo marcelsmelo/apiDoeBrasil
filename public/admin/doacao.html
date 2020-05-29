@@ -52,7 +52,7 @@
         </div>
        
         <div id="test3" class="col s12">
-          <h3 class="header center">Entregas <br>Pontos de Entrega</h3>
+          <h3 class="header center">Receber - Pontos de Entrega</h3>
           <ul class="collection" id="entrega"></ul>
         </div>
        
@@ -185,7 +185,6 @@
             }else throw new Error('Erro ao buscar Doações. Tente novamente!')
          })
          .then(data=>{
-           console.log(data)
            for(let i=0; i<data.length; i++){
               texto += '<li class="collection-item"><div class="card horizontal">'
               if(data[i].status == 1 && !data[i].parceiroId) texto+='<div class="card-image" style="width: 10px; background-color: red">'
@@ -194,16 +193,34 @@
               else texto+='<div class="card-image" style="width: 10px; background-color: green">'
               
               texto += '</div><div class="card-stacked"><div class="card-content"><div class="row">'
-
-              texto += `<h5><i class="material-icons left">person</i>${data[i].usuario.nome}</h5>`
-              texto += `<h6><i class="material-icons left">phone</i>${data[i].usuario.telefone}</h6>`
-              texto += `<h6><i class="material-icons left">place</i>Rua ${data[i].usuario.rua} - Bairro ${data[i].usuario.bairro}</h6>`
-              
-  
-              if(data[i].observacoes){
-                texto += `<div class="col s12"><h6><i class="material-icons left">format_align_justify</i><b>Observações:</b><br>
-                          ${data[i].observacoes}</h6> </div>`
+              if(data[i].status == 0 && data[i].pontoEntrega){
+                texto += `<h6><i class="material-icons left">get_app</i>Receber doação em:</h6>`
+                texto += `<h6><i class="material-icons left">place</i>Ponto de Entrega: ${data[i].pontoEntrega.nome}</h6>`
+                
+                texto += `<br><h5><i class="material-icons left">person</i>${data[i].usuario.nome}</h5>`
+                texto += `<h6><i class="material-icons left">phone</i>${data[i].usuario.telefone}</h6>`
+              }else if(data[i].status == 1 && data[i].parceiro){
+                texto += `<h6> <i class="material-icons left">airport_shuttle</i> Retirar doação em:</h6>`
+                texto += `<h6><i class="material-icons left">place</i>Rua ${data[i].usuario.rua} Nro: ${data[i].usuario.numero} - Bairro ${data[i].usuario.bairro} - Complemento: ${data[i].usuario.complemento}</h6>`
+                texto += `<br><h5><i class="material-icons left">person</i>${data[i].usuario.nome}</h5>`
+                texto += `<h6><i class="material-icons left">phone</i>${data[i].usuario.telefone}</h6>`
+              }else if(data[i].status == 2 || data[i].status == 3){
+                texto += `<h6>Doação realizada por:</h6>`
+                texto += `<h5><i class="material-icons left">person</i>${data[i].usuario.nome}</h5>`
+                texto += `<h6><i class="material-icons left">phone</i>${data[i].usuario.telefone}</h6>`
+                if(data[i].pontoEntrega) texto +=`<h6><i class="material-icons left">get_app</i>Recebida em: Ponto de Entrega - ${data[i].pontoEntrega.nome}</h6>`
+              }else{
+                texto += `<h5><i class="material-icons left">place</i>Rua ${data[i].usuario.rua} - Bairro ${data[i].usuario.bairro}</h5>`
               }
+
+              
+             
+            if(data[i].status != 3){
+              if(data[i].observacoes){
+                texto += `<h6><i class="material-icons left">format_align_justify</i><b>Observações:</b><br>
+                          ${data[i].observacoes}</h6>`
+              }
+            }
                           
               texto += '</div> <div class="row">'
 
