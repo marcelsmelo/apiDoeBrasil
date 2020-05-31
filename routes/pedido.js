@@ -9,7 +9,8 @@ module.exports = (app) => {
     app.get('/pedido/', auth.jwtVerify, controller.buscarTodos);
     app.get('/pedido/status/:status', auth.jwtVerify, controller.buscarPorStatus);
     
-    app.get('/pedidos-nao-atendidos/', auth.jwtVerify, controller.naoAtendidos); 
+    app.get('/pedidos-nao-atendidos/', auth.jwtVerify, controller.naoAtendidos);
+    app.get('/pedido/me/aberto', auth.jwtVerify, controller.verificarPedidoAberto);
     
     app.post('/pedido', auth.jwtVerify, auth.groupVerify(['U']), controller.cadastrar);
     app.put('/pedido/:id',auth.jwtVerify, auth.groupVerify(['U']),  controller.editar)

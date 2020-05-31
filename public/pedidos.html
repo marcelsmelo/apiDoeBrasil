@@ -42,21 +42,21 @@
         <div id="test1" class="col s12">
             <h3 class="header center titulo" >Meus Pedidos Abertos</h3>
             <div class="row">
-              <a href="cadastroPedido.html" class="waves-effect waves-light btn teal lighten-2 col offset-s3 offset-l5 offset-m4 s6 m4 l2"><i class="material-icons left">add</i>Novo Pedido</a> 
+              <a href="cadastroPedido.html" class="waves-effect waves-light btn teal lighten-2 col offset-s3 offset-l5 offset-m4 s6 m4 l2 btnCadastro"><i class="material-icons left">add</i>Novo Pedido</a> 
             </div>
             <ul class="collection" id="disponivel"></ul>
         </div>
         <div id="test2" class="col s12">
           <h3 class="header center titulo">Meus Pedidos - Aguardando Entregas</h3>
           <div class="row">
-            <a href="cadastroPedido.html" class="waves-effect waves-light btn teal lighten-2 col offset-s3 offset-l5 offset-m4 s6 m4 l2"><i class="material-icons left">add</i>Novo Pedido</a> 
+            <a href="cadastroPedido.html" class="waves-effect waves-light btn teal lighten-2 col offset-s3 offset-l5 offset-m4 s6 m4 l2 btnCadastro"><i class="material-icons left">add</i>Novo Pedido</a> 
           </div>
           <ul class="collection" id="entregas"></ul>
         </div>
         <div id="test3" class="col s12">
           <h3 class="header center titulo">Meus Pedidos Atendidos</h3>
           <div class="row">
-            <a href="cadastroPedido.html" class="waves-effect waves-light btn teal lighten-2 col offset-s3 offset-l5 offset-m4 s6 m4 l2"><i class="material-icons left">add</i>Novo Pedido</a> 
+            <a href="cadastroPedido.html" class="waves-effect waves-light btn teal lighten-2 col offset-s3 offset-l5 offset-m4 s6 m4 l2 btnCadastro"><i class="material-icons left">add</i>Novo Pedido</a> 
           </div>
           <ul class="collection" id="atendidos"></ul>
         </div>
@@ -83,6 +83,7 @@
 
       function init(){
         verificaLogado();
+        verificarPedidosAberto();
         carregarPedidos('/pedido/status/0', localStorage.getItem('token-user'), document.querySelector('#disponivel'))
         M.Tabs.init(document.querySelectorAll('.tabs'),{swipeable: false});
         M.FloatingActionButton.init(document.querySelectorAll('.fixed-action-btn'), {swipeable: true});
@@ -122,6 +123,31 @@
         if(!token) window.location = "login.html"
       }
 
+      function verificarPedidosAberto(){
+        let token = localStorage.getItem('token-user');
+        fetch("/pedido/me/aberto", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "authorization": token
+          },
+        })
+         .then((response) => {
+            let status = '';
+
+            if(response.status == 200) status = 'block';
+            else status = 'none';
+              
+            
+            let botoes = document.querySelectorAll('.btnCadastro')
+            for(let i=0; i<botoes.length; i++){
+              console.log(botoes[i])
+              botoes[i].style.display = status;
+            }
+         });
+      }
+
       function deslogar(){
         let token = localStorage.getItem('token-user');
         fetch("/usuario/logout", {
@@ -150,6 +176,7 @@
       }
 
       function carregarPedidos(url, token, componente){
+        verificarPedidosAberto()
         let texto = ""
         fetch(url, {
           method: "GET",
@@ -170,7 +197,6 @@
             else throw new Error('Erro ao buscar Pedidos')
          })
          .then(data=>{
-           console.log(data)
            for(let i=0; i<data.length; i++){
               texto += '<li class="collection-item col s12"><div class="card horizontal">'
               if(data[i].status == 0) texto+='<div class="card-image" style="width: 10px; background-color: red">'

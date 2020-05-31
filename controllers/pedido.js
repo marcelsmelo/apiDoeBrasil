@@ -120,10 +120,14 @@ module.exports = {
    },
    //Cadastra um novo pedido vinculado ao usuário logado
    cadastrar: async (req, res, next)=>{
+      let nroPedidos = await nroPedidosAbertos(req.user.id)
+      if(nroPedidos > 0){//Não permitir a criação de um novo pedido enquanto existir pedido em aberto
+         return res.status(500).json({msg: "Erro ao cadastrar pedido", 'error': 'O usuário já possui pedido em aberto!'})
+      }
+      
       if(!req.body.generoAlimenticio && !req.body.higienePessoal &&
          !req.body.artigoLimpeza && !req.body.mascara){
-            res.status(500).json({msg: "Erro ao cadastrar pedido", 'error': 'Solicite pelo menos um material!'})
-            return;
+            return res.status(500).json({msg: "Erro ao cadastrar pedido", 'error': 'Solicite pelo menos um material!'})
       }
 
       let pedido = new Pedido({
@@ -267,4 +271,19 @@ module.exports = {
          res.status(500).json({msg: "Erro ao atualizar solicitação!" , 'error':error.message})
       }
    },
+
+   verificarPedidoAberto: async (req, res, next)=>{//TODO: Documentar
+      let nroPedidos = await nroPedidosAbertos(req.user.id);
+      if(!nroPedidos) res.status(200).json({msg: `O usuário não possui pedidos em aberto!`})
+      else res.status(500).json({msg:`O usuário possui ${nroPedidos} abertos!`})
+   },
+}
+
+async function nroPedidosAbertos(usuarioId){
+   let condition = {
+      usuarioId: usuarioId,
+      status: {[Op.or]: [0, 1]},
+      removed: false
+   }
+   return await Pedido.count({where: condition})
 }

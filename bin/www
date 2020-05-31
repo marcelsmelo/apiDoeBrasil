@@ -18,42 +18,42 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 
-if( cluster.isMaster ) {
-  // Create a worker for each CPU
-  for( var i = 0; i < nCPU; i++ ) {
-    cluster.fork();
-  }
+// if( cluster.isMaster ) {
+//   // Create a worker for each CPU
+//   for( var i = 0; i < nCPU; i++ ) {
+//     cluster.fork();
+//   }
 
-    cluster.on( 'online', function( worker ) {
-    console.log( 'Worker ' + worker.process.pid + ' is online.' );
-  });
-  cluster.on( 'exit', function( worker, code, signal ) {
-    console.log( 'worker ' + worker.process.pid + ' died.' );
-    cluster.fork();
-  });
-}
-else {
-    var server = http.createServer(app);
-    server.listen(port);
-    console.log('Listening on ' + port);
-}
+//     cluster.on( 'online', function( worker ) {
+//     console.log( 'Worker ' + worker.process.pid + ' is online.' );
+//   });
+//   cluster.on( 'exit', function( worker, code, signal ) {
+//     console.log( 'worker ' + worker.process.pid + ' died.' );
+//     cluster.fork();
+//   });
+// }
+// else {
+//     var server = http.createServer(app);
+//     server.listen(port);
+//     console.log('Listening on ' + port);
+// }
 
 
 /**
  * Create HTTP server.
  */
 
-//var server = http.createServer(app);
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-// server.listen(port);
-// server.on('error', onError);
-// server.on('listening', onListening);
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 
-// console.log('Listening on ' + port);
+console.log('Listening on ' + port);
 
 /**
  * Normalize a port into a number, string, or false.

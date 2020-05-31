@@ -93,7 +93,7 @@ module.exports = {
 
       if(req.user.group == 'U'){
          condition.usuarioId = req.user.id 
-         if(req.params.status == 3){
+         if(req.params.status == 2 || req.params.status == 3){
             condition.status = {[Op.or]: [2, 3]}
          }else{
             condition.status = req.params.status 
