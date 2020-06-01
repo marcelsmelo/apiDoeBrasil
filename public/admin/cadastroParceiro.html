@@ -38,6 +38,7 @@
                <input id="nome" type="text" />
                <label for="nome">Nome</label>
             </div>
+            
             <div class="input-field col s12 m6">
                <i class="material-icons prefix">phone</i>
               <input id="telefone" type="text" onkeydown="javascript: fMasc( this, mTel );" onblur="javascript: fMasc( this, mTel );"/>
@@ -48,6 +49,11 @@
               <input id="senha" type="password" />
               <label for="senha">Senha</label>
             </div>
+            <div class="input-field col s12">
+              <i class="material-icons prefix">email</i>
+              <input id="email" type="text" />
+              <label for="email">E-mail</label>
+           </div>
             <div class="input-field col s12 m8">
                <i class="material-icons prefix">place</i>
               <input id="rua" type="text" />
@@ -184,6 +190,7 @@
             nome: form.nome.value,
             telefone: form.telefone.value,
             senha: form.senha.value,
+            email: form.email.value,
             rua: form.rua.value,
             numero: form.numero.value,
             bairro: form.bairro.value,
@@ -207,8 +214,7 @@
                throw new Error('Erro ao realizar cadastro. Tente novamente!')
          })
          .then((data) => {
-            M.toast({html: 'Parceiro criado com sucesso!'});
-            window.location = "/admin/login.html";
+            window.location = "/admin/login.html?created=true";
          })
          .catch((error) => {
             M.toast({html: 'Erro ao cadastrar Parceiro. Tente novamente!'});

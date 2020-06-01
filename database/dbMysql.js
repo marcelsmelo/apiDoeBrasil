@@ -13,3 +13,4 @@ module.exports =  new Sequelize(config.database, config.username, config.passwor
     }
 })
 
+//ALTER TABLE parceiros ADD COLUMN email varchar(255) NOT NULL;

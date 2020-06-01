@@ -30,7 +30,7 @@
             <div class="col offset-m3 s12 m6">
               <div class="card hoverable">
                 <div class="card-content" style="width: 95%; margin: 0 auto;">
-                  <h5 class="center" style="color: #0D47A1; font-size: 2em">Login Parceiro</h5>
+                  <h5 class="center" style="color: #0D47A1;  font-size: 2em">Login Parceiro</h5>
                 </div>           
                 <div class="row">
                   <div class="input-field col s10 offset-s1">
@@ -64,6 +64,7 @@
 
       function init(){
         verificaLogado();
+        verificaCadastro();
         document.querySelector('#logar').addEventListener('click', logar);
       }
 
@@ -71,6 +72,16 @@
         let token = localStorage.getItem('token-partner');
         if(token) window.location = "/admin/index.html";
       }
+
+      function verificaCadastro(){
+        let cadastro = window.location.search.replace('?created=','')
+        if(cadastro){
+          M.toast({html: 'Parceiro criado com sucesso! Acesse seu e-mail para informações de acesso.'});
+        }
+        
+      }
+
+
 
       function logar(){
          let telefone = document.querySelector('#telefone').value;

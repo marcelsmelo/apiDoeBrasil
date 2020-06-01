@@ -12,7 +12,7 @@ module.exports = {
                   id: req.params.id,
                   removed: false
                },
-               attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado']
+               attributes: ['id', 'nome', 'telefone', 'email', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado']
             })
          res.status(200).json(parceiro)
       }catch(error){
@@ -51,7 +51,7 @@ module.exports = {
                   cidade: req.user.cidade,
                   removed: false
                },
-               attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado']
+               attributes: ['id', 'nome', 'telefone','email', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado']
          })
          res.status(200).json(parceiros)
       }catch(error){
@@ -64,6 +64,7 @@ module.exports = {
       let parceiro = new Parceiro({
          nome: req.body.nome,
          telefone: req.body.telefone,
+         email:req.body.email,
          senha: req.body.senha,
          rua: req.body.rua, 
          numero: req.body.numero,
@@ -98,6 +99,7 @@ module.exports = {
 
          parceiro.nome = req.body.nome;
          parceiro.telefone = req.body.telefone;
+         parceiro.email = req.body.email;
          parceiro.rua = req.body.rua; 
          parceiro.numero = req.body.numero;
          parceiro.bairro = req.body.bairro;

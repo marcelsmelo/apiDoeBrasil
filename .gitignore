@@ -38,4 +38,5 @@ jspm_packages
 
 #config infos
 config/
+.vscode/
 
