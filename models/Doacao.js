@@ -81,4 +81,6 @@ Doacao.belongsTo(PontoEntrega,{
     }
 })
 
+
+
 module.exports = Doacao;
