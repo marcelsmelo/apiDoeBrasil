@@ -61,7 +61,8 @@ const Parceiro = sequelize.define('parceiro', {
     },
     numero: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 0
     },
     complemento: {
         type: Sequelize.STRING,
