@@ -34,8 +34,8 @@ const PontoEntrega = sequelize.define('pontoEntrega', {
     },
     numero: {
         type: Sequelize.STRING,
-        allowNull: true,
-        defaultValue: 0
+        allowNull: false,
+        defaultValue: "0"
     },
     complemento: {
         type: Sequelize.STRING,
