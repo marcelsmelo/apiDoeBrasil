@@ -72,7 +72,7 @@ const Usuario = sequelize.define('usuario', {
     },
     complemento: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     estado: {
         type: Sequelize.STRING,
