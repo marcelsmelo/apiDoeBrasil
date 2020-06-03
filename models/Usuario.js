@@ -67,7 +67,7 @@ const Usuario = sequelize.define('usuario', {
     },
     numero: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         defaultValue: 0
     },
     complemento: {
