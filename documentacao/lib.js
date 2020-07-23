@@ -3,6 +3,22 @@
 {
   components:{
     parameters:{
+      'idParam':{
+        'description': "ID do elemento",
+        'in': 'query',
+        'required': true,
+        "schema":{
+          "type": "int"
+        }
+      },
+      'optionalIdParam':{
+        'description': "ID do elemento (Opcional)",
+        'in': 'query',
+        'required': false,
+        "schema":{
+          "type": "int"
+        }
+      },
       'userParam':{
         'description': "Objeto Usuário",
         'in': "body",
@@ -119,13 +135,13 @@
         }
       },
       "arrayParceiros":{
-        "description": "Array de Parceiros solicitadas",
+        "description": "Array de Parceiros solicitados",
         "content":{
           "application/json":{
             "schema":{
               "type":"array",
               "items":{
-                "$ref":"#/components/schemas/Parceiro"
+                "$ref":"#/components/schemas/Usuario"
               }
             }
           }
@@ -136,7 +152,30 @@
         "content":{
           "application/json":{
             "schema":{
-              "$ref":"#/components/schemas/Parceiro"
+              "$ref":"#/components/schemas/Usuario"
+            }
+          }
+        }
+      },
+      "arrayUsuarios":{
+        "description": "Array de Usuários solicitados",
+        "content":{
+          "application/json":{
+            "schema":{
+              "type":"array",
+              "items":{
+                "$ref":"#/components/schemas/Usuario"
+              }
+            }
+          }
+        }
+      },
+      "singleUsuario":{
+        "description": "Usuário solicitado",
+        "content":{
+          "application/json":{
+            "schema":{
+              "$ref":"#/components/schemas/Usuario"
             }
           }
         }

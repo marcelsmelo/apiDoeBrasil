@@ -21,6 +21,11 @@ const Usuario = sequelize.define('usuario', {
             }
         }
     },
+    cpfCnpj:{
+        type: Sequelize.STRING,
+        unique: true,
+        allowNull: false
+    },
     telefone: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -31,6 +36,11 @@ const Usuario = sequelize.define('usuario', {
                 msg: "Telefone não deve conter tamanho maior que 17!"
             }
         }
+    },
+    email:{
+        type: Sequelize.STRING,
+        allowNull: true,
+        unique: true
     },
     senha: {
         type: Sequelize.STRING,
@@ -46,7 +56,7 @@ const Usuario = sequelize.define('usuario', {
         }
     },
     group:{
-        type: Sequelize.ENUM('U', 'P', 'A') ,
+        type: Sequelize.ENUM('U', 'P', 'UP', 'A') ,
         allowNull: false,
         defaultValue: 'U'
     },
@@ -121,12 +131,12 @@ Usuario.prototype.comparePassword = function(enteredPassword) {
 }
 
 
-Usuario.prototype.generateAuthToken = function(loginType) {
+Usuario.prototype.generateAuthToken = function() {
    return new Promise((success, reject) => {
       // Generate an auth token for the user
       const usuario = this
       
-      let data = {usuarioId: usuario.id, parceiroId: usuario.parceiroId, loginType}
+      let data = {usuarioId: usuario.id, group: usuario.group}
 
       //Cria o token
       const token = jwt.sign(
@@ -157,11 +167,9 @@ Usuario.prototype.generateAuthToken = function(loginType) {
 Usuario.beforeCreate(setSaltAndPassword)
 Usuario.beforeUpdate(setSaltAndPassword)
 
-Usuario.belongsTo(Parceiro, {
-    foreignKey: {
-        allowNull: true, 
-        defaultValue: null
-    }
+Usuario.belongsTo(Usuario, {
+    as:'parceiro',
+    defaultValue: null
 })
 
 module.exports = Usuario;

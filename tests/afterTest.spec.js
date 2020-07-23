@@ -17,18 +17,18 @@ describe("Entrega de cidades pela UF do Estado",()=>{
       })
    });
 
-   it('Delete all Parceiro data', done=>{
-      Parceiro.destroy({
-         where: {},
-         cascade: true
-      })
-      .then(()=>{
-         done()
-      })
-      .catch(error=>{
-         done(error)
-      })
-   })
+   // it('Delete all Parceiro data', done=>{
+   //    Parceiro.destroy({
+   //       where: {},
+   //       cascade: true
+   //    })
+   //    .then(()=>{
+   //       done()
+   //    })
+   //    .catch(error=>{
+   //       done(error)
+   //    })
+   // })
 
    // it('Remove all Pedido data created on Test', done =>{
    //    Pedido.destroy({

@@ -15,6 +15,10 @@ const Parceiro = sequelize.define('parceiro', {
         type: Sequelize.STRING,
         allowNull: false
     },
+    cpfCnpj:{
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     telefone: {
         type: Sequelize.STRING,
         allowNull: false,

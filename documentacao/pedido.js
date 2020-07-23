@@ -226,7 +226,7 @@
   "/parceiro/pedido/atender/{id}": {
     "put": {
       "description": "Permite que o Parceiro logado seleciona o pedido, pelo ID, para ser Atendido (Disponível apenas para parceiros) <br> Modifica o Status do Pedido para Status = 1 (Aguardando Entrega)",
-      "tags":['Parceiro'],
+      "tags":['Pedido'],
       "security": [
           { "BearerAuth": [] }
         ],

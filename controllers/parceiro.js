@@ -113,34 +113,7 @@ module.exports = {
       }
    },
 
-   //Remove um Parceiro existente
-   remover: async (req, res, next)=>{
-      if(req.user.id) return res.status(403).json({msg: "O Usuário não tem acesso a essa rota"})
-      
-      try{
-         await Parceiro.update({
-                  removed: true
-               },{
-               where: {
-                  id: req.user.parceiroId,
-                  removed: false
-               }
-         })
-
-         await Usuario.update({
-            group: 'U',
-            parceiroId: null,
-            token: null
-         },{
-            where: {
-               parceiroId: req.user.parceiroId
-            }
-         })
-         return res.status(200).json({msg: "Parceiro removido com sucesso!"})
-      }catch(error){
-         return res.status(500).json({msg: "Erro ao remover Parceiro!" , 'error': error.message})
-      }
-   },
+  
     //Realiza o login do Parceiro
     login: (req, res, next)=>{
       const { telefone, senha } = req.body

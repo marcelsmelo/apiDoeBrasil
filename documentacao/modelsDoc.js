@@ -7,16 +7,16 @@
           "properties":{
             "id":{"type":"integer"},
             "nome":{"type":"string"},
+            "cpfCnpj":{"type":"string"},
             "telefone":{"type":"string"},
+            "email":{"type":"string"},
             "senha":{"type":"string"},
             "rua": {"type":"string"},
             "numero": {"type":"string"},
             "bairro":{"type":"string"},
             "complemento":{"type":"string"},
             "cidade":{"type":"string"},
-            "estados":{"type":"string"},
-            "group": {"type": "string", "enum":["U", "P", "A"]},
-            "parceiroId": {"type":"integer"}
+            "estados":{"type":"string"}
           }
         },
         "Pedido":{
@@ -48,20 +48,6 @@
             "pedidoId": {"type:":"integer"},
             "parceiroId":{"type:":"integer"},
             "pontoEntregaId": {"type:":"integer"}
-          }
-        },
-        "Parceiro":{
-          "properties":{
-            "id":{"type":"integer"},
-            "nome":{"type":"string"},
-            "telefone":{"type":"string"},
-            "senha":{"type":"string"},
-            "rua": {"type":"string"},
-            "numero": {"type":"string"},
-            "bairro":{"type":"string"},
-            "complemento":{"type":"string"},
-            "cidade":{"type":"string"},
-            "estado":{"type":"string"}
           }
         },
         "PontoEntrega":{

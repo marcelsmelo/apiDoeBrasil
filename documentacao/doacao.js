@@ -210,7 +210,7 @@
     "/parceiro/doacao/disponivel": {
     "get": {
       "description": "Busca todas Doações disponíveis para retirada na cidade dos Parceiro logado. (Permitido apenas para parceiros)",
-      "tags":['Parceiro'],
+      "tags":['Doação'],
       "security": [
           { "BearerAuth": [] }
         ],
@@ -234,7 +234,7 @@
   "/parceiro/doacao/selecionar/{id}": {
     "get": {
       "description": "Permite que um parceiro selecione uma doação para retirada. (Permitido apenas para parceiros)",
-      "tags":['Parceiro'],
+      "tags":['Doação'],
       "security": [
           { "BearerAuth": [] }
         ],
