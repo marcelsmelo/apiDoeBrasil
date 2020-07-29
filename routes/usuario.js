@@ -3,9 +3,10 @@ const auth = require('../lib/auth')
 module.exports = (app) => {
     const controller = app.controllers.usuario;
 
-    app.post('/login', controller.login);//OK
+    app.post('/usuario/login',(req, res, next)=>{req.body.loginType = 'U'; next();}, controller.login);
+    app.post('/parceiro/login',(req, res, next)=>{req.body.loginType = 'P'; next();}, controller.login);
     app.post('/logout', auth.jwtVerify, controller.logout);//ok
-    app.get('/meus-dados', auth.jwtVerify, controller.meusDados);
+    app.get('/me', auth.jwtVerify, controller.meusDados);
 
     
     //Usuários

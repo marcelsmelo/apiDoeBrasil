@@ -2,8 +2,6 @@ const Sequelize = require('sequelize')
 const sequelize = require('../database/dbMysql');
 const Usuario = require('./Usuario');
 const Pedido = require('./Pedido');
-const Parceiro = require('./Parceiro');
-const PontoEntrega = require('./PontoEntrega');
 
 const Doacao = sequelize.define('doacao', {
     id: {
@@ -69,17 +67,17 @@ Doacao.belongsTo(Pedido,{
     }
 });
 
-Doacao.belongsTo(Parceiro,{
-    foreignKey:{
-        allowNull: true
-    }
-})
+// Doacao.belongsTo(Parceiro,{
+//     foreignKey:{
+//         allowNull: true
+//     }
+// })
 
-Doacao.belongsTo(PontoEntrega,{
-    foreignKey:{
-        allowNull: true
-    }
-})
+// Doacao.belongsTo(PontoEntrega,{
+//     foreignKey:{
+//         allowNull: true
+//     }
+// })
 
 
 

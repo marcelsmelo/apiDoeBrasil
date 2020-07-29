@@ -10,6 +10,7 @@
             "cpfCnpj":{"type":"string"},
             "telefone":{"type":"string"},
             "email":{"type":"string"},
+            "sobre":{"type":"string"},
             "senha":{"type":"string"},
             "rua": {"type":"string"},
             "numero": {"type":"string"},
@@ -50,17 +51,14 @@
             "pontoEntregaId": {"type:":"integer"}
           }
         },
-        "PontoEntrega":{
+        "Acao":{
           "properties":{
             "id":{"type":"integer"},
             "nome":{"type":"string"},
-            "telefone":{"type":"string"},
-            "rua": {"type":"string"},
-            "numero": {"type":"string"},
-            "bairro":{"type":"string"},
-            "complemento":{"type":"string"},
-            "cidade":{"type":"string"},
-            "estado":{"type":"string"},
+            "descricao":{"type":"string"},
+            "dataInicio": {"type":"date"},
+            "dataFim": {"type":"date"},
+            "ativo":{"type":"boolean"},
             "parceiroId":{"type:":"integer"}
           }
         },

@@ -51,12 +51,12 @@
           "$ref": "#/components/schemas/Parceiro"
         }
       },
-      'pontoEntregaParam':{
-        'description': "Objeto PontoEntrega",
+      'acaoParam':{
+        'description': "Objeto Acao",
         'in': "body",
         'requiered':true,
         "schema": {
-          "$ref": "#/components/schemas/PontoEntrega"
+          "$ref": "#/components/schemas/Acao"
         }
       }
     },
@@ -180,25 +180,25 @@
           }
         }
       },
-      "arrayPontosEntrega":{
-        "description": "Array de Pontos de Entrega solicitados",
+      "arrayAcoes":{
+        "description": "Array de Ações solicitadas",
         "content":{
           "application/json":{
             "schema":{
               "type":"array",
               "items":{
-                "$ref":"#/components/schemas/PontoEntrega"
+                "$ref":"#/components/schemas/Acao"
               }
             }
           }
         }
       },
-      "singlePontoEntrega":{
-        "description": "PontoEntrega solicitado",
+      "singleAcao":{
+        "description": "Ação solicitada",
         "content":{
           "application/json":{
             "schema":{
-              "$ref":"#/components/schemas/PontoEntrega"
+              "$ref":"#/components/schemas/Acao"
             }
           }
         }

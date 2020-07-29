@@ -35,7 +35,7 @@
         }
       }
     },
-    "/login": {
+    "/usuario/login": {
       "post": {
         "description": "Realiza o login do usuário cadastrado. ",
         "tags":['Login'],
@@ -79,6 +79,50 @@
         }
      }
     },
+    "/parceiro/login": {
+      "post": {
+        "description": "Realiza o login do parceiro cadastrado. ",
+        "tags":['Login'],
+        "parameters":[
+          {
+            name: "cpfCnpj",
+            description: "CPF/CNPJ do Parceiro ",
+            in: "body",
+            requiered:true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            name: "senha",
+            description: "Senha do Parceiro ",
+            in: "body",
+            requiered:true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Parceiro logado com sucesso.",
+            "content":{
+              "application/json":{
+                "schema": {
+                  "type":"object",
+                  "properties":{
+                    "token": { "type":"string"}
+                  }
+                }
+              }
+            }
+          },
+          "500":{
+            "$ref": "#/components/responses/genericError"
+          }
+        }
+     }
+    },
     "/logout": {
       "post": {
         "description": "Realiza o logout do usuário",
@@ -99,9 +143,9 @@
         }
      }
    },
-   "/meus-dados/": {
+   "/me/": {
       "post": {
-        "description": "Retorna todos os dados do Usuário Logado. ",
+        "description": "Retorna todos os dados do Usuário/Parceiro Logado. ",
         "tags":['Login'],
         "security": [
           { "BearerAuth": [] }

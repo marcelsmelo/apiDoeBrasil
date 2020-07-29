@@ -14,6 +14,7 @@ describe("User Login test",()=>{
     nome: 'Marcel Melo',
     cpfCnpj: '08911211613',
     telefone: '+55 34 99636-8898',
+    email: 'kasks@aksdfja.com',
     senha: '123456',
     rua: 'FC 05',
     numero: 'QA L6',
@@ -49,7 +50,7 @@ describe("User Login test",()=>{
   
   it("Tentar logar com um usuário não existente",(done)=>{
     chai.request(base_url)
-    .post('/login')
+    .post('/usuario/login')
     .send({cpfCnpj: '86453233535533', senha: '66857566'})
     .end((err, res)=>{
       expect(res).to.have.status(500)
@@ -59,9 +60,20 @@ describe("User Login test",()=>{
     })
   });
 
+  it('Não conseguir realizar login de um usuário cadastrado como Parceiro', (done)=>{
+    chai.request(base_url)
+    .post('/parceiro/login')
+    .send({cpfCnpj: user.cpfCnpj, senha: user.senha})
+    .end((err, res)=>{
+      expect(res).to.have.status(500)
+      expect(res.body).to.have.property('error')
+      done();
+    })
+  });
+
   it('Realizar login de um usuário cadastrado', (done)=>{
     chai.request(base_url)
-    .post('/login')
+    .post('/usuario/login')
     .send({cpfCnpj: user.cpfCnpj, senha: user.senha})
     .end((err, res)=>{
       expect(res).to.have.status(200)
@@ -73,7 +85,7 @@ describe("User Login test",()=>{
 
   it('Recuperar os dados do usuário logado', (done)=>{
     chai.request(base_url)
-    .get('/meus-dados')
+    .get('/me')
     .set('authorization', 'Bearer '+token)
     .end((err, res)=>{
       expect(res).to.have.status(200)
@@ -98,7 +110,7 @@ describe("User Login test",()=>{
 
   it('Recuperar os dados do usuário logado (Editado)', (done)=>{
     chai.request(base_url)
-    .get('/meus-dados')
+    .get('/me')
     .set('authorization', 'Bearer '+token)
     .end((err, res)=>{
       expect(res).to.have.status(200)

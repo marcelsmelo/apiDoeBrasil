@@ -2,7 +2,6 @@ const Sequelize = require('sequelize')
 const sequelize = require('../database/dbMysql');
 const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
-const Parceiro = require('./Parceiro')
 
 const Usuario = sequelize.define('usuario', {
     id: {
@@ -41,6 +40,10 @@ const Usuario = sequelize.define('usuario', {
         type: Sequelize.STRING,
         allowNull: true,
         unique: true
+    },
+    sobre:{
+        type: Sequelize.STRING,
+        allowNull: true
     },
     senha: {
         type: Sequelize.STRING,
@@ -131,12 +134,12 @@ Usuario.prototype.comparePassword = function(enteredPassword) {
 }
 
 
-Usuario.prototype.generateAuthToken = function() {
+Usuario.prototype.generateAuthToken = function(loginType) {
    return new Promise((success, reject) => {
       // Generate an auth token for the user
       const usuario = this
       
-      let data = {usuarioId: usuario.id, group: usuario.group}
+      let data = {usuarioId: usuario.id, loginType: loginType}
 
       //Cria o token
       const token = jwt.sign(

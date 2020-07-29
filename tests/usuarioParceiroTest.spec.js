@@ -15,7 +15,10 @@ describe("User Login test",()=>{
     nome: 'Partner',
     telefone: '+55 34 99636-8899',
     cpfCnpj: '85236974102',
+    email: "email@email.com",
+    sobre: "Uns detalhes do Parceiro",
     senha: '123456',
+    descricao: "Descrição do parceiro!",
     rua: 'FC 05',
     numero: 'QA L6',
     complemento: 'Casa 02',
@@ -88,10 +91,22 @@ describe("User Login test",()=>{
             done();
          })
   });
+
+  it("Não conseguir Realizar o login como Usuário",(done)=>{
+    chai.request(base_url)
+    .post('/usuario/login')
+    .send({cpfCnpj: partner.cpfCnpj, senha: partner.senha})
+    .end((err, res)=>{
+      expect(res).to.have.status(500)
+      expect(res.body).to.be.a('object')
+      expect(res.body).to.have.property('error')
+      done();
+    })
+  });
   
   it("Realizar o login como parceiro",(done)=>{
     chai.request(base_url)
-    .post('/login')
+    .post('/parceiro/login')
     .send({cpfCnpj: partner.cpfCnpj, senha: partner.senha})
     .end((err, res)=>{
       expect(res).to.have.status(200)
@@ -170,6 +185,32 @@ describe("User Login test",()=>{
     })
   });
 
+  it("Realizar o login do Usuário-Parceiro como Usuário",(done)=>{
+    chai.request(base_url)
+    .post('/usuario/login')
+    .send({cpfCnpj: userPartner.cpfCnpj, senha: userPartner.senha})
+    .end((err, res)=>{
+      expect(res).to.have.status(200)
+      expect(res.body).to.be.a('object')
+      expect(res.body).to.have.property('token')
+      done();
+    })
+  });
+
+  it("Realizar o login do Usuário-Parceiro como Parceiro",(done)=>{
+    chai.request(base_url)
+    .post('/parceiro/login')
+    .send({cpfCnpj: userPartner.cpfCnpj, senha: userPartner.senha})
+    .end((err, res)=>{
+      expect(res).to.have.status(200)
+      expect(res.body).to.be.a('object')
+      expect(res.body).to.have.property('token')
+      done();
+    })
+  });
+
+
+  
   it("Buscar um Usuário-Parceiro (UP) por um ID específico",(done)=>{
     chai.request(base_url)
     .get('/parceiro/usuario')
@@ -189,6 +230,7 @@ describe("User Login test",()=>{
     .query({'id': userPartnerId})
     .set('authorization', 'Bearer '+token)
     .end((err, res)=>{
+      console.log(res.body)
       expect(res).to.have.status(200)
       expect(res.body).to.have.property('msg')
       done();

@@ -2,8 +2,7 @@ const Sequelize = require('sequelize');
 let Usuario = require('../models/Usuario')
 let Doacao = require('../models/Doacao')
 let Pedido = require('../models/Pedido')
-let Parceiro = require('../models/Parceiro')
-let PontoEntrega = require('../models/PontoEntrega')
+
 const Op = Sequelize.Op
 
 module.exports = {
@@ -32,12 +31,6 @@ module.exports = {
                      id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("pedido->usuario.id")),
                  }
                }]
-            },{   
-               model: Parceiro,
-               attributes: { exclude: ['createdAt', 'updatedAt'] } 
-            },{
-               model: PontoEntrega,
-               attributes: { exclude: ['createdAt', 'updatedAt'] } 
             }]
          })
          res.status(200).json(doacao)
@@ -72,13 +65,7 @@ module.exports = {
                         id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("pedido->usuario.id")),
                     }
                   }]
-               },{   
-                  model: Parceiro,
-                  attributes: ['id', 'nome', 'telefone'] 
-               },{
-                  model: PontoEntrega,
-                  attributes: ['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado']
-            }]
+               }]
          })
          res.status(200).json(doacoes)
       }catch (error){
@@ -123,13 +110,7 @@ module.exports = {
                         id: Sequelize.where(Sequelize.col("pedido.usuarioId"), "=", Sequelize.col("pedido->usuario.id")),
                     }
                   }]
-               },{   
-                  model: Parceiro,
-                  attributes: ['id', 'nome', 'telefone'],
-               },{
-                  model: PontoEntrega,
-                  attributes:['id', 'nome', 'telefone', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado'],
-            }]
+               }]
           })
           res.status(200).json(doacoes)
        }catch (error){

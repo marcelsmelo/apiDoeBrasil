@@ -1,4 +1,6 @@
 let Usuario = require('../models/Usuario')
+let Sequelize = require("sequelize");
+const Op = Sequelize.Op
 
 module.exports = {
    //Cadastra um novo Usuário
@@ -7,6 +9,8 @@ module.exports = {
          nome: req.body.nome,
          cpfCnpj: req.body.cpfCnpj,
          telefone: req.body.telefone,
+         email: req.body.email,
+         sobre: req.body.sobre? req.body.sobre: null,
          senha: req.body.senha,
          rua: req.body.rua, 
          numero: req.body.numero,
@@ -26,7 +30,7 @@ module.exports = {
    },
 
    //Retorna os dados do usuário logado
-   meusDados: async (req, res, next)=>{//TODO: Documentar, definir campos para retorno
+   meusDados: async (req, res, next)=>{
       try{
          let dados = await Usuario.findOne({
             where:{
@@ -42,11 +46,19 @@ module.exports = {
 
    //Realiza o login do usuário / Parceiro
    login: (req, res, next)=>{
+      let condition = {
+         'cpfCnpj': req.body.cpfCnpj,
+         removed: false
+      }
+
+      if(req.body.loginType == 'U'){//Login de Usuário
+         condition.group =  {[Op.or]: ['U', 'UP']}
+      }else{//Login de Parceiro
+         condition.group =  {[Op.or]: ['P', 'UP']}
+      }
+
       Usuario.findOne({
-         where: {
-            'cpfCnpj': req.body.cpfCnpj,
-            removed: false
-         }
+         where: condition
       })
       .then(user=>{
          if(!user){//Usuário (cpfCnpj) não foi encontrado
@@ -55,7 +67,7 @@ module.exports = {
                error: null})   
          }else{//Usuário encontrado, verificar senha
             if(user.comparePassword(req.body.senha)){//Senha informada está correta
-               user.generateAuthToken() //Gerar o token JWT
+               user.generateAuthToken(req.body.loginType) //Gerar o token JWT
                .then(sucesso =>{//Token gerado com sucesso
                   res.status(200).json(sucesso)
                })
@@ -105,7 +117,9 @@ module.exports = {
 
          usuario.nome = req.body.nome;
          usuario.telefone = req.body.telefone;
-         usuario.rua = req.body.rua; 
+         usuario.email = req.body.email? req.body.email: null;
+         usuario.sobre = req.body.sobre? req.body.sobre: null;
+         usuario.rua = req.body.rua;
          usuario.numero = req.body.numero;
          usuario.bairro = req.body.bairro;
          usuario.complemento = req.body.complemento;
@@ -116,7 +130,6 @@ module.exports = {
          await usuario.save();
          return res.status(200).json({msg: "Usuário editado com sucesso!"})
       }catch(error){
-         console.log(error)
          res.status(500).json({msg: "Erro ao editar usuário", 'error': error.message})
       }
    },
@@ -155,7 +168,7 @@ module.exports = {
       try{
          let success = await Usuario.update({
             group: 'UP',
-            parceiroId: req.user.id
+            parceiroId: req.user.parceiroId
          }, {
             where: {
                id: req.query.id,
@@ -253,7 +266,6 @@ module.exports = {
          })
          res.status(200).json(parceiros)
       }catch(error){
-         console.log(error)
          res.status(500).json({msg: "Erro ao buscar parceiros", 'error': error.message})
       }
    },
