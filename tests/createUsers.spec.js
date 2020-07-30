@@ -116,7 +116,7 @@ describe("Create Users for Test", () => {
          cascade: true
       })
       .then(success=>{
-         done()
+         done();
       })
       .catch(error=>{
          done(error)
