@@ -47,7 +47,7 @@ module.exports = {
    //Realiza o login do usuário / Parceiro
    login: (req, res, next)=>{
       let condition = {
-         'cpfCnpj': String.toString(req.body.cpfCnpj),
+         'cpfCnpj': "`"+req.body.cpfCnpj+"`",
          removed: false
       }
 
