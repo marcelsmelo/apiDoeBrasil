@@ -47,12 +47,9 @@ module.exports = {
    //Realiza o login do usuário / Parceiro
    login: (req, res, next)=>{
       let condition = {
-         'cpfCnpj': req.body.cpfCnpj,
+         'cpfCnpj': String.toString(req.body.cpfCnpj),
          removed: false
       }
-      
-      console.log('CPF ', req.body.cpfCnpj);
-      console.log('Senha ', req.body.senha);
 
       if(req.body.loginType == 'U'){//Login de Usuário
          condition.group =  {[Op.or]: ['U', 'UP']}
@@ -65,7 +62,6 @@ module.exports = {
       })
       .then(user=>{
          if(!user){//Usuário (cpfCnpj) não foi encontrado
-            console.log('ERROR ', 'USuário não encontrado')
             res.status(500).json({
                msg: "Usuário não encontrado! Tente novamente",
                error: null})   
@@ -76,11 +72,9 @@ module.exports = {
                   res.status(200).json(sucesso)
                })
                .catch(error =>{//Erro ao gerar o Token JWT
-                  console.log('ERROR ', error.message)
                   res.status(500).json({msg:"Erro ao realizar o login!", "error": error.message})
                })
                }else{//Senha informada está incorreta
-                  console.log('ERROR ', 'Senha incorreta')
                   res.status(500).json({
                      msg: "Senha informada está incorreta!",
                      "error": null
