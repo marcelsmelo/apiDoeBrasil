@@ -1,7 +1,7 @@
 /**
 @swagger
   {
-    "/signup/usuario": {
+    "/usuario/signup/": {
       "post": {
         "description": "Cadastra um novo o usuário",
         "tags":['Login'],
@@ -18,7 +18,7 @@
         }
       }
     },
-     "/signup/parceiro": {
+     "/parceiro/signup/": {
       "post": {
         "description": "Cadastra um novo o usuário como Parceiro",
         "tags":['Login'],
