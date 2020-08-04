@@ -3,7 +3,7 @@
 {
   "/pedido/": {
     "get": {
-      "description": "Busca todos os Pedidos vinculados ao Usuário/Parceiro logado. Opcionalmente é possível passar parâmetros para realizar filtros no resultado",
+      "description": "Busca todos os Pedidos vinculados ao Usuário/Parceiro logado. Opcionalmente é possível passar parâmetros para realizar filtros no resultado <br><br> Status: 0 - Aguardando Atendimento; 1 - Aguardando Entrega; 2 - Finalizado  ",
       "tags":['Pedido'],
       "security": [
           { "BearerAuth": [] }
@@ -19,7 +19,7 @@
           }
         },{
           'name': "status",
-          'description': "(OPCIONAL) Status da Doação - Busca todos pedidos vinculados ao usuário/parceiro logado com o status informado",
+          'description': "(OPCIONAL) Status da Doação - Busca todos pedidos vinculados ao usuário/parceiro logado com o status informado <br> Status:<br> 0 - Aguardando Atendimento;<br> 1 - Aguardando Entrega;<br> 2 - Finalizado",
           'in': "query",
          'required':false,
           "schema": {

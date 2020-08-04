@@ -3,7 +3,7 @@
 {
   "/doacao/": {
     "get": {
-      "description": "Busca a Todas Doações vinculadas ao Usuário/Parceiro Logado. Opcionalmente é possível passar parâmetros para realizar filtros no resultado",
+      "description": "Busca a Todas Doações vinculadas ao Usuário/Parceiro Logado. Opcionalmente é possível passar parâmetros para realizar filtros no resultado <br><br> Status: 0 - Aguardando Entrega; 1 - Aguardando Retirada; 2 - Aguardando confirmação; 3 - Finalizada",
       "tags":['Doação'],
       "security": [
           { "BearerAuth": [] }
@@ -19,7 +19,7 @@
           }
         },{
           'name': "status",
-          'description': "(OPCIONAL) Status da Doação - Busca todas doações vinculadas ao usuário/parceiro logado com o status informado",
+          'description': "(OPCIONAL) Status da Doação - Busca todas doações vinculadas ao usuário/parceiro logado com o status informado <br> Status:<br> 0 - Aguardando Entrega;<br> 1 - Aguardando Retirada;<br> 2 - Aguardando confirmação;<br> 3 - Finalizada",
           'in': "query",
          'required':false,
           "schema": {
