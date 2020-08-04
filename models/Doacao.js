@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize')
 const sequelize = require('../database/dbMysql');
 const Usuario = require('./Usuario');
-const Pedido = require('./Pedido');
 
 const Doacao = sequelize.define('doacao', {
     id: {
@@ -22,8 +21,8 @@ const Doacao = sequelize.define('doacao', {
         type: Sequelize.BOOLEAN,
         defaultValue: false
     },
-    mascara: {
-        type: Sequelize.BOOLEAN,
+    outros: {
+        type: Sequelize.STRING,
         defaultValue: false
     },
     observacoes:{
@@ -38,9 +37,9 @@ const Doacao = sequelize.define('doacao', {
         type: Sequelize.BOOLEAN,
         defaultValue: false
     },
-    answeredAt:{
-        type: Sequelize.DATE,
-        defaultValue: null
+    createdBy:{
+        type: Sequelize.CHAR,
+        allowNull: false
     },
     deliveredAt:{
         type: Sequelize.DATE,
@@ -59,26 +58,14 @@ const Doacao = sequelize.define('doacao', {
     }
 }, { sequelize, modelName: 'doacao', tableName: 'doacoes' });
 
-Doacao.belongsTo(Usuario);
-
-Doacao.belongsTo(Pedido,{
-    foreignKey:{
-        allowNull: true
-    }
+Doacao.belongsTo(Usuario,{
+    as: 'usuario',
+    defaultValue: false
 });
 
-// Doacao.belongsTo(Parceiro,{
-//     foreignKey:{
-//         allowNull: true
-//     }
-// })
-
-// Doacao.belongsTo(PontoEntrega,{
-//     foreignKey:{
-//         allowNull: true
-//     }
-// })
-
-
+Doacao.belongsTo(Usuario,{
+    as: 'parceiro',
+    defaultValue: false
+})
 
 module.exports = Doacao;

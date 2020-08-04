@@ -11,6 +11,7 @@
             "telefone":{"type":"string"},
             "email":{"type":"string"},
             "sobre":{"type":"string"},
+            "url_image":{"type":"string"},
             "senha":{"type":"string"},
             "rua": {"type":"string"},
             "numero": {"type":"string"},
@@ -41,14 +42,13 @@
             "generoAlimenticio":{"type":"boolean"},
             "higienePessoal":{"type":"boolean"},
             "artigoLimpeza":{"type":"boolean"},
-            "mascara": {"type":"boolean"},
+            "outros": {"type":"string"},
             "observacoes": {"type":"string"},
             "dispEntrega":{"type":"boolean"},
             "status": {"type": "string", "enum":[0,1,2,3]},
+            "createdBy": {"type": "char", "enum":['U', 'P']},
             "usuarioId":{"type:":"integer"},
-            "pedidoId": {"type:":"integer"},
-            "parceiroId":{"type:":"integer"},
-            "pontoEntregaId": {"type:":"integer"}
+            "parceiroId":{"type:":"integer"}
           }
         },
         "Acao":{

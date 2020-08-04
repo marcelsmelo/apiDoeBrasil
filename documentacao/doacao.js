@@ -1,9 +1,9 @@
 /**
 @swagger
 {
-  "/doacao/{id}": {
+  "/doacao/": {
     "get": {
-      "description": "Busca a Doação pelo ID informado em parâmetro",
+      "description": "Busca a Todas Doações vinculadas ao Usuário/Parceiro Logado. Opcionalmente é possível passar parâmetros para realizar filtros no resultado",
       "tags":['Doação'],
       "security": [
           { "BearerAuth": [] }
@@ -11,9 +11,17 @@
       "parameters":[
         {
           'name': "id",
-          'description': "ID da Doação",
-          'in': "path",
-         'requiered':true,
+          'description': "(OPCIONAL) ID da Doação - Busca doação com o ID informado.",
+          'in': "query",
+         'requiered':false,
+          "schema": {
+            'type': 'integer'
+          }
+        },{
+          'name': "status",
+          'description': "(OPCIONAL) Status da Doação - Busca todas doações vinculadas ao usuário/parceiro logado com o status informado",
+          'in': "query",
+         'requiered':false,
           "schema": {
             'type': 'integer'
           }
@@ -21,7 +29,7 @@
       ],
       "responses": {
         "200":{
-          "$ref": "#/components/responses/singleDoacao"
+          "$ref": "#/components/responses/arrayDoacoes"
         },
         "500":{
           "$ref": "#/components/responses/genericError"
@@ -31,8 +39,32 @@
         }
       }
     },
+    "post": {
+      "description": "Adiciona uma nova Doação.<br><br>Caso seja criada pelo usuário, é obrigatório informar o ID do Parceiro.<br> Caso seja criadda pelo Parceiro, é obrigatório informar o ID do usuário. <br><br> O status da doação dependerá dos dados informados podendo ser:<br>0 - Aguardando Entrega <br>1 - Aguardando retirada",
+      "tags":['Doação'],
+      "security": [
+          { "BearerAuth": [] }
+        ],
+      "parameters":[
+        "$ref":"#/components/parameters/doacaoParam"
+      ],
+      "responses": {
+        "200":{
+          "$ref": "#/components/responses/singlePedido"
+        },
+        "500":{
+          "$ref": "#/components/responses/genericError"
+        },
+        "401":{
+          "$ref": "#/components/responses/autenticacaoError"
+        },
+        "403":{
+          "$ref": "#/components/responses/acessoError"
+        }
+      }
+    },
     "put": {
-      "description": "Altera a Doação com ID informado em parâmetro criada pelo Usuário logado. <br> A Doação não pode ser atualizada no status=2 (Aguardando confirmação) ou status=3 (Finalizada)",
+      "description": "Altera a Doação com ID informado em parâmetro. Permitido apenas para o Usuário/Parceiro que criou a Doação. <br> A Doação não pode ser atualizada no status=2 (Aguardando confirmação) ou status=3 (Finalizada)",
       "tags":['Doação'],
       "security": [
           { "BearerAuth": [] }
@@ -41,7 +73,7 @@
         {
           'name': "id",
           'description': "ID da Doação",
-          'in': "path",
+          'in': "query",
          'requiered':true,
           "schema": {
             'type': 'integer'
@@ -65,7 +97,7 @@
       }
     },
     "delete": {
-      "description": "Remove a Doação com ID informado criada pelo usuário logado. <br> A Doação não pode ser removida no status=2 (Aguardando Confirmação) ou status=3 (Finalizada)",
+      "description": "Remove a Doação com ID informad. Permitido apenas para o Usuário/Parceiro que criou a Doação.  <br> A Doação não pode ser removida no status=2 (Aguardando Confirmação) ou status=3 (Finalizada)",
       "tags":['Doação'],
       "security": [
           { "BearerAuth": [] }
@@ -74,7 +106,7 @@
         {
           'name': "id",
           'description': "ID da Doação",
-          'in': "path",
+          'in': "query",
          'requiered':true,
           "schema": {
             'type': 'integer'
@@ -97,83 +129,7 @@
       }
     }
   },
-  "/doacao/": {
-     "get": {
-      "description": "Busca todas as Doações criadas pelo Usuário logado OU vinculadas ao Parceiro logado",
-      "tags":['Doação'],
-      "security": [
-          { "BearerAuth": [] }
-        ],
-      "parameters":[],
-      "responses": {
-        "200":{
-          "$ref": "#/components/responses/arrayDoacoes"
-        },
-        "500":{
-          "$ref": "#/components/responses/genericError"
-        },
-        "401":{
-          "$ref": "#/components/responses/autenticacaoError"
-        }
-      }
-    },
-    "post": {
-      "description": "Adiciona uma nova Doação vinculada ao usuário logado <br> O status da doação dependerá dos dados informados podendo ser:<br>0 - Aguardando Entrega <br>1 - Aguardando retirada <br> Permitido apenas para Usuários",
-      "tags":['Doação'],
-      "security": [
-          { "BearerAuth": [] }
-        ],
-      "parameters":[
-        "$ref":"#/components/parameters/doacaoParam"
-      ],
-      "responses": {
-        "200":{
-          "$ref": "#/components/responses/singlePedido"
-        },
-        "500":{
-          "$ref": "#/components/responses/genericError"
-        },
-        "401":{
-          "$ref": "#/components/responses/autenticacaoError"
-        },
-        "403":{
-          "$ref": "#/components/responses/acessoError"
-        }
-      }
-    }
-  },
-  "/doacao/status/{status}": {
-    "get": {
-      "description": "Busca todas as Doações com o Status informado criadas pelo Usuário logado OU vinculadas ao Parceiro logado.",
-      "tags":['Doação'],
-      "security": [
-          { "BearerAuth": [] }
-        ],
-      "parameters":[
-        {
-          'name': "status",
-          'description': "Status da doação <br><br> 0 - Aguardando Entrega <br> 1 - Aguardando Retirada (parceiro) <br> 2 - Aguardando confirmação de entrega <br> 3 - Finalizado",
-          'in': "path",
-         'requiered':true,
-          "schema": {
-            'type': 'integer'
-          }
-        }
-      ],
-      "responses": {
-        "200":{
-          "$ref": "#/components/responses/arrayDoacoes"
-        },
-        "500":{
-          "$ref": "#/components/responses/genericError"
-        },
-        "401":{
-          "$ref": "#/components/responses/autenticacaoError"
-        }
-      }
-    }
-  },
-  "/doacao/finalizar/{id}": {
+  "/doacao/finalizar/": {
     "put": {
       "description": "Confirma a entrega da Doação criada pelo Usuário Logado OU vinculada ao Parceiro logado. <br> Se finalizada pelo Usuário, é definido status=2 (Aguardando confirmação) e se finalizada pelo Parceiro é definido status=3 (Finalizada)",
       "tags":['Doação'],
@@ -184,7 +140,7 @@
         {
           'name': "id",
           'description': "ID do doação",
-          'in': "path",
+          'in': "query",
          'requiered':true,
           "schema": {
             'type': 'integer'
@@ -206,54 +162,6 @@
         }
       }
     }
-  },
-    "/parceiro/doacao/disponivel": {
-    "get": {
-      "description": "Busca todas Doações disponíveis para retirada na cidade dos Parceiro logado. (Permitido apenas para parceiros)",
-      "tags":['Doação'],
-      "security": [
-          { "BearerAuth": [] }
-        ],
-      "parameters":[],
-      "responses": {
-        "200":{
-          "$ref": "#/components/responses/arrayDoacoes"
-        },
-        "500":{
-          "$ref": "#/components/responses/genericError"
-        },
-        "401":{
-          "$ref": "#/components/responses/autenticacaoError"
-        },
-        "403":{
-          "$ref": "#/components/responses/acessoError"
-        }
-      }
-    },
-  },
-  "/parceiro/doacao/selecionar/{id}": {
-    "get": {
-      "description": "Permite que um parceiro selecione uma doação para retirada. (Permitido apenas para parceiros)",
-      "tags":['Doação'],
-      "security": [
-          { "BearerAuth": [] }
-        ],
-      "parameters":[],
-      "responses": {
-        "200":{
-          "$ref": "#/components/responses/singleMsg"
-        },
-        "500":{
-          "$ref": "#/components/responses/genericError"
-        },
-        "401":{
-          "$ref": "#/components/responses/autenticacaoError"
-        },
-        "403":{
-          "$ref": "#/components/responses/acessoError"
-        }
-      }
-    },
   },
 }
 */

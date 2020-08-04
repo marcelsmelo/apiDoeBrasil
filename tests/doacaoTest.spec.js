@@ -1,176 +1,184 @@
+const app = require('../bin/www')
+
 let chai = require("chai");
 let chaiHttp = require('chai-http')
 let expect = chai.expect;
 const base_url = 'http://localhost:3000';
-let Pedido = require('../models/Pedido')
 let Doacao = require('../models/Doacao')
-
+let Usuario = require('../models/Usuario')
 
 chai.use(chaiHttp);
 
 describe("Donation tests",()=>{
-
-   let tokenRequester;
+   let partnerId;
+   let giverId;
+   let giver2Id;
+   
+   let tokenPartner;
    let tokenGiver;
-   let doacaoId;
-   let doacao2Id
-   let pedidoId;
-   let doacaoPedidoId
+   let tokenGiver2;
 
-   let requester = {
-      nome: 'Solicitante',
-      telefone: '+55 34 99636-8888',
-      senha: '123456789',
-      cidade: 'Morrinhos'
-   }
+
+   let doacaoId1;
+   let doacaoId2;
+   let doacaoId3;
 
    let giver = {
-      nome: 'Giver',
-      telefone: '+55 34 99636-9999',
-      senha: '123456789',
+      nome: 'Marcel Melo',
+      cpfCnpj: '08911211613',
+      telefone: '+55 34 99636-8898',
+      email: 'kasks@aksdfja.com',
+      senha: '123456',
+      rua: 'FC 05',
+      numero: 'QA L6',
+      complemento: 'Casa 02',
+      bairro: 'Felício Chaves',
+      estado: 'GO',
       cidade: 'Morrinhos'
    }
 
+   let giver2 = {
+      nome: 'Marcelo Melo',
+      cpfCnpj: '7556658325',
+      telefone: '+55 34 99636-9999',
+      email: 'gjhfdhg@asdfas.com',
+      senha: '123456',
+      rua: 'FC 05',
+      numero: 'QA L6',
+      complemento: 'Casa 02',
+      bairro: 'Felício Chaves',
+      estado: 'GO',
+      cidade: 'Morrinhos'
+   }
+  
+   let partner = {
+      nome: 'Partner',
+      telefone: '+55 34 99636-8899',
+      cpfCnpj: '85236974102',
+      email: "email@email.com",
+      sobre: "Uns detalhes do Parceiro",
+      senha: '123456',
+      descricao: "Descrição do parceiro!",
+      rua: 'FC 05',
+      numero: 'QA L6',
+      complemento: 'Casa 02',
+      bairro: 'Felício Chaves',
+      estado: 'GO',
+      cidade: 'Morrinhos'
+    }
 
    before(done => {
       // runs once before the first test in this block
       chai.request(base_url)
-      .post('/usuario/login')
-      .send({telefone: requester.telefone, senha: requester.senha})
+           .post('/parceiro/signup/')
+           .send(partner)
+           .end((err, res) => {
+              expect(res).to.have.status(201)
+              expect(res.body).to.be.a('object')
+              expect(res.body).to.have.property('msg')
+              done();
+           })
+   });
+
+   before(done => {
+      // runs once before the first test in this block
+      chai.request(base_url)
+           .post('/usuario/signup/')
+           .send(giver)
+           .end((err, res) => {
+              expect(res).to.have.status(201)
+              expect(res.body).to.be.a('object')
+              expect(res.body).to.have.property('msg')
+              done();
+           })
+   });
+
+   before(done => {
+      // runs once before the first test in this block
+      chai.request(base_url)
+           .post('/usuario/signup/')
+           .send(giver2)
+           .end((err, res) => {
+              expect(res).to.have.status(201)
+              expect(res.body).to.be.a('object')
+              expect(res.body).to.have.property('msg')
+              done();
+           })
+   });
+  
+   before(done => {
+      chai.request(base_url)
+      .post('/parceiro/login')
+      .send({cpfCnpj: partner.cpfCnpj, senha: partner.senha})
       .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.have.property('token')
-         tokenRequester = res.body.token
-         done();
+        expect(res).to.have.status(200)
+        expect(res.body).to.be.a('object')
+        expect(res.body).to.have.property('token')
+        tokenPartner = res.body.token
+        done();
+      })
+    });
+
+   before(done => {
+      chai.request(base_url)
+      .post('/usuario/login')
+      .send({cpfCnpj: giver.cpfCnpj, senha: giver.senha})
+      .end((err, res)=>{
+        expect(res).to.have.status(200)
+        expect(res.body).to.be.a('object')
+        expect(res.body).to.have.property('token')
+        tokenGiver = res.body.token
+        done();
       })
     });
 
     before(done => {
-      // runs once before the first test in this block
       chai.request(base_url)
       .post('/usuario/login')
-      .send({telefone: giver.telefone, senha: giver.senha})
+      .send({cpfCnpj: giver2.cpfCnpj, senha: giver2.senha})
       .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.have.property('token')
-         tokenGiver = res.body.token
-         done();
+        expect(res).to.have.status(200)
+        expect(res.body).to.be.a('object')
+        expect(res.body).to.have.property('token')
+        tokenGiver2 = res.body.token
+        done();
       })
-   });
+    });
 
-   before(done=>{
-      let pedido = {
-         generoAlimenticio: true,
-         higienePessoal: false, 
-         artigoLimpeza: true, 
-         mascara: false, 
-         observacoes: 'Entrega após as 18h (PEDIDO)'
-      }
-
+   before(done => {
       chai.request(base_url)
-      .post('/pedido')
-      .set('authorization', 'Bearer '+tokenRequester)
-      .send(pedido)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('object')
-         expect(res.body.mascara).to.be.equal(pedido.mascara)
-         pedidoId = res.body.id
-         done();
-      })
-   })
-
-   it('Create a new Donation without pedidoId and dispEntrega=false', done =>{
-      let doacao = {
-         generoAlimenticio: true,
-         higienePessoal: false, 
-         artigoLimpeza: true, 
-         mascara: false,
-         dispEntrega: false,
-         observacoes: 'Entrega após as 18h, sem pedido e dispEntrega false 01'
-      }
-
-      chai.request(base_url)
-      .post('/doacao')
-      .set('authorization', 'Bearer '+tokenGiver)
-      .send(doacao)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('object')
-         expect(res.body.status).to.be.equal(1)
-         doacaoId = res.body.id
-         done();
-      })
-   })
-
-   it('Create a another Donation without pedidoId and dispEntrega=false', done =>{
-      let doacao = {
-         generoAlimenticio: false,
-         higienePessoal: false, 
-         artigoLimpeza: true, 
-         mascara: false,
-         dispEntrega: false,
-         observacoes: 'Entrega após as 30h, sem pedido e dispEntre=false 02'
-      }
-
-      chai.request(base_url)
-      .post('/doacao')
-      .set('authorization', 'Bearer '+tokenGiver)
-      .send(doacao)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('object')
-         expect(res.body.status).to.be.equal(1)
-         doacao2Id = res.body.id
-         done();
-      })
-   })
-
-   it('Create a new Donation with pedidoId', done =>{
-      let doacao = {
-         generoAlimenticio: true,
-         higienePessoal: false, 
-         artigoLimpeza: true, 
-         mascara: false,
-         pedidoId: pedidoId,
-         observacoes: 'Entrega após as 18h. with pedido'
-      }
-
-      chai.request(base_url)
-      .post('/doacao')
-      .set('authorization', 'Bearer '+tokenGiver)
-      .send(doacao)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('object')
-         expect(res.body.status).to.be.equal(0)
-         doacaoPedidoId = res.body.id
-         done();
-      })
-   })
-
-   it("Get Pedido By ID", (done) => {
-      chai.request(base_url)
-      .get('/pedido/'+pedidoId)
+      .get('/parceiro')
       .set('authorization', 'Bearer '+tokenGiver)
       .end((err, res)=>{
          expect(res).to.have.status(200)
-         expect(res.body).to.be.an('object')
-         expect(res.body.status).to.be.equal(1)
-         expect(res.body.atendidoPorUsuario).to.be.not.null
-         done()
+         expect(res.body).to.have.lengthOf(1)
+         partnerId = res.body[0].id
+         done();
       })
-   });
+    });
 
-   it('Not permit create a new Donation with dispEntrega=false and parceiroId=null', done =>{
-      let doacao = {
-         generoAlimenticio: true,
-         higienePessoal: false, 
-         artigoLimpeza: true, 
-         mascara: false,
-         dispEntrega: true,
-         observacoes: 'Entrega após as 18h (Não permitido)'
-      }
+   before(done => {
+      chai.request(base_url)
+      .get('/usuario')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(2)
+         giverId = res.body[0].id
+         giver2Id = res.body[1].id
+         done();
+      })
+    });
+
+   it('Não permitir criar uma doação, pelo usuário, parceiroID não informado!', done =>{
+       let doacao = {
+          generoAlimenticio: true,
+          higienePessoal: false,
+          artigoLimpeza: true,
+          outros: 'Qualquer coisa',
+          dispEntrega: false,
+          observacoes: 'Teste sem parceiroID'
+       }
 
       chai.request(base_url)
       .post('/doacao')
@@ -184,192 +192,367 @@ describe("Donation tests",()=>{
       })
    })
 
-
-   it("Get All Donations owned by Logged User (Giver)", (done) => {
-      chai.request(base_url)
-      .get('/doacao/')
-      .set('authorization', 'Bearer '+tokenGiver)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('array')
-         expect(res.body.length).to.be.equal(3)
-         done()
-      })
-   });
-
-   it("Get 0 Donations owned by Logged User (Requester)", (done) => {
-      chai.request(base_url)
-      .get('/doacao/')
-      .set('authorization', 'Bearer '+tokenRequester)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('array')
-         expect(res.body.length).to.be.equal(0)
-         done()
-      })
-   });
-
-   it('Try Edit a Donation owned by Logged User', done =>{
+   it('Não permitir criar uma doação, pelo Parceiro, usuarioID não informado!', done =>{
       let doacao = {
          generoAlimenticio: true,
-         higienePessoal: true, 
-         artigoLimpeza: true, 
-         mascara: true,
-         observacoes: 'Entrega após as 20h'
+         higienePessoal: false,
+         artigoLimpeza: true,
+         outros: 'Qualquer coisa',
+         dispEntrega: false,
+         observacoes: 'Teste sem usuarioID'
+      }
+
+     chai.request(base_url)
+     .post('/doacao')
+     .set('authorization', 'Bearer '+tokenPartner)
+     .send(doacao)
+     .end((err, res)=>{
+        expect(res).to.have.status(500)
+        expect(res.body).to.be.an('object')
+        expect(res.body).to.have.property('msg')
+        done();
+     })
+  })
+
+   it('Criar uma doação, pelo usuário. (dispEntrega = true)', done =>{
+      let doacao = {
+         generoAlimenticio: true,
+         higienePessoal: false,
+         artigoLimpeza: true,
+         outros: 'Qualquer coisa',
+         dispEntrega: true,
+         parceiroId: partnerId,
+         observacoes: 'DispEntrega false'
       }
 
       chai.request(base_url)
-      .put('/doacao/'+doacaoId)
+      .post('/doacao')
       .set('authorization', 'Bearer '+tokenGiver)
       .send(doacao)
       .end((err, res)=>{
          expect(res).to.have.status(200)
          expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('msg')
+         expect(res.body.status).to.be.equal(0)
+         doacaoId1 = res.body.id;
          done();
       })
    })
 
-   it('Not permit Edit a Donation owned by Logged User (Requester)', done =>{
+   it('Criar uma doação, pelo usuário. (dispEntrega = false)', done =>{
       let doacao = {
          generoAlimenticio: true,
-         higienePessoal: true, 
-         artigoLimpeza: true, 
-         mascara: true,
-         observacoes: 'Entrega após as 20h'
+         higienePessoal: false,
+         artigoLimpeza: true,
+         outros: 'Qualquer coisa',
+         dispEntrega: false,
+         parceiroId: partnerId,
+         observacoes: 'DispEntrega true'
       }
 
       chai.request(base_url)
-      .put('/doacao/'+doacaoId)
-      .set('authorization', 'Bearer '+tokenRequester)
+      .post('/doacao')
+      .set('authorization', 'Bearer '+tokenGiver2)
+      .send(doacao)
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.be.an('object')
+         expect(res.body.status).to.be.equal(1)
+         doacaoId2 = res.body.id;
+         done();
+      })
+   })
+
+   it('Criar uma doação, pelo Parceiro. (dispEntrega = true)', done =>{
+      let doacao = {
+         generoAlimenticio: false,
+         higienePessoal: false,
+         artigoLimpeza: true,
+         outros: 'Qualquer coisa',
+         dispEntrega: false,
+         usuarioId: giverId,
+         observacoes: 'Parceiro'
+      }
+
+      chai.request(base_url)
+      .post('/doacao')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .send(doacao)
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.be.an('object')
+         expect(res.body.status).to.be.equal(1)
+         doacaoId3 = res.body.id;
+         done();
+      })
+   })
+
+   it('Buscar doações criadas pelo usuário.', done =>{
+      chai.request(base_url)
+      .get('/doacao')
+      .set('authorization', 'Bearer '+tokenGiver)
+      .query({})
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(2)
+         done();
+      })
+   })
+
+   it('Buscar doações criadas pelo usuário 2.', done =>{
+      chai.request(base_url)
+      .get('/doacao')
+      .set('authorization', 'Bearer '+tokenGiver2)
+      .query({})
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(1)
+         done();
+      })
+   })
+
+   it('Buscar doações vinculadas ao parceiro logado.', done =>{
+      chai.request(base_url)
+      .get('/doacao')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({})
+      .end((err, res)=>{  
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(3)
+         done();
+      })
+   })
+
+   it('Buscar doações vinculadas ao Parceiro pelo status (Aguardando Entrega).', done =>{
+      chai.request(base_url)
+      .get('/doacao')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({status: 0})
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(1)
+         done();
+      })
+   })
+
+   it('Buscar doações vinculadas ao Parceiro pelo status (Aguardando retirada).', done =>{
+      chai.request(base_url)
+      .get('/doacao')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({status: 1})
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(2)
+         done();
+      })
+   })
+
+   it('Não permitir que o Parceiro edite uma doação que ele não criou', done =>{
+      let doacao = {
+         generoAlimenticio: true,
+         higienePessoal: true,
+         artigoLimpeza: true,
+         outros: 'Qualquer coisa',
+         dispEntrega: true,
+         observacoes: 'Editado pelo Parceiro'
+      }
+
+      chai.request(base_url)
+      .put('/doacao')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({id: doacaoId1})
       .send(doacao)
       .end((err, res)=>{
          expect(res).to.have.status(403)
          expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('error')
-         done();
-      })
-   })
-
-   it('Finish a Donation owned by Logged User', done =>{
-      chai.request(base_url)
-      .put('/doacao/finalizar/'+doacaoId)
-      .set('authorization', 'Bearer '+tokenGiver)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('object')
          expect(res.body).to.have.property('msg')
          done();
       })
    })
 
-   it('Not permit Edit a Donation finished by Logged User', done =>{
+   it('Permitir que o Parceiro edite uma doação que ele criou', done =>{
       let doacao = {
-         generoAlimenticio: false,
-         higienePessoal: false, 
-         artigoLimpeza: false, 
-         mascara: true,
-         observacoes: 'Entrega após as 20h'
+         generoAlimenticio: true,
+         higienePessoal: true,
+         artigoLimpeza: true,
+         outros: 'Qualquer coisa',
+         dispEntrega: false,
+         observacoes: 'Editado pelo Parceiro'
       }
 
       chai.request(base_url)
-      .put('/doacao/'+doacaoId)
-      .set('authorization', 'Bearer '+tokenGiver)
+      .put('/doacao')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({id: doacaoId3})
       .send(doacao)
       .end((err, res)=>{
-         expect(res).to.have.status(500)
+         expect(res).to.have.status(200)
          expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('error')
+         expect(res.body).to.have.property('msg')
          done();
       })
    })
 
-   it("Get All Donations waiting confirmation(status=2) owned by Logged User (Giver)", (done) => {
-      chai.request(base_url)
-      .get('/doacao/status/2')
-      .set('authorization', 'Bearer '+tokenGiver)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('array')
-         expect(res.body.length).to.be.equal(1)
-         done()
-      })
-   });
+   it('Permitir que o Usuário edite uma doação que ele criou', done =>{
+      let doacao = {
+         generoAlimenticio: true,
+         higienePessoal: false,
+         artigoLimpeza: true,
+         outros: 'Qualquer coisa',
+         dispEntrega: false,
+         observacoes: 'Editado pelo Usuario'
+      }
 
-   it("Get All Delivery Donations (status=0) owned by Logged User (Giver)", (done) => {
       chai.request(base_url)
-      .get('/doacao/status/0')
+      .put('/doacao')
       .set('authorization', 'Bearer '+tokenGiver)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('array')
-         expect(res.body.length).to.be.equal(1)
-         done()
-      })
-   });
-
-   it("Not permit remove a Finished Donation owned by Logged User (Giver)", (done) => {
-      chai.request(base_url)
-      .delete('/doacao/'+doacaoId)
-      .set('authorization', 'Bearer '+tokenGiver)
-      .end((err, res)=>{
-         expect(res).to.have.status(500)
-         expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('error')
-         done()
-      })
-   });
-
-   it("Remove a Donation owned by Logged User (Giver)", (done) => {
-      chai.request(base_url)
-      .delete('/doacao/'+doacao2Id)
-      .set('authorization', 'Bearer '+tokenGiver)
+      .query({id: doacaoId1})
+      .send(doacao)
       .end((err, res)=>{
          expect(res).to.have.status(200)
          expect(res.body).to.be.an('object')
          expect(res.body).to.have.property('msg')
-         done()
+         done();
       })
-   });
+   })
 
-   it("Remove a Donation linked by a Pedido owned by Logged User (Giver)", (done) => {
+   it('Não Permitir que o Usuário edite uma doação que ele não criou', done =>{
+      let doacao = {
+         generoAlimenticio: true,
+         higienePessoal: false,
+         artigoLimpeza: true,
+         outros: 'Qualquer coisa',
+         dispEntrega: false,
+         observacoes: 'Editado pelo Usuario'
+      }
+
       chai.request(base_url)
-      .delete('/doacao/'+doacaoPedidoId)
+      .put('/doacao')
       .set('authorization', 'Bearer '+tokenGiver)
+      .query({id: doacaoId2})
+      .send(doacao)
+      .end((err, res)=>{
+         expect(res).to.have.status(403)
+         expect(res.body).to.be.an('object')
+         expect(res.body).to.have.property('msg')
+         done();
+      })
+   })
+
+   it('Buscar doações vinculadas ao Parceiro pelo status (Aguardando Entrega).', done =>{
+      chai.request(base_url)
+      .get('/doacao')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({status: 0})
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(0)
+         done();
+      })
+   })
+
+   it('Buscar doações vinculadas ao Parceiro pelo status (Aguardando retirada).', done =>{
+      chai.request(base_url)
+      .get('/doacao')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({status: 1})
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(3)
+         done();
+      })
+   })
+
+   it('Não Permitir que o Parceiro apague uma doação que ele não criou', done =>{
+      chai.request(base_url)
+      .delete('/doacao')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({id: doacaoId1})
+      .end((err, res)=>{
+         expect(res).to.have.status(403)
+         expect(res.body).to.be.an('object')
+         expect(res.body).to.have.property('msg')
+         done();
+      })
+   })
+
+   it('Permitir que o Parceiro apague uma doação que ele criou', done =>{
+      chai.request(base_url)
+      .delete('/doacao')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({id: doacaoId3})
       .end((err, res)=>{
          expect(res).to.have.status(200)
          expect(res.body).to.be.an('object')
          expect(res.body).to.have.property('msg')
-         done()
+         done();
       })
-   });
+   })
 
-   it("Get Pedido linked to a Donation of User's Logged (Requester)", (done) => {
+   it('Permitir que o Usuário finalize uma doação que ele criou', done =>{
       chai.request(base_url)
-      .get('/pedido/'+pedidoId)
-      .set('authorization', 'Bearer '+tokenRequester)
+      .put('/doacao/finalizar')
+      .set('authorization', 'Bearer '+tokenGiver)
+      .query({id: doacaoId1})
       .end((err, res)=>{
          expect(res).to.have.status(200)
          expect(res.body).to.be.an('object')
-         expect(res.body.status).to.be.equal(0)
-         done()
+         expect(res.body).to.have.property('msg')
+         done();
       })
-   });
+   })
 
-   it("Get All Finished Donations (status=3) owned by Logged User (Giver)", (done) => {
+   it('Permitir que o Parceiro finalize uma doação a ele vinculado', done =>{
       chai.request(base_url)
-      .get('/doacao/status/3')
-      .set('authorization', 'Bearer '+tokenGiver)
+      .put('/doacao/finalizar')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({id: doacaoId2})
       .end((err, res)=>{
          expect(res).to.have.status(200)
-         expect(res.body).to.be.an('array')
-         expect(res.body.length).to.be.equal(0)
-         done()
+         expect(res.body).to.be.an('object')
+         expect(res.body).to.have.property('msg')
+         done();
       })
-   });
+   })
+
+   it('Buscar doações vinculadas ao Parceiro pelo status (Aguardando retirada).', done =>{
+      chai.request(base_url)
+      .get('/doacao')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({status: 1})
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(0)
+         done();
+      })
+   })
+
+   it('Buscar doações vinculadas ao Parceiro pelo status (Aguardando Confirmação).', done =>{
+      chai.request(base_url)
+      .get('/doacao')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({status: 2})
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(1)
+         done();
+      })
+   })
+
+   it('Buscar doações vinculadas ao Parceiro pelo status (Finalizada).', done =>{
+      chai.request(base_url)
+      .get('/doacao')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({status: 3})
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(1)
+         done();
+      })
+   })
+
 
    after(done =>{
-      Pedido.destroy({
+      Usuario.destroy({
          where: {},
          cascade: true
       })

@@ -3,7 +3,7 @@ require('./dbMysql')
 const Usuario = require('../models/Usuario')
 const Acao = require('../models/Acao')
 // const Pedido = require('../models/Pedido')
-// const Doacao = require('../models/Doacao')
+const Doacao = require('../models/Doacao')
 // const Parceiro = require('../models/Parceiro')
 // const PontoEntrega = require('../models/PontoEntrega')
 
@@ -23,7 +23,10 @@ Usuario.sync()
 .then(()=>{
   Acao.sync()
   .then(()=>{
-    
+    Doacao.sync()
+    .then(()=>{
+      console.log("Sincronização realizada com sucesso!")
+    })
   })
 })
 

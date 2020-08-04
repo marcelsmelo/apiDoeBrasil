@@ -45,6 +45,10 @@ const Usuario = sequelize.define('usuario', {
         type: Sequelize.STRING,
         allowNull: true
     },
+    url_image:{
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     senha: {
         type: Sequelize.STRING,
         allowNull: false,

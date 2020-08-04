@@ -11,6 +11,7 @@ module.exports = {
          telefone: req.body.telefone,
          email: req.body.email,
          sobre: req.body.sobre? req.body.sobre: null,
+         url_image: req.body.url_image? req.body.url_image: null,
          senha: req.body.senha,
          rua: req.body.rua, 
          numero: req.body.numero,
@@ -119,6 +120,7 @@ module.exports = {
          usuario.telefone = req.body.telefone;
          usuario.email = req.body.email? req.body.email: null;
          usuario.sobre = req.body.sobre? req.body.sobre: null;
+         usuario.url_image = req.body.url_image? req.body.sobre: null;
          usuario.rua = req.body.rua;
          usuario.numero = req.body.numero;
          usuario.bairro = req.body.bairro;
@@ -262,7 +264,7 @@ module.exports = {
       try{
          let parceiros = await Usuario.findAll({
                where: condition,
-               attributes: ['id', 'nome', 'cpfCnpj', 'telefone','email', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado']
+               attributes: ['id', 'nome', 'cpfCnpj', 'telefone','email', 'sobre', 'url_image', 'rua', 'bairro', 'numero', 'complemento','cidade', 'estado']
          })
          res.status(200).json(parceiros)
       }catch(error){
