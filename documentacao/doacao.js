@@ -13,7 +13,7 @@
           'name': "id",
           'description': "(OPCIONAL) ID da Doação - Busca doação com o ID informado.",
           'in': "query",
-         'requiered':false,
+         'required':false,
           "schema": {
             'type': 'integer'
           }
@@ -21,7 +21,7 @@
           'name': "status",
           'description': "(OPCIONAL) Status da Doação - Busca todas doações vinculadas ao usuário/parceiro logado com o status informado",
           'in': "query",
-         'requiered':false,
+         'required':false,
           "schema": {
             'type': 'integer'
           }
@@ -74,7 +74,7 @@
           'name': "id",
           'description': "ID da Doação",
           'in': "query",
-         'requiered':true,
+         'required':true,
           "schema": {
             'type': 'integer'
           }
@@ -97,7 +97,7 @@
       }
     },
     "delete": {
-      "description": "Remove a Doação com ID informad. Permitido apenas para o Usuário/Parceiro que criou a Doação.  <br> A Doação não pode ser removida no status=2 (Aguardando Confirmação) ou status=3 (Finalizada)",
+      "description": "Remove a Doação com ID informado. Permitido apenas para o Usuário/Parceiro que criou a Doação.  <br> A Doação não pode ser removida no status=2 (Aguardando Confirmação) ou status=3 (Finalizada)",
       "tags":['Doação'],
       "security": [
           { "BearerAuth": [] }
@@ -107,7 +107,7 @@
           'name': "id",
           'description': "ID da Doação",
           'in': "query",
-         'requiered':true,
+         'required':true,
           "schema": {
             'type': 'integer'
           }
@@ -141,7 +141,7 @@
           'name': "id",
           'description': "ID do doação",
           'in': "query",
-         'requiered':true,
+         'required':true,
           "schema": {
             'type': 'integer'
           }

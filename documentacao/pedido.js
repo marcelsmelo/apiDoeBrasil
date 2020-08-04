@@ -1,9 +1,9 @@
 /**
 @swagger
 {
-  "/pedido/{id}": {
+  "/pedido/": {
     "get": {
-      "description": "Busca um Pedido pelo ID informado pelo parâmetro",
+      "description": "Busca todos os Pedidos vinculados ao Usuário/Parceiro logado. Opcionalmente é possível passar parâmetros para realizar filtros no resultado",
       "tags":['Pedido'],
       "security": [
           { "BearerAuth": [] }
@@ -11,13 +11,42 @@
       "parameters":[
         {
           'name': "id",
-          'description': "ID do pedido",
-          'in': "path",
-         'requiered':true,
+          'description': "(OPCIONAL) ID do pedido",
+          'in': "query",
+         'required':true,
+          "schema": {
+            'type': 'integer'
+          }
+        },{
+          'name': "status",
+          'description': "(OPCIONAL) Status da Doação - Busca todos pedidos vinculados ao usuário/parceiro logado com o status informado",
+          'in': "query",
+         'required':false,
           "schema": {
             'type': 'integer'
           }
         }
+      ],
+      "responses": {
+        "200":{
+          "$ref": "#/components/responses/arrayPedidos"
+        },
+        "500":{
+          "$ref": "#/components/responses/genericError"
+        },
+        "401":{
+          "$ref": "#/components/responses/autenticacaoError"
+        }
+      }
+    },
+    "post": {
+      "description": "Adiciona um novo Pedido vinculado ao Usuário/Parceiro logado <br><br>Caso seja criada pelo usuário, é obrigatório informar o ID do Parceiro.<br> Caso seja criadda pelo Parceiro, é obrigatório informar o ID do usuário.",
+      "tags":['Pedido'],
+      "security": [
+          { "BearerAuth": [] }
+        ],
+      "parameters":[
+        "$ref":"#/components/parameters/pedidoParam"
       ],
       "responses": {
         "200":{
@@ -32,7 +61,7 @@
       }
     },
     "put": {
-      "description": "Altera o Pedido com ID informado criado pelo Usuário Logado",
+      "description": "Altera o Pedido com ID informado em parâmetro. Permitido apenas para o Usuário/Parceiro que criou a Doação. <br> O pedido só pode ser removido caso ainda não tenha sido atendido (status=0 - Aguardando Atendimento) ",
       "tags":['Pedido'],
       "security": [
           { "BearerAuth": [] }
@@ -41,8 +70,8 @@
         {
           'name': "id",
           'description': "ID do Pedido",
-          'in': "path",
-         'requiered':true,
+          'in': "query",
+         'required':true,
           "schema": {
             'type': 'integer'
           }
@@ -65,7 +94,7 @@
       }
     },
     "delete": {
-      "description": "Remove o Pedido com ID informado criado pelo Usuário Logado. <br> O pedido só pode ser removido caso ainda não tenha sido atendido por alguma Doação ou Parceiro (status=0)",
+      "description": "Remove o Pedido com ID informado. <br> O pedido só pode ser removido caso ainda não tenha sido atendido (status=0 - Aguardando Atendimento)",
       "tags":['Pedido'],
       "security": [
           { "BearerAuth": [] }
@@ -74,8 +103,8 @@
         {
           'name': "id",
           'description': "ID do Pedido",
-          'in': "path",
-         'requiered':true,
+          'in': "query",
+         'required':true,
           "schema": {
             'type': 'integer'
           }
@@ -97,104 +126,9 @@
       }
     }
   },
-  
-  "/pedido/": {
-    "get": {
-      "description": "Busca todos os Pedidos criados pelo Usuário logado ou atendidos pelo Parceiro logado",
-      "tags":['Pedido'],
-      "security": [
-          { "BearerAuth": [] }
-        ],
-      "parameters":[],
-      "responses": {
-        "200":{
-          "$ref": "#/components/responses/arrayPedidos"
-        },
-        "500":{
-          "$ref": "#/components/responses/genericError"
-        },
-        "401":{
-          "$ref": "#/components/responses/autenticacaoError"
-        }
-      }
-    },
-    "post": {
-      "description": "Adiciona um novo Pedido vinculado ao Usuário logado",
-      "tags":['Pedido'],
-      "security": [
-          { "BearerAuth": [] }
-        ],
-      "parameters":[
-        "$ref":"#/components/parameters/pedidoParam"
-      ],
-      "responses": {
-        "200":{
-          "$ref": "#/components/responses/singlePedido"
-        },
-        "500":{
-          "$ref": "#/components/responses/genericError"
-        },
-        "401":{
-          "$ref": "#/components/responses/autenticacaoError"
-        }
-      }
-    }
-  },
-  "/pedido/status/{status}": {
-    "get": {
-      "description": "Busca todos os Pedidos pelo Status informado criados pelo Usuário ou Atendidos pelo Parceiro Logados",
-      "tags":['Pedido'],
-      "security": [
-          { "BearerAuth": [] }
-        ],
-      "parameters":[
-        {
-          'name': "status",
-          'description': "Status da doação <br><br> 0 - Não Atendido <br> 1 - Aguardando entrega <br> 2 - Finalizado",
-          'in': "path",
-         'requiered':true,
-          "schema": {
-            'type': 'integer'
-          }
-        }
-      ],
-      "responses": {
-        "200":{
-          "$ref": "#/components/responses/arrayPedidos"
-        },
-        "500":{
-          "$ref": "#/components/responses/genericError"
-        },
-        "401":{
-          "$ref": "#/components/responses/autenticacaoError"
-        }
-      }
-    }
-  },
-  "/pedidos-nao-atendidos": {
-    "get": {
-      "description": "Busca todos os Pedidos Não Atendidos (status = 0) da cidade do Usuário ou Parceiro logados",
-      "tags":['Pedido'],
-      "security": [
-          { "BearerAuth": [] }
-        ],
-      "parameters":[],
-      "responses": {
-        "200":{
-          "$ref": "#/components/responses/arrayPedidos"
-        },
-        "500":{
-          "$ref": "#/components/responses/genericError"
-        },
-        "401":{
-          "$ref": "#/components/responses/autenticacaoError"
-        }
-      }
-    }
-  },
-  "/pedido/finalizar/{id}": {
+  "/pedido/finalizar/": {
     "put": {
-      "description": "Confirma o recebimento (ou entrega) da Doação para o Pedido informado pelo ID <br> O pedido pode ser finalizado pelo Usuário que o criou ou pelo Parceiro que o esteja atendendo. <br> Em caso de uma Doação vinculada ao Pedido, a Doação é finalizada (status=3) neste momento. ",
+      "description": "Finaliza o Pedido com o ID informado em parâmetro<br> O pedido pode ser finalizado pelo Usuário que o criou ou pelo Parceiro vinculado.",
       "tags":['Pedido'],
       "security": [
           { "BearerAuth": [] }
@@ -203,8 +137,8 @@
         {
           'name': "id",
           'description': "ID do pedido",
-          'in': "path",
-         'requiered':true,
+          'in': "query",
+         'required':true,
           "schema": {
             'type': 'integer'
           }
@@ -223,24 +157,22 @@
       }
     }
   },
-  "/parceiro/pedido/atender/{id}": {
-    "put": {
-      "description": "Permite que o Parceiro logado seleciona o pedido, pelo ID, para ser Atendido (Disponível apenas para parceiros) <br> Modifica o Status do Pedido para Status = 1 (Aguardando Entrega)",
+  "/pedido/aberto/": {
+    "get": {
+      "description": "Verifica se o Usuário possui um pedido aberto (status=0) OU em atendimento (status=1)",
       "tags":['Pedido'],
       "security": [
           { "BearerAuth": [] }
         ],
-      "parameters":[
-        {
-          'name': "id",
-          'description': "ID do pedido",
-          'in': "path",
-         'requiered':true,
+      "parameters":[{
+          'name': "usuarioId",
+          'description': "ID do usuário - Obrigatório quando a pesquisa for realizada pelo Parceiro Logado",
+          'in': "query",
+         'required':true,
           "schema": {
             'type': 'integer'
           }
-        }
-      ],
+        }],
       "responses": {
         "200":{
           "$ref": "#/components/responses/singleMsg"
@@ -250,9 +182,6 @@
         },
         "401":{
           "$ref": "#/components/responses/autenticacaoError"
-        },
-        "403":{
-          "$ref": "#/components/responses/acessoError"
         }
       }
     }

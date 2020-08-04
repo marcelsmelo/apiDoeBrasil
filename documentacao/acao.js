@@ -13,7 +13,7 @@
           'name': "id",
           'description': "(OPCIONAL) ID da ação",
           'in': "query",
-         'requiered':true,
+         'required':true,
           "schema": {
             'type': 'integer'
           }
@@ -22,7 +22,7 @@
           'name': "parceiroId",
           'description': "(OPCIONAL) ID do parceiro criador da Ação",
           'in': "query",
-         'requiered':true,
+         'required':true,
           "schema": {
             'type': 'integer'
           }
@@ -31,7 +31,7 @@
           'name': "ativo",
           'description': "(OPCIONAL) Buscar ações ativas ou inativas vinculadas a um parceiro. É necessário passar o parceiroId.",
           'in': "query",
-         'requiered':true,
+         'required':true,
           "schema": {
             'type': 'boolean'
           }
@@ -84,7 +84,7 @@
           'name': "id",
           'description': "ID da Ação",
           'in': "query",
-         'requiered':true,
+         'required':true,
           "schema": {
             'type': 'integer'
           }
@@ -117,7 +117,7 @@
           'name': "id",
           'description': "ID da Ação",
           'in': "query",
-         'requiered':true,
+         'required':true,
           "schema": {
             'type': 'integer'
           }

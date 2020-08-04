@@ -27,13 +27,12 @@
             "generoAlimenticio":{"type":"boolean"},
             "higienePessoal":{"type":"boolean"},
             "artigoLimpeza":{"type":"boolean"},
-            "mascara": {"type":"boolean"},
+            "outros": {"type":"string"},
             "observacoes": {"type":"string"},
             "status": {"type": "string", "enum":[0,1,2]},
+            "createdBy": {"type": "char", "enum":['U', 'P']},
             "usuarioId":{"type:":"integer"},
-            "atendidoPorUsuario":{"type": "integer"},
-            "atendidoPorParceiro":{"type": "string"},
-            
+            "parceiroId":{"type:":"integer"}
           }
         },
         "Doacao":{

@@ -17,8 +17,8 @@ module.exports = {
          condition.id = req.query.id
       }else{//Em caso de BuscarTodos, busca os pedidos vinculados aos usuários e/ou Parceiros logados
 
-         if(req.user.group == 'U') condition.usuarioId = req.user.id; //Usuário comum - Busca todos pedidos do usuário
-         else if(req.user.group == 'P') condition.parceiroId = req.user.parceiroId; //Parceiro - Busca todos pedidos associados ao parceiro
+         if(req.user.loginType == 'U') condition.usuarioId = req.user.id; //Usuário comum - Busca todos pedidos do usuário
+         else if(req.user.loginType == 'P') condition.parceiroId = req.user.parceiroId; //Parceiro - Busca todos pedidos associados ao parceiro
 
          //Verifica também a busca por status
          //0 - Aguardando Entrega; 1 - Aguardando Retirada; 2 - Aguardando confirmação; 3 - Finalizada
@@ -66,7 +66,7 @@ module.exports = {
          //0 - Aguardando Entrega; 1 - Aguardando Retirada; 2 - Aguardando confirmação; 3 - Finalizada
          if(req.body.dispEntrega) status = 0
 
-         if(req.user.group == 'U'){//Cadastro de doação pelo usuário
+         if(req.user.loginType == 'U'){//Cadastro de doação pelo usuário
 
             //Realizar o usuário for realizar a entrega, deve ter selecionado um parceiro
             if(!req.body.parceiroId)
@@ -75,7 +75,7 @@ module.exports = {
             req.body.usuarioId = req.user.id;
             req.body.createdBy = 'U'
 
-         }else if(req.user.group = 'P'){//Cadastro de doação pelo Parceiro
+         }else if(req.user.loginType = 'P'){//Cadastro de doação pelo Parceiro
 
             if(!req.body.usuarioId)//Verificar se vinculou a doação a um Usuário
                throw new Error("Selecione um usuário que realizou a doação")
@@ -115,11 +115,11 @@ module.exports = {
     editar: async (req, res, next)=>{
       let condition = {
          id: req.query.id,
-         createdBy: req.user.group,
+         createdBy: req.user.loginType,
          removed: false
       }
 
-      if(req.user.group == 'U') condition.usuarioId = req.user.id;
+      if(req.user.loginType == 'U') condition.usuarioId = req.user.id;
       else condition.parceiroId = req.user.parceiroId;
 
       try{
@@ -141,7 +141,7 @@ module.exports = {
          if(req.body.dispEntrega) doacao.status = 0;
          else doacao.status = 1
          
-         if(req.user.group == 'U')
+         if(req.user.loginType == 'U')//O usuário pode alterar o parceiro da doaçao.
             doacao.parceiroId = req.body.parceiroId
          else{
             //O parceiro pode definir o status de uma doação
@@ -161,9 +161,9 @@ module.exports = {
          removed: false
       }
       
-      if(req.user.group == 'U') condition.usuarioId = req.user.id;
+      if(req.user.loginType == 'U') condition.usuarioId = req.user.id;
       else{
-         condition.createdBy = req.user.group
+         condition.createdBy = req.user.loginType
          condition.parceiroId = req.user.parceiroId
       }
 
@@ -192,7 +192,7 @@ module.exports = {
 
       condition.id = req.query.id
       
-      if(req.user.group == 'U'){
+      if(req.user.loginType == 'U'){
          data.status = 2
          data.deliveredAt = new Date().toString()
          condition.usuarioId = req.user.id

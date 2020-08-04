@@ -33,6 +33,10 @@ const Pedido = sequelize.define('pedido', {
         type: Sequelize.INTEGER.UNSIGNED,
         defaultValue: 0
     },
+    createdBy:{
+        type: Sequelize.CHAR,
+        allowNull: false
+    },
     finishedAt:{
         type: Sequelize.DATE,
         defaultValue: null
@@ -47,11 +51,6 @@ const Pedido = sequelize.define('pedido', {
 }, { sequelize, modelName: 'pedido',  tableName: 'pedidos' });
 
 Pedido.belongsTo(Usuario);
-
-Pedido.belongsTo(Usuario, {
-    as:'cadastradoPor',
-    allowNull: false
-});
 
 Pedido.belongsTo(Usuario,{
     as: 'parceiro',
