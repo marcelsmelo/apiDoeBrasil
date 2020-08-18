@@ -282,6 +282,54 @@ describe("Pedidos tests",()=>{
       })
    })
 
+   it('Buscar pedidos criadas pelo usuário.', done =>{
+      chai.request(base_url)
+      .get('/pedido/')
+      .set('authorization', 'Bearer '+tokenRequester)
+      .query({})
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(2)
+         done();
+      })
+   })
+
+   it('Buscar pedidos criadas pelo usuário 2.', done =>{
+      chai.request(base_url)
+      .get('/pedido')
+      .set('authorization', 'Bearer '+tokenRequester2)
+      .query({})
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(1)
+         done();
+      })
+   })
+
+   it('Buscar pedidos vinculadas ao parceiro logado.', done =>{
+      chai.request(base_url)
+      .get('/pedido')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({})
+      .end((err, res)=>{  
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(3)
+         done();
+      })
+   })
+
+   it('Buscar pedidos vinculadas ao Parceiro pelo status (Aguardando Entrega).', done =>{
+      chai.request(base_url)
+      .get('/pedido')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .query({status: 0})
+      .end((err, res)=>{
+         expect(res).to.have.status(200)
+         expect(res.body).to.have.lengthOf(3)
+         done();
+      })
+   })
+
   
    after(done =>{
       Usuario.destroy({

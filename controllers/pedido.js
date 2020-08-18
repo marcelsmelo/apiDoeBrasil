@@ -41,7 +41,7 @@ module.exports = {
                },{
                   model: Usuario,
                   as: 'parceiro',
-                  attributes: ['id', 'nome', 'cpfCnjp', 'email'],
+                  attributes: ['id', 'nome', 'cpfCnpj', 'email'],
                   on:{
                      id: Sequelize.where(Sequelize.col("pedido.parceiroId"), "=", Sequelize.col("parceiro.id"))
                   },
