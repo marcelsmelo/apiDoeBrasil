@@ -128,7 +128,7 @@ module.exports = {
          })
 
          if(!doacao) return res.status(403).json({msg: 'Alteração não autorizada! O usuário logado não tem permissão para fazer essa operação.', error: null})
-         if(doacao.status == 2 || doacao.status == 3) throw new Error('Alteração não autorizada! A doação já foi finalizada.')
+         if(doacao.status == 2 || doacao.Ess == 3) throw new Error('Alteração não autorizada! A doação já foi finalizada.')
 
          doacao.generoAlimenticio = req.body.generoAlimenticio
          doacao.higienePessoal = req.body.higienePessoal
@@ -141,7 +141,7 @@ module.exports = {
          if(req.body.dispEntrega) doacao.status = 0;
          else doacao.status = 1
          
-         if(req.user.loginType == 'U')//O usuário pode alterar o parceiro da doaçao.
+         if(req.user.loginType == 'U' && req.body.parceiroId)//O usuário pode alterar o parceiro da doaçao.
             doacao.parceiroId = req.body.parceiroId
          else{
             //O parceiro pode definir o status de uma doação

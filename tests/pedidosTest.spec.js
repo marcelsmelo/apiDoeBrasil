@@ -1,422 +1,300 @@
+const app = require('../bin/www')
+
 let chai = require("chai");
 let chaiHttp = require('chai-http')
 let expect = chai.expect;
 const base_url = 'http://localhost:3000';
 let Pedido = require('../models/Pedido')
-let Doacao = require('../models/Doacao')
+let Usuario = require('../models/Usuario')
 
 
 chai.use(chaiHttp);
 
-describe("Pedidos test",()=>{
-
+describe("Pedidos tests",()=>{
+   let partnerId;
+   let requesterID;
+   let requester2ID;
+   
+   let tokenPartner;
    let tokenRequester;
-   let tokenGiver;
-   let pedidoId;
-   let pedido2Id
-   let pedidoDoacaoID
+   let tokenRequester2;
+
+
+   let reqID;
+   let req2ID;
+   let req3ID;
 
    let requester = {
-      nome: 'Solicitante',
-      telefone: '+55 34 99636-8888',
-      senha: '123456789',
+      nome: 'Marcel Melo',
+      cpfCnpj: '08911211613',
+      telefone: '+55 34 99636-8898',
+      email: 'kasks@aksdfja.com',
+      senha: '123456',
+      rua: 'FC 05',
+      numero: 'QA L6',
+      complemento: 'Casa 02',
+      bairro: 'Felício Chaves',
+      estado: 'GO',
       cidade: 'Morrinhos'
    }
 
-   let giver = {
-      nome: 'Giver',
+   let requester2 = {
+      nome: 'Marcelo Melo',
+      cpfCnpj: '7556658325',
       telefone: '+55 34 99636-9999',
-      senha: '123456789',
+      email: 'gjhfdhg@asdfas.com',
+      senha: '123456',
+      rua: 'FC 05',
+      numero: 'QA L6',
+      complemento: 'Casa 02',
+      bairro: 'Felício Chaves',
+      estado: 'GO',
       cidade: 'Morrinhos'
    }
-
+  
+   let partner = {
+      nome: 'Partner',
+      telefone: '+55 34 99636-8899',
+      cpfCnpj: '85236974102',
+      email: "email@email.com",
+      sobre: "Uns detalhes do Parceiro",
+      senha: '123456',
+      descricao: "Descrição do parceiro!",
+      rua: 'FC 05',
+      numero: 'QA L6',
+      complemento: 'Casa 02',
+      bairro: 'Felício Chaves',
+      estado: 'GO',
+      cidade: 'Morrinhos'
+    }
 
    before(done => {
       // runs once before the first test in this block
       chai.request(base_url)
-      .post('/usuario/login')
-      .send({telefone: requester.telefone, senha: requester.senha})
+           .post('/parceiro/signup/')
+           .send(partner)
+           .end((err, res) => {
+              expect(res).to.have.status(201)
+              expect(res.body).to.be.a('object')
+              expect(res.body).to.have.property('msg')
+              done();
+           })
+   });
+   before(done => {
+      // runs once before the first test in this block
+      chai.request(base_url)
+           .post('/usuario/signup/')
+           .send(requester)
+           .end((err, res) => {
+              expect(res).to.have.status(201)
+              expect(res.body).to.be.a('object')
+              expect(res.body).to.have.property('msg')
+              done();
+           })
+   });
+
+   before(done => {
+      // runs once before the first test in this block
+      chai.request(base_url)
+           .post('/usuario/signup/')
+           .send(requester2)
+           .end((err, res) => {
+              expect(res).to.have.status(201)
+              expect(res.body).to.be.a('object')
+              expect(res.body).to.have.property('msg')
+              done();
+           })
+   });
+  
+   before(done => {
+      chai.request(base_url)
+      .post('/parceiro/login')
+      .send({cpfCnpj: partner.cpfCnpj, senha: partner.senha})
       .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.have.property('token')
-         tokenRequester = res.body.token
-         done();
+        expect(res).to.have.status(200)
+        expect(res.body).to.be.a('object')
+        expect(res.body).to.have.property('token')
+        tokenPartner = res.body.token
+        done();
+      })
+    });
+
+   before(done => {
+      chai.request(base_url)
+      .post('/usuario/login')
+      .send({cpfCnpj: requester.cpfCnpj, senha: requester.senha})
+      .end((err, res)=>{
+        expect(res).to.have.status(200)
+        expect(res.body).to.be.a('object')
+        expect(res.body).to.have.property('token')
+        tokenRequester = res.body.token
+        done();
       })
     });
 
     before(done => {
-      // runs once before the first test in this block
       chai.request(base_url)
       .post('/usuario/login')
-      .send({telefone: giver.telefone, senha: giver.senha})
+      .send({cpfCnpj: requester2.cpfCnpj, senha: requester2.senha})
+      .end((err, res)=>{
+        expect(res).to.have.status(200)
+        expect(res.body).to.be.a('object')
+        expect(res.body).to.have.property('token')
+        tokenRequester2 = res.body.token
+        done();
+      })
+    });
+
+   before(done => {
+      chai.request(base_url)
+      .get('/parceiro')
+      .set('authorization', 'Bearer '+tokenRequester)
       .end((err, res)=>{
          expect(res).to.have.status(200)
-         expect(res.body).to.have.property('token')
-         tokenGiver = res.body.token
+         expect(res.body).to.have.lengthOf(1)
+         partnerId = res.body[0].id
          done();
       })
     });
 
-   it("Get all Pedidos owned by User Logged (Requester)", (done) => {
+   before(done => {
       chai.request(base_url)
-      .get('/pedido')
-      .set('authorization', 'Bearer '+tokenRequester)
+      .get('/usuario')
+      .set('authorization', 'Bearer '+tokenPartner)
       .end((err, res)=>{
          expect(res).to.have.status(200)
-         expect(res.body).to.be.an('array')
-         expect(res.body.length).to.be.equal(0)
-         done()
-      })
-   });
-
-   it("Try create a new Pedido", done =>{
-      let pedido = {
-         generoAlimenticio: true,
-         higienePessoal: false, 
-         artigoLimpeza: true, 
-         mascara: false, 
-         observacoes: 'Entrega após as 18h'
-      }
-
-      chai.request(base_url)
-      .post('/pedido')
-      .set('authorization', 'Bearer '+tokenRequester)
-      .send(pedido)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('object')
-         expect(res.body.mascara).to.be.equal(pedido.mascara)
-         pedidoId = res.body.id
+         expect(res.body).to.have.lengthOf(2)
+         requesterID = res.body[0].id
+         requester2ID = res.body[1].id
          done();
       })
-   })
+    });
 
-   it("Not permit to create a new Pedido", done =>{
-      let pedido = {
-         generoAlimenticio: false,
-         higienePessoal: false, 
-         artigoLimpeza: false, 
-         mascara: false, 
-         observacoes: 'Entrega após as 18h'
-      }
+   it('Não permitir criar um pedido, pelo usuário, parceiroID não informado!', done =>{
+       let doacao = {
+          generoAlimenticio: true,
+          higienePessoal: false,
+          artigoLimpeza: true,
+          outros: 'Qualquer coisa',
+          observacoes: 'Teste sem parceiroID'
+       }
 
       chai.request(base_url)
       .post('/pedido')
       .set('authorization', 'Bearer '+tokenRequester)
-      .send(pedido)
+      .send(doacao)
       .end((err, res)=>{
          expect(res).to.have.status(500)
          expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('error')
+         expect(res.body).to.have.property('msg')
          done();
       })
    })
 
-   it("Not permit create a new Pedido, Exists Pedido status 0", done =>{
-      let pedido = {
-         generoAlimenticio: true,
-         higienePessoal: false, 
-         artigoLimpeza: true, 
-         mascara: false, 
-         observacoes: 'Entrega após as 18h'
-      }
 
-      chai.request(base_url)
-      .post('/pedido')
-      .set('authorization', 'Bearer '+tokenRequester)
-      .send(pedido)
-      .end((err, res)=>{
-         expect(res).to.have.status(500)
-         expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('error')
-         done();
-      })
-   })
-
-   it('Create a new Donation with pedidoId', done =>{
+   it('Não permitir criar um pedido, pelo Parceiro, usuarioID não informado!', done =>{
       let doacao = {
          generoAlimenticio: true,
-         higienePessoal: false, 
-         artigoLimpeza: true, 
-         mascara: false,
-         pedidoId: pedidoId,
-         observacoes: 'Entrega após as 18h'
+         higienePessoal: false,
+         artigoLimpeza: true,
+         outros: 'Qualquer coisa',
+         observacoes: 'Teste sem usuarioID'
+      }
+
+     chai.request(base_url)
+     .post('/pedido')
+     .set('authorization', 'Bearer '+tokenPartner)
+     .send(doacao)
+     .end((err, res)=>{
+        expect(res).to.have.status(500)
+        expect(res.body).to.be.an('object')
+        expect(res.body).to.have.property('msg')
+        done();
+     })
+  })
+
+   it('Criar um Pedido, pelo usuário.', done =>{
+      let doacao = {
+         generoAlimenticio: true,
+         higienePessoal: false,
+         artigoLimpeza: true,
+         outros: 'Qualquer coisa',
+         parceiroId: partnerId,
+         observacoes: 'DispEntrega false'
       }
 
       chai.request(base_url)
-      .post('/doacao')
-      .set('authorization', 'Bearer '+tokenGiver)
+      .post('/pedido')
+      .set('authorization', 'Bearer '+tokenRequester)
       .send(doacao)
       .end((err, res)=>{
          expect(res).to.have.status(200)
          expect(res.body).to.be.an('object')
          expect(res.body.status).to.be.equal(0)
-         pedidoDoacaoID = res.body.id
+         reqID = res.body.id;
          done();
       })
    })
 
-   it("Get all Pedidos owned by User Logged (Giver)", (done) => {
+   it('Criar um Pedido, pelo Parceiro. ', done =>{
+      let doacao = {
+         generoAlimenticio: false,
+         higienePessoal: false,
+         artigoLimpeza: true,
+         outros: 'Qualquer coisa',
+         usuarioId: requesterID,
+         observacoes: 'Parceiro'
+      }
+
       chai.request(base_url)
-      .get('/pedido')
-      .set('authorization', 'Bearer '+tokenGiver)
+      .post('/pedido')
+      .set('authorization', 'Bearer '+tokenPartner)
+      .send(doacao)
       .end((err, res)=>{
          expect(res).to.have.status(200)
-         expect(res.body).to.be.an('array')
-         expect(res.body.length).to.be.equal(0)
-         done();
-      })
-   });
-
-   it("Not Permit edit a exists Pedido, status=1", done =>{
-      let pedido = {
-         generoAlimenticio: true,
-         higienePessoal: true, 
-         artigoLimpeza: true, 
-         mascara: true, 
-         observacoes: 'Entrega após as 18h (altered)'
-      }
-
-      chai.request(base_url)
-      .put('/pedido/'+pedidoId)
-      .set('authorization', 'Bearer '+tokenRequester)
-      .send(pedido)
-      .end((err, res)=>{
-         expect(res).to.have.status(500)
          expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('msg')
+         expect(res.body.status).to.be.equal(0)
+         req2ID = res.body.id;
          done();
       })
    })
 
-   it("Not permit edit a exists Pedido by not owned User (Giver)", done =>{
-      let pedido = {
-         generoAlimenticio: false,
-         higienePessoal: true, 
-         artigoLimpeza: true, 
-         mascara: false, 
-         observacoes: 'Entrega após as 18h'
+   it('Criar um Pedido, pelo usuário 2.', done =>{
+      let doacao = {
+         generoAlimenticio: true,
+         higienePessoal: false,
+         artigoLimpeza: true,
+         outros: 'Qualquer coisa',
+         parceiroId: partnerId,
+         observacoes: 'DispEntrega true'
       }
 
       chai.request(base_url)
-      .put('/pedido/'+pedidoId)
-      .set('authorization', 'Bearer '+tokenGiver)
-      .send(pedido)
+      .post('/pedido')
+      .set('authorization', 'Bearer '+tokenRequester2)
+      .send(doacao)
       .end((err, res)=>{
-         expect(res).to.have.status(403)
+         expect(res).to.have.status(200)
          expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('error')
+         expect(res.body.status).to.be.equal(0)
+         req3ID = res.body.id;
          done();
       })
    })
 
   
-   it("Not permit create a second new Pedido, Exists pedido status = 1", done =>{
-      let pedido = {
-         generoAlimenticio: false,
-         higienePessoal: false, 
-         artigoLimpeza: true, 
-         mascara: false, 
-         observacoes: 'Entrega após as 18h'
-      }
-
-      chai.request(base_url)
-      .post('/pedido')
-      .set('authorization', 'Bearer '+tokenRequester)
-      .send(pedido)
-      .end((err, res)=>{
-         expect(res).to.have.status(500)
-         expect(res.body).to.be.an('object')
-         done();
+   after(done =>{
+      Usuario.destroy({
+         where: {},
+         cascade: true
+      })
+      .then(success=>{
+         done()
+      })
+      .catch(error=>{
+         done(error)
       })
    })
-
-   it("Get all Waiting delivery Pedidos (Status=1) owned by Logged User (Requester)", (done) => {
-      chai.request(base_url)
-      .get('/pedido/status/1')
-      .set('authorization', 'Bearer '+tokenRequester)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('array')
-         expect(res.body.length).to.be.equal(1)
-         done()
-      })
-   });
-
-   it("Not permit remove a exists Pedido by not owner User (Giver)", done =>{
-      chai.request(base_url)
-      .delete('/pedido/'+pedidoId)
-      .set('authorization', 'Bearer '+tokenGiver)
-      .end((err, res)=>{
-         expect(res).to.have.status(500)
-         expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('error')
-         done();
-      })
-   })
-
-   it("Finish Pedido of User's Logged", (done) => {
-      chai.request(base_url)
-      .put('/pedido/finalizar/'+pedidoId)
-      .set('authorization', 'Bearer '+tokenRequester)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('msg')
-         done()
-      })
-   });
-
-   it("Donation linked by Pedido must be finished", (done)=>{
-      chai.request(base_url)
-      .get('/doacao/'+pedidoDoacaoID)
-      .set('authorization', 'Bearer '+tokenGiver)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('object')
-         expect(res.body.status).to.be.equal(3)
-         done()
-      })
-   })
-
-   it("Try create a second new Pedido", done =>{
-      let pedido = {
-         generoAlimenticio: false,
-         higienePessoal: false, 
-         artigoLimpeza: true, 
-         mascara: false, 
-         observacoes: 'Entrega após as 18h'
-      }
-
-      chai.request(base_url)
-      .post('/pedido')
-      .set('authorization', 'Bearer '+tokenRequester)
-      .send(pedido)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('object')
-         expect(res.body.mascara).to.be.equal(pedido.mascara)
-         pedido2Id = res.body.id
-         done();
-      })
-   })
-
-   it("Get all Open Pedidos (Status=0) owned by Logged User (Requester)", (done) => {
-      chai.request(base_url)
-      .get('/pedido/status/0')
-      .set('authorization', 'Bearer '+tokenRequester)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('array')
-         expect(res.body.length).to.be.equal(1)
-         done()
-      })
-   });
-
-   it("Permit edit a exists Open Pedido (status=0)", done =>{
-      let pedido = {
-         generoAlimenticio: true,
-         higienePessoal: true, 
-         artigoLimpeza: true, 
-         mascara: true, 
-         observacoes: 'Entrega após as 18h (altered)'
-      }
-
-      chai.request(base_url)
-      .put('/pedido/'+pedido2Id)
-      .set('authorization', 'Bearer '+tokenRequester)
-      .send(pedido)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('msg')
-         done();
-      })
-   })
-
-   it("Not permit Finish Pedido with status=0", (done) => {
-      chai.request(base_url)
-      .put('/pedido/finalizar/'+pedido2Id)
-      .set('authorization', 'Bearer '+tokenRequester)
-      .end((err, res)=>{
-         expect(res).to.have.status(500)
-         expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('msg')
-         done()
-      })
-   });
-
-   it("Get all Finished Pedidos (Status=2) from User's Logged City", (done) => {
-      chai.request(base_url)
-      .get('/pedido/status/2')
-      .set('authorization', 'Bearer '+tokenRequester)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('array')
-         expect(res.body.length).to.be.equal(1)
-         done()
-      })
-   });
-
-   it("Get all Open Pedidos from User's Logged City - Giver", (done) => {
-      chai.request(base_url)
-      .get('/pedidos-nao-atendidos/')
-      .set('authorization', 'Bearer '+tokenGiver)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('array')
-         expect(res.body.length).to.be.equal(1)
-         done()
-      })
-   });
-
-   it("Get all Open Pedidos from User's Logged City - Requester", (done) => {
-      chai.request(base_url)
-      .get('/pedidos-nao-atendidos/')
-      .set('authorization', 'Bearer '+tokenRequester)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('array')
-         expect(res.body.length).to.be.equal(0)
-         done()
-      })
-   });
-
-   it("Try remove a exists Pedido owned by Logged User (Requester)", done =>{
-      chai.request(base_url)
-      .delete('/pedido/'+pedido2Id)
-      .set('authorization', 'Bearer '+tokenRequester)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('msg')
-         done();
-      })
-   })
-
-   it("Not permit remove a exists Pedido finished", done =>{
-      chai.request(base_url)
-      .delete('/pedido/'+pedidoId)
-      .set('authorization', 'Bearer '+tokenRequester)
-      .end((err, res)=>{
-         expect(res).to.have.status(500)
-         expect(res.body).to.be.an('object')
-         expect(res.body).to.have.property('error')
-         done();
-      })
-   })
-
-   it("Get all Open Pedidos from User's Logged City - None", (done) => {
-      chai.request(base_url)
-      .get('/pedidos-nao-atendidos/')
-      .set('authorization', 'Bearer '+tokenGiver)
-      .end((err, res)=>{
-         expect(res).to.have.status(200)
-         expect(res.body).to.be.an('array')
-         expect(res.body.length).to.be.equal(0)
-         done()
-      })
-   });
 
    after(done =>{
       Pedido.destroy({
@@ -431,16 +309,4 @@ describe("Pedidos test",()=>{
       })
    })
 
-   after(done =>{
-      Doacao.destroy({
-         where: {},
-         cascade: true
-      })
-      .then(success=>{
-         done()
-      })
-      .catch(error=>{
-         done(error)
-      })
-   })
-})
+});
