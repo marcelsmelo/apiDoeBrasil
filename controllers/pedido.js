@@ -145,10 +145,10 @@ module.exports = {
             pedido.observacoes = req.body.observacoes
 
             if(req.user.loginType == 'U')//O usuário pode alterar o parceiro do pedido.
-               doacao.parceiroId = req.body.parceiroId
+               pedido.parceiroId = req.body.parceiroId
             else{
                //O parceiro pode definir o status de uma doação
-               if(req.body.status) doacao.status = req.body.status;
+               if(req.body.status) pedido.status = req.body.status;
             }
 
             await pedido.save()
