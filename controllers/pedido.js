@@ -28,7 +28,7 @@ module.exports = {
       try{
          let pedidos = await Pedido.findAll({
             where: condition,
-            attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'outros', 'observacoes', 'status'],
+            attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'outros', 'observacoes', 'status', 'createdAt','finishedAt'],
             include:[{
                   model: Usuario,
                   as: 'usuario',
@@ -70,7 +70,7 @@ module.exports = {
       //Se for aberto pelo Parceiro, deve indicar para qual usuário (U)
       if(req.user.loginType == 'U'){
          if(!req.body.parceiroId)//Ao solicitar ajuda, o usuário deve selecionar um Parceiro
-            return res.status(500).json({msg: "Erro ao cadastrar pedido", 'error': 'O Pedido deve ser vinculado a um usuário!'})
+            return res.status(500).json({msg: "Erro ao cadastrar pedido", 'error': 'O Pedido deve ser vinculado a um Parceiro!'})
          
          req.body.usuarioId = req.user.id;
          req.body.createdBy = 'U';

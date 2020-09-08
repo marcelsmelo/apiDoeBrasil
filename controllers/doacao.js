@@ -30,7 +30,7 @@ module.exports = {
       try{
          let doacoes = await Doacao.findAll({
             where: condition,
-            attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'outros', 'observacoes', 'status', 'dispEntrega'],
+            attributes: ['id', 'generoAlimenticio', 'higienePessoal', 'artigoLimpeza', 'outros', 'observacoes', 'status', 'dispEntrega', 'createdAt', 'deliveredAt', 'finishedAt'],
             include:[{
                model: Usuario,
                as: 'usuario',
