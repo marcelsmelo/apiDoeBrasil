@@ -19,6 +19,14 @@
           "type": "int"
         }
       },
+      'optionalCpfCnpjParam':{
+        'description': "CPF/CNPJ do usuário (Opcional)",
+        'in': 'query',
+        'required': false,
+        "schema":{
+          "type": "string"
+        }
+      },
       'userParam':{
         'description': "Objeto Usuário",
         'in': "body",

@@ -9,7 +9,8 @@
             { "BearerAuth": [] }
           ],
         "parameters":[
-          "$ref": "#/components/parameters/optionalIdParam"
+          "$ref": "#/components/parameters/optionalIdParam",
+          "$ref": "#/components/parameters/optionalCpfCnpjParam",
         ],
         "responses": {
           "200":{

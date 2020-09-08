@@ -231,6 +231,8 @@ module.exports = {
    //Disponível apenas para o Parceiro (P)
    buscarUsuarios: async (req, res, next)=>{//Filtar por ID
       let usuarioId = req.query.id;
+      let cpfCnpj = req.query.cpfCnpj;//TODO: Documentar
+
       let condition = {
          parceiroId: null,
          group: 'U',
@@ -239,6 +241,7 @@ module.exports = {
       };
 
       if(usuarioId) condition.id = usuarioId;
+      if(cpfCnpj) condition.cpfCnpj = cpfCnpj;
 
       try{
          let usuarios = await Usuario.findAll({
