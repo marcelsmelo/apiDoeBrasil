@@ -3,14 +3,29 @@
   {
     "/usuario/" : {
       "get": {
-        "description": "Busca todos os Usuários (U), sem vinculação com algum ao Parceiro (P), na cidade do Parceiro logado. Caso seja passado um ID como parâmetro, realiza retorna o Usuário (U) com o ID informado <br> Disponível apenas para Parceiro (P)",
+        "description": "Busca todos os Usuários (U), sem vinculação com algum ao Parceiro (P), na cidade do Parceiro logado. Caso seja passado um ID OU cpfCnpj como parâmetro, filtra somente o Usuário (U) com o ID ou CPF/CNPJ informado. <br> Disponível apenas para Parceiro (P)",
         "tags":['Usuário'],
         "security": [
             { "BearerAuth": [] }
           ],
         "parameters":[
-          "$ref": "#/components/parameters/optionalIdParam",
-          "$ref": "#/components/parameters/optionalCpfCnpjParam",
+          {
+          'name': "id",
+          'description': "(OPCIONAL) ID do Usuário",
+          'in': "query",
+         'required':false,
+          "schema": {
+            'type': 'integer'
+          }
+        },{
+          'name': "cpfCnpj",
+          'description': "(OPCIONAL) CPF ou CNPJ do usúario",
+          'in': "query",
+         'required':false,
+          "schema": {
+            'type': 'integer'
+          }
+        }
         ],
         "responses": {
           "200":{

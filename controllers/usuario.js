@@ -231,7 +231,7 @@ module.exports = {
    //Disponível apenas para o Parceiro (P)
    buscarUsuarios: async (req, res, next)=>{//Filtar por ID
       let usuarioId = req.query.id;
-      let cpfCnpj = req.query.cpfCnpj;//TODO: Documentar
+      let cpfCnpj = req.query.cpfCnpj;
 
       let condition = {
          parceiroId: null,
