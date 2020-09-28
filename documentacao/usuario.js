@@ -81,5 +81,87 @@
         }
       },
     },
+    "/usuario/hasEmail": {
+    "get": {
+      "description": "Verifica se o e-mail informado já está cadastrado no sistema.",
+      "tags":['Usuário'],
+      "security": [
+          { "BearerAuth": [] }
+        ],
+      "parameters":[
+        {
+          'name': "email",
+          'description': "E-mail a ser verificado",
+          'in': "query",
+          'required':true,
+          "schema": {
+            'type': 'String'
+          }
+        }
+      ],
+      "responses": {
+        "200":{
+          "description": "O e-mail informado já está cadastrado no sistema",
+          "content":{
+            "application/json":{
+              "schema":{
+                "type":"object",
+                "properties":{
+                  "msg": { "type":"string"}
+                }
+              }
+            }
+          }
+        },
+        "204":{
+          "description": "O e-mail informado NÃO está cadastrado no sistema",
+        },
+        "500":{
+          "$ref": "#/components/responses/genericError"
+        },
+      }
+    },
+  },
+  "/usuario/hasCpfCnpj": {
+    "get": {
+      "description": "Verifica se o CPF ou CNPJ informado já está cadastrado no sistema.",
+      "tags":['Usuário'],
+      "security": [
+          { "BearerAuth": [] }
+        ],
+      "parameters":[
+        {
+          'name': "cpfCnpj",
+          'description': "CPF ou CNPJ a ser verificado",
+          'in': "query",
+          'required':true,
+          "schema": {
+            'type': 'String'
+          }
+        }
+      ],
+      "responses": {
+        "200":{
+          "description": "O CPF ou CNPJ informado já está cadastrado no sistema",
+          "content":{
+            "application/json":{
+              "schema":{
+                "type":"object",
+                "properties":{
+                  "msg": { "type":"string"}
+                }
+              }
+            }
+          }
+        },
+        "204":{
+          "description": "O CPF ou CNPJ informado NÃO está cadastrado no sistema",
+        },
+        "500":{
+          "$ref": "#/components/responses/genericError"
+        },
+      }
+    },
+  },
   }
 */
