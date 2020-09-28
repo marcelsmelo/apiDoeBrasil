@@ -14,7 +14,7 @@ describe("User Login test",()=>{
     nome: 'Marcel Melo',
     cpfCnpj: '08911211613',
     telefone: '+55 34 99636-8898',
-    email: 'kasks@aksdfja.com',
+    email: 'marcel.msmelo@gmail.com',
     senha: '123456',
     rua: 'FC 05',
     numero: 'QA L6',
@@ -38,7 +38,7 @@ describe("User Login test",()=>{
   before(done => {
     // runs once before the first test in this block
     chai.request(base_url)
-         .post('/signup/usuario/')
+         .post('/usuario/signup/')
          .send(user)
          .end((err, res) => {
             expect(res).to.have.status(201)
@@ -46,6 +46,56 @@ describe("User Login test",()=>{
             expect(res.body).to.have.property('msg')
             done();
          })
+  });
+
+  it('E-mail ainda não cadastrado para algum usuário', (done)=>{
+    chai.request(base_url)
+    .get('/usuario/hasEmail')
+    .query({email: 'asdf@gmail.com'})
+    .end((err, res)=>{
+      console.log("resposta: ", res.body)
+      expect(res).to.have.status(204);
+
+      done();
+    });
+  });
+
+  it('Cpf ou Cnpj não cadastrado para algum usuário', (done)=>{
+    chai.request(base_url)
+    .get('/usuario/hasCpfCnpj')
+    .query({cpfCnpj: '234.344.567-33'})
+    .end((err, res)=>{
+      console.log("resposta: ", res.body)
+      expect(res).to.have.status(204);
+
+      done();
+    });
+  });
+
+  it('Verificar se o e-mail já está cadastrado', (done)=>{
+    chai.request(base_url)
+    .get('/usuario/hasEmail')
+    .query({email: user.email})
+    .end((err, res)=>{
+      console.log("resposta: ", res.body)
+      expect(res).to.have.status(200);
+      expect(res.body).to.be.a('object')
+      expect(res.body).to.have.property('msg')
+      done();
+    });
+  });
+
+  it('Verificar se o Cpf ou Cnpj já está cadastrado', (done)=>{
+    chai.request(base_url)
+    .get('/usuario/hasCpfCnpj')
+    .query({cpfCnpj: user.cpfCnpj})
+    .end((err, res)=>{
+      console.log("resposta: ", res.body)
+      expect(res).to.have.status(200);
+      expect(res.body).to.be.a('object')
+      expect(res.body).to.have.property('msg')
+      done();
+    });
   });
   
   it("Tentar logar com um usuário não existente",(done)=>{

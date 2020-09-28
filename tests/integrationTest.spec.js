@@ -1,11 +1,11 @@
 const app = require('../bin/www')
 
-require('./createUsers.spec')
-require('./cidadesTest.spec')
+// require('./createUsers.spec')
+// require('./cidadesTest.spec')
 require('./usuarioTest.spec') 
-require('./usuarioParceiroTest.spec')
-require('./acao.spec')
-require('./doacaoTest.spec')
+// require('./usuarioParceiroTest.spec')
+// require('./acao.spec')
+// require('./doacaoTest.spec')
 
 //require('./parceiro.spec')
 // require('./pedidosTest.spec')

@@ -13,8 +13,10 @@ module.exports = (app) => {
     app.post('/usuario/signup/', (req, res, next)=>{req.body.group = 'U'; next();}, controller.cadastrar);//cadastrar usuário
     app.get('/usuario', auth.jwtVerify, auth.groupVerify(['P', 'A']), controller.buscarUsuarios)
     app.put('/usuario', auth.jwtVerify, controller.editar);//ok
-    app.delete('/usuario', auth.jwtVerify, controller.remover)
-    
+    app.delete('/usuario', auth.jwtVerify, controller.remover);
+
+    app.get('/usuario/hasEmail', controller.hasEmail);
+    app.get('/usuario/hasCpfCnpj', controller.hasCpfCnpj);
 
 
     //Parceiros
