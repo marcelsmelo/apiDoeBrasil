@@ -13,7 +13,7 @@
           'name': "id",
           'description': "(OPCIONAL) ID da Doação - Busca doação com o ID informado.",
           'in': "query",
-         'required':false,
+          'required':false,
           "schema": {
             'type': 'integer'
           }
@@ -21,7 +21,7 @@
           'name': "status",
           'description': "(OPCIONAL) Status da Doação - Busca todas doações vinculadas ao usuário/parceiro logado com o status informado <br> Status:<br> 0 - Aguardando Entrega;<br> 1 - Aguardando Retirada;<br> 2 - Aguardando confirmação;<br> 3 - Finalizada",
           'in': "query",
-         'required':false,
+          'required':false,
           "schema": {
             'type': 'integer'
           }
@@ -74,12 +74,12 @@
           'name': "id",
           'description': "ID da Doação",
           'in': "query",
-         'required':true,
+          'required':true,
           "schema": {
             'type': 'integer'
           }
         },
-         "$ref":"#/components/parameters/doacaoParam"
+        "$ref":"#/components/parameters/doacaoParam"
       ],
       "responses": {
         "200":{

@@ -30,7 +30,7 @@
       'userParam':{
         'description': "Objeto Usuário",
         'in': "body",
-        'requiered':true,
+        'required':true,
         "schema": {
           "$ref": "#/components/schemas/Usuario"
         }
@@ -38,7 +38,7 @@
       'pedidoParam':{
         'description': "Objeto Pedido",
         'in': "body",
-        'requiered':true,
+        'required':true,
         "schema": {
           "$ref": "#/components/schemas/Pedido"
         }
@@ -46,7 +46,7 @@
       'doacaoParam':{
         'description': "Objeto Doação",
         'in': "body",
-        'requiered':true,
+        'required':true,
         "schema": {
           "$ref": "#/components/schemas/Doacao"
         }
@@ -54,7 +54,7 @@
       'parceiroParam':{
         'description': "Objeto Parceiro",
         'in': "body",
-        'requiered':true,
+        'required':true,
         "schema": {
           "$ref": "#/components/schemas/Parceiro"
         }
@@ -62,7 +62,7 @@
       'acaoParam':{
         'description': "Objeto Acao",
         'in': "body",
-        'requiered':true,
+        'required':true,
         "schema": {
           "$ref": "#/components/schemas/Acao"
         }

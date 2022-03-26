@@ -1,0 +1,49 @@
+version: '3.3'
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'doebrasil'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'admin'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'admin'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'root'
+      ACCEPT_EULA: "Y"
+      TZ: "America/Sao_Paulo"
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3306:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+      # Where our data will be persisted
+    volumes:
+      - my-db:/var/lib/mysql
+  app:
+    depends_on:
+      - db
+    build: 
+      context: .
+    #entrypoint: ["/bin/bash", "./entrypoint.sh"]
+    ports:
+      - 8080:3000
+    environment:
+      - PORT=3000
+      - DB_HOST=db
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - DB_NAME=doebrasil
+      - DB_PORT=3306
+    stdin_open: true
+    tty: true
+    command: bash -c "chmod +x ./wait-for-it.sh && ./wait-for-it.sh -t 0 db:3306 -- node ./database/syncDB.js && npm start"
+    volumes:
+      - ./:/home/node/app
+      - node_modules:/home/node/app/node_modules
+# Names our volume
+volumes:
+  my-db:
+  node_modules: 

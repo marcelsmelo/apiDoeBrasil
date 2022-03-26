@@ -13,7 +13,7 @@
           'name': "id",
           'description': "(OPCIONAL) ID da ação",
           'in': "query",
-         'required':true,
+          'required':true,
           "schema": {
             'type': 'integer'
           }
@@ -22,7 +22,7 @@
           'name': "parceiroId",
           'description': "(OPCIONAL) ID do parceiro criador da Ação",
           'in': "query",
-         'required':true,
+          'required':true,
           "schema": {
             'type': 'integer'
           }
@@ -31,7 +31,7 @@
           'name': "ativo",
           'description': "(OPCIONAL) Buscar ações ativas ou inativas vinculadas a um parceiro. É necessário passar o parceiroId.",
           'in': "query",
-         'required':true,
+          'required':true,
           "schema": {
             'type': 'boolean'
           }
@@ -49,7 +49,7 @@
         }
       }
     },
-     "post": {
+    "post": {
       "description": "Adiciona uma nova Ação vinculada ao Parceiro logado (Disponível apenas para o Parceiros)",
       "tags":['Ação'],
       "security": [
@@ -84,12 +84,12 @@
           'name': "id",
           'description': "ID da Ação",
           'in': "query",
-         'required':true,
+          'required':true,
           "schema": {
             'type': 'integer'
           }
         },
-         "$ref":"#/components/parameters/AcaoParam"
+        "$ref":"#/components/parameters/AcaoParam"
       ],
       "responses": {
         "200":{
@@ -117,7 +117,7 @@
           'name': "id",
           'description': "ID da Ação",
           'in': "query",
-         'required':true,
+          'required':true,
           "schema": {
             'type': 'integer'
           }
@@ -162,6 +162,6 @@
         }
       }
     }
-   },
+  },
 }
 */
