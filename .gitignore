@@ -40,4 +40,5 @@ jspm_packages
 config/
 .vscode/
 dumps/
+data/
 

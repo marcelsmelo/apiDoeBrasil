@@ -1,7 +1,6 @@
 const Sequelize = require("sequelize");
 let Usuario = require("../models/Usuario");
 let Pedido = require("../models/Pedido");
-const database = require("../config/database");
 const Op = Sequelize.Op;
 
 module.exports = {
